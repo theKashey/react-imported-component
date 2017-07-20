@@ -1,0 +1,47 @@
+{
+  "name": "react-hot-component-loader",
+  "version": "1.0.0",
+  "description": "Async component for React-Hot-Loader ",
+  "main": "dist/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "build": "babel src -d dist",
+    "flow-copy": "flow-copy-source src dist",
+    "flow-watch": "clear; printf \"\\033[3J\" & npm run flow & fswatch -o ./ | xargs -n1 -I{} sh -c 'clear; printf \"\\033[3J\" && npm run flow'",
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "clean": "rimraf dist && mkdir dist",
+    "test": "jest",
+    "prepublish": "npm run build",
+    "lint": "eslint src tests",
+    "lint:fix": "eslint src tests --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theKashey/react-hot-component-loader.git"
+  },
+  "keywords": [
+    "react-hot-loader",
+    "loader",
+    "import",
+    "async",
+    "hmr"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-hot-loader": "^3.0.0-beta.7"
+  },
+  "author": "theKashey <thekashey@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/theKashey/react-hot-component-loader/issues"
+  },
+  "homepage": "https://github.com/theKashey/react-hot-component-loader#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^4.2.0"
+  }
+}
