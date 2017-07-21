@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { AppContainer } from 'react-hot-loader';
+import {AppContainer} from 'react-hot-loader';
 
 const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
@@ -7,7 +7,7 @@ const STATE_OK = 'ok';
 
 export class HotComponentLoader extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {};
     this.reload = this.reload.bind(this);
@@ -97,9 +97,9 @@ HotComponentLoader.defaultProps = {
   exportPicker: es6import
 };
 
-const loader = (loaderFunction, options) => {
-  const hotLoader = (props) => (
-    <AsyncComponentLoader
+const loader = (loaderFunction, options = {}) =>
+  (props) => (
+    <HotComponentLoader
       loader={loaderFunction}
       LoadingComponent={options.LoadingComponent}
       ErrorComponent={options.ErrorComponent}
@@ -107,13 +107,5 @@ const loader = (loaderFunction, options) => {
       {...props}
     />
   );
-  hotLoader.propTypes = {
-    loader: PropTypes.func.isRequired,
-    LoadingComponent: PropTypes.func,
-    ErrorComponent: PropTypes.func,
-    exportPicker: PropTypes.func
-  };
-  return hotLoader;
-};
 
 export default loader;

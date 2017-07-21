@@ -1,16 +1,13 @@
 {
   "name": "react-hot-component-loader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Async component for React-Hot-Loader ",
   "main": "dist/index.js",
   "module": "src/index.js",
   "scripts": {
     "build": "babel src -d dist",
-    "flow-copy": "flow-copy-source src dist",
-    "flow-watch": "clear; printf \"\\033[3J\" & npm run flow & fswatch -o ./ | xargs -n1 -I{} sh -c 'clear; printf \"\\033[3J\" && npm run flow'",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2",
-    "clean": "rimraf dist && mkdir dist",
-    "test": "jest",
+    "test": "npm run test:pick -- '_tests/**/*spec.js'",
+    "test:pick": "BABEL_ENV=test mocha --compilers js:babel-core/register -r jsdom-global/register",
     "prepublish": "npm run build",
     "lint": "eslint src tests",
     "lint:fix": "eslint src tests --fix"
@@ -42,6 +39,17 @@
     "babel-eslint": "^7.2.3",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.24.1",
-    "eslint": "^4.2.0"
+    "chai": "^4.1.0",
+    "chai-enzyme": "^0.8.0",
+    "enzyme": "^2.9.1",
+    "eslint": "^4.2.0",
+    "eslint-plugin-mocha": "^4.11.0",
+    "jsdom": "11.1.0",
+    "jsdom-global": "3.0.2",
+    "mocha": "^3.4.2",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-hot-loader": "^3.0.0-beta.7",
+    "react-test-renderer": "^15.6.1"
   }
 }
