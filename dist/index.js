@@ -135,22 +135,16 @@ HotComponentLoader.defaultProps = {
   exportPicker: es6import
 };
 
-var loader = function loader(loaderFunction, options) {
-  var hotLoader = function hotLoader(props) {
-    return _react2.default.createElement(AsyncComponentLoader, _extends({
+var loader = function loader(loaderFunction) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  return function (props) {
+    return _react2.default.createElement(HotComponentLoader, _extends({
       loader: loaderFunction,
       LoadingComponent: options.LoadingComponent,
       ErrorComponent: options.ErrorComponent,
       exportPicker: options.exportPicker
     }, props));
   };
-  hotLoader.propTypes = {
-    loader: _react.PropTypes.func.isRequired,
-    LoadingComponent: _react.PropTypes.func,
-    ErrorComponent: _react.PropTypes.func,
-    exportPicker: _react.PropTypes.func
-  };
-  return hotLoader;
 };
 
 exports.default = loader;

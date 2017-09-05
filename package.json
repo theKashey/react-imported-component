@@ -1,9 +1,8 @@
 {
   "name": "react-hot-component-loader",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Async component for React-Hot-Loader ",
   "main": "dist/index.js",
-  "module": "src/index.js",
   "scripts": {
     "build": "babel src -d dist",
     "test": "npm run test:pick -- '_tests/**/*spec.js'",
