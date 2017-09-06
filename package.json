@@ -1,6 +1,6 @@
 {
   "name": "react-hot-component-loader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Async component for React-Hot-Loader ",
   "main": "dist/index.js",
   "scripts": {
@@ -50,5 +50,8 @@
     "react-dom": "^15.6.1",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-test-renderer": "^15.6.1"
+  },
+  "dependencies": {
+    "prop-types": "15.5.10"
   }
 }

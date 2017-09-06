@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {AppContainer} from 'react-hot-loader';
 
 const STATE_LOADING = 'loading';
@@ -20,7 +21,7 @@ export class HotComponentLoader extends Component {
   componentWillReceiveProps() {
     // Hot reload is happening.
     if (module.hot) {
-      this.remount();
+      setImmediate(()=> this.remount());
     }
   }
 

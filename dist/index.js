@@ -13,6 +13,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _reactHotLoader = require('react-hot-loader');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -48,18 +52,22 @@ var HotComponentLoader = exports.HotComponentLoader = function (_Component) {
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps() {
+      var _this2 = this;
+
       // Hot reload is happening.
       if (module.hot) {
-        this.remount();
+        setImmediate(function () {
+          return _this2.remount();
+        });
       }
     }
   }, {
     key: 'remount',
     value: function remount() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.loader().then(function (payload) {
-        _this2.setState({ AsyncComponent: _this2.props.exportPicker(payload) });
+        _this3.setState({ AsyncComponent: _this3.props.exportPicker(payload) });
       });
     }
   }, {
@@ -70,19 +78,19 @@ var HotComponentLoader = exports.HotComponentLoader = function (_Component) {
   }, {
     key: 'reload',
     value: function reload() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.setState({
         state: STATE_LOADING
       });
       this.loader().then(function (payload) {
-        _this3.setState({
-          AsyncComponent: _this3.props.exportPicker(payload),
+        _this4.setState({
+          AsyncComponent: _this4.props.exportPicker(payload),
           state: STATE_OK
         });
       }, function (err) {
         console.error('[React-hot-component-loader]', err);
-        _this3.setState({
+        _this4.setState({
           state: STATE_ERROR
         });
       });
@@ -121,10 +129,10 @@ var HotComponentLoader = exports.HotComponentLoader = function (_Component) {
 }(_react.Component);
 
 HotComponentLoader.propTypes = {
-  loader: _react.PropTypes.func.isRequired,
-  LoadingComponent: _react.PropTypes.func,
-  ErrorComponent: _react.PropTypes.func,
-  exportPicker: _react.PropTypes.func
+  loader: _propTypes2.default.func.isRequired,
+  LoadingComponent: _propTypes2.default.func,
+  ErrorComponent: _propTypes2.default.func,
+  exportPicker: _propTypes2.default.func
 };
 
 var es6import = function es6import(module) {
