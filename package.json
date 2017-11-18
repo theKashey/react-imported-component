@@ -1,7 +1,7 @@
 {
-  "name": "react-hot-component-loader",
-  "version": "1.0.3",
-  "description": "Async component for React-Hot-Loader ",
+  "name": "react-imported-component",
+  "version": "1.0.0",
+  "description": "The simples universal way to defer/async load react component, keeping it sync on server side",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src -d dist",
@@ -36,6 +36,7 @@
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "chai": "^4.1.0",
@@ -52,6 +53,7 @@
     "react-test-renderer": "^15.6.1"
   },
   "dependencies": {
+    "detect-node": "^2.0.3",
     "prop-types": "15.5.10"
   }
 }

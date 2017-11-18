@@ -1,112 +1,12 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {AppContainer} from 'react-hot-loader';
+import deferred from './HOC';
+import {drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks} from './marks';
+import {done as whenComponentsReady, dryRender} from './loadable';
 
-const STATE_LOADING = 'loading';
-const STATE_ERROR = 'error';
-const STATE_OK = 'ok';
-
-export class HotComponentLoader extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.reload = this.reload.bind(this);
-  }
-
-  componentWillMount() {
-    this.reload();
-  }
-
-  componentWillReceiveProps() {
-    // Hot reload is happening.
-    if (module.hot) {
-      setImmediate(()=> this.remount());
-    }
-  }
-
-  remount() {
-    this.loader()
-      .then((payload) => {
-        this.setState({AsyncComponent: this.props.exportPicker(payload)});
-      });
-  }
-
-  loader() {
-    return Promise.resolve(this.props.loader());
-  }
-
-  reload() {
-    this.setState({
-      state: STATE_LOADING
-    });
-    this.loader().then((payload) => {
-      this.setState({
-        AsyncComponent: this.props.exportPicker(payload),
-        state: STATE_OK
-      });
-    }, (err) => {
-      console.error('[React-hot-component-loader]', err);
-      this.setState({
-        state: STATE_ERROR
-      });
-    });
-  }
-
-  render() {
-    const {AsyncComponent, state} = this.state;
-    const {LoadingComponent, ErrorComponent} = this.props;
-
-    if (AsyncComponent) {
-      return (
-        <AppContainer>
-          <AsyncComponent {...this.props} />
-        </AppContainer>
-      );
-    }
-
-    switch (state) {
-      case STATE_LOADING:
-        return LoadingComponent
-          ? React.Children.only(<LoadingComponent {...this.props} />)
-          : null;
-      case STATE_ERROR:
-        return ErrorComponent
-          ? React.Children.only(<ErrorComponent retryImport={this.reload} {...this.props} />)
-          : null;
-      default:
-        return null;
-    }
-  }
+export {
+  printDrainHydrateMarks,
+  drainHydrateMarks,
+  rehydrateMarks,
+  whenComponentsReady,
+  dryRender
 }
-
-HotComponentLoader.propTypes = {
-  loader: PropTypes.func.isRequired,
-  LoadingComponent: PropTypes.func,
-  ErrorComponent: PropTypes.func,
-  exportPicker: PropTypes.func
-};
-
-
-const es6import = (module) => (
-  module.default
-    ? module.default
-    : module
-);
-
-HotComponentLoader.defaultProps = {
-  exportPicker: es6import
-};
-
-const loader = (loaderFunction, options = {}) =>
-  (props) => (
-    <HotComponentLoader
-      loader={loaderFunction}
-      LoadingComponent={options.LoadingComponent}
-      ErrorComponent={options.ErrorComponent}
-      exportPicker={options.exportPicker}
-      {...props}
-    />
-  );
-
-export default loader;
+export default deferred;
