@@ -1,8 +1,9 @@
 {
   "name": "react-imported-component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The simples universal way to defer/async load react component, keeping it sync on server side",
   "main": "dist/index.js",
+  "types": "module.d.ts",
   "scripts": {
     "build": "babel src -d dist",
     "test": "npm run test:pick -- '_tests/**/*spec.js'",
