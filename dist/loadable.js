@@ -41,7 +41,7 @@ var toLoadable = function toLoadable(importFunction) {
     reset: function reset() {
       this.done = false;
       this.ok = true;
-      this.payload = payload;
+      this.payload = null;
       this.promise = null;
     },
     load: function load() {

@@ -13,11 +13,12 @@ const toLoadable = (importFunction, autoImport = true, mark = false) => {
     done: false,
     ok: false,
     payload: undefined,
+    promise: undefined,
     reset() {
       this.done = false;
       this.ok = true;
-      this.payload = payload;
-      this.promise = null;
+      this.payload = undefined;
+      this.promise = undefined;
     },
     load() {
       if (!this.promise) {
