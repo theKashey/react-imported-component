@@ -1,6 +1,6 @@
 {
   "name": "react-imported-component",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The simples universal way to defer/async load react component, keeping it sync on server side",
   "main": "dist/index.js",
   "types": "module.d.ts",
