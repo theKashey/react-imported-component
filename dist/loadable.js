@@ -38,11 +38,12 @@ var toLoadable = function toLoadable(importFunction) {
     done: false,
     ok: false,
     payload: undefined,
+    promise: undefined,
     reset: function reset() {
       this.done = false;
       this.ok = true;
-      this.payload = null;
-      this.promise = null;
+      this.payload = undefined;
+      this.promise = undefined;
     },
     load: function load() {
       var _this = this;
