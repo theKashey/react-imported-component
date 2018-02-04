@@ -15,7 +15,7 @@ const loader = (loaderFunction, options = {}) =>
   (props) => (
     <HotComponentLoader
       ssrMark={options.mark}
-      loadable={toLoadable(loaderFunction, true, options.mark)}
+      loadable={toLoadable(loaderFunction, options.noAutoImport ? false : true, options.mark)}
       LoadingComponent={options.LoadingComponent}
       ErrorComponent={options.ErrorComponent}
       exportPicker={options.exportPicker}

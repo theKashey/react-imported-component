@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.settings = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -20,6 +21,10 @@ var _reactHotLoader = require('react-hot-loader');
 
 var _marks = require('./marks');
 
+var _NotSoPureComponent = require('./NotSoPureComponent');
+
+var _NotSoPureComponent2 = _interopRequireDefault(_NotSoPureComponent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32,6 +37,19 @@ var STATE_LOADING = 'loading';
 var STATE_ERROR = 'error';
 var STATE_OK = 'ok';
 
+var Fragment = _react2.default.Fragment ? _react2.default.Fragment : function (_ref) {
+  var children = _ref.children;
+  return _react2.default.createElement(
+    'div',
+    null,
+    children
+  );
+};
+
+var settings = exports.settings = {
+  hot: !!module.hot
+};
+
 var HotComponentLoader = function (_Component) {
   _inherits(HotComponentLoader, _Component);
 
@@ -40,12 +58,23 @@ var HotComponentLoader = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (HotComponentLoader.__proto__ || Object.getPrototypeOf(HotComponentLoader)).call(this, props));
 
+    _this.onHRM = function () {
+      if (settings.hot) {
+        setImmediate(function () {
+          _this.props.loadable.reset();
+          _this.remount();
+        });
+      }
+    };
+
     _this.reload = function () {
       _this.setState({
         state: STATE_LOADING
       });
       _this.remount().catch(function (err) {
+        /* eslint-disable */
         console.error('[React-hot-component-loader]', err);
+        /* eslint-enable */
         _this.setState({
           state: STATE_ERROR
         });
@@ -63,22 +92,9 @@ var HotComponentLoader = function (_Component) {
       this.reload();
     }
   }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps() {
-      var _this2 = this;
-
-      // Hot reload is happening.
-      if (module.hot) {
-        setImmediate(function () {
-          _this2.props.loadable.reset();
-          _this2.remount();
-        });
-      }
-    }
-  }, {
     key: 'remount',
     value: function remount() {
-      var _this3 = this;
+      var _this2 = this;
 
       if (this.props.loadable.done) {
         this.setState({
@@ -88,7 +104,7 @@ var HotComponentLoader = function (_Component) {
         return this.props.loadable.promise;
       } else {
         return this.props.loadable.load().then(function (payload) {
-          _this3.setState({ AsyncComponent: _this3.props.exportPicker(payload) });
+          _this2.setState({ AsyncComponent: _this2.props.exportPicker(payload) });
         });
       }
     }
@@ -112,7 +128,12 @@ var HotComponentLoader = function (_Component) {
         return _react2.default.createElement(
           _reactHotLoader.AppContainer,
           null,
-          _react2.default.createElement(AsyncComponent, this.props)
+          _react2.default.createElement(
+            Fragment,
+            null,
+            _react2.default.createElement(AsyncComponent, this.props),
+            _react2.default.createElement(_NotSoPureComponent2.default, { onUpdate: this.onHRM })
+          )
         );
       }
 

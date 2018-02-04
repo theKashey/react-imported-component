@@ -45,7 +45,9 @@ const toLoadable = (importFunction, autoImport = true, mark = false) => {
   if (mark) {
     if (LOADABLE_MARKS[mark]) {
       if (isNode) {
+        /* eslint-disable */
         console.warn('react-deferred-component: mark', mark, 'already used for', LOADABLE_MARKS[mark].importFunction.toString());
+        /* eslint-enable */
       }
     }
     LOADABLE_MARKS[mark] = loadable;

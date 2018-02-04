@@ -71,7 +71,9 @@ var toLoadable = function toLoadable(importFunction) {
   if (mark) {
     if (_marks2.default[mark]) {
       if (_detectNode2.default) {
+        /* eslint-disable */
         console.warn('react-deferred-component: mark', mark, 'already used for', _marks2.default[mark].importFunction.toString());
+        /* eslint-enable */
       }
     }
     _marks2.default[mark] = loadable;

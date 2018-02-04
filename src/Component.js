@@ -2,10 +2,17 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {AppContainer} from 'react-hot-loader';
 import {useMark} from './marks';
+import NotSoPureComponent from "./NotSoPureComponent";
 
 const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
 const STATE_OK = 'ok';
+
+const Fragment = React.Fragment ? React.Fragment : ({children}) => <div>{children}</div>;
+
+export const settings = {
+  hot: !!module.hot
+};
 
 export default class HotComponentLoader extends Component {
 
@@ -17,16 +24,6 @@ export default class HotComponentLoader extends Component {
   componentWillMount() {
     useMark(this.props.ssrMark);
     this.reload();
-  }
-
-  componentWillReceiveProps() {
-    // Hot reload is happening.
-    if (module.hot) {
-      setImmediate(() => {
-        this.props.loadable.reset();
-        this.remount()
-      });
-    }
   }
 
   remount() {
@@ -48,12 +45,23 @@ export default class HotComponentLoader extends Component {
     return Promise.resolve(this.props.loadable());
   }
 
+  onHRM = () => {
+    if (settings.hot) {
+      setImmediate(() => {
+        this.props.loadable.reset();
+        this.remount()
+      });
+    }
+  }
+
   reload = () => {
     this.setState({
       state: STATE_LOADING
     });
     this.remount().catch(err => {
+      /* eslint-disable */
       console.error('[React-hot-component-loader]', err);
+      /* eslint-enable */
       this.setState({
         state: STATE_ERROR
       });
@@ -67,7 +75,10 @@ export default class HotComponentLoader extends Component {
     if (AsyncComponent) {
       return (
         <AppContainer>
-          <AsyncComponent {...this.props} />
+          <Fragment>
+            <AsyncComponent {...this.props} />
+            <NotSoPureComponent onUpdate={this.onHRM}/>
+          </Fragment>
         </AppContainer>
       );
     }

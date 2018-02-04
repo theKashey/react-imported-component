@@ -34,7 +34,7 @@ var loader = function loader(loaderFunction) {
   return function (props) {
     return _react2.default.createElement(_Component2.default, _extends({
       ssrMark: options.mark,
-      loadable: (0, _loadable2.default)(loaderFunction, true, options.mark),
+      loadable: (0, _loadable2.default)(loaderFunction, options.noAutoImport ? false : true, options.mark),
       LoadingComponent: options.LoadingComponent,
       ErrorComponent: options.ErrorComponent,
       exportPicker: options.exportPicker

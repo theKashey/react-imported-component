@@ -2,23 +2,56 @@ import React from 'react';
 import chai, {expect} from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import {mount} from 'enzyme';
+import sinon from 'sinon';
+import deepForceUpdate from 'react-deep-force-update';
 import loader from '../src/HOC';
-import HotComponentLoader from '../src/Component';
+import HotComponentLoader, {settings} from '../src/Component';
 import toLoadable from '../src/loadable';
 
 chai.use(chaiEnzyme());
 
 describe('Async Component', () => {
-  describe('loader', (done) => {
-    it('should load component', () => {
+  describe('loader', () => {
+    it('should load component', (done) => {
       const TargetComponent = ({payload}) => <div>{payload}</div>;
       const Component = loader(() => TargetComponent);
       const wrapper = mount(<Component payload={42}/>);
       expect(wrapper.find(TargetComponent)).to.be.not.present();
       setImmediate(() => {
         expect(wrapper.find(TargetComponent)).to.be.present();
-        expect(wrapper.find(TargetComponent)).to.contain('42');
+        expect(wrapper.find(TargetComponent)).to.contain.text('42');
         done();
+      });
+    });
+
+    it('should re-load component', (done) => {
+      const spy = sinon.spy();
+      const TargetComponent = ({payload}) => <div>{payload}</div>;
+      const Component = loader(() => {
+        spy();
+        return TargetComponent
+      }, {noAutoImport: true});
+      settings.hot = true;
+      const wrapper = mount(<Component payload={42}/>);
+      setImmediate(() => {
+        sinon.assert.calledOnce(spy);
+        wrapper.setProps({payload:42});
+        setImmediate(() => {
+          sinon.assert.calledOnce(spy);
+          wrapper.setProps({payload: 43});
+          setImmediate(() => {
+            sinon.assert.calledOnce(spy);
+            deepForceUpdate(wrapper.find(HotComponentLoader).get(0));
+            //wrapper.find(HotComponentLoader).get(0).forceUpdate();
+            setImmediate(() => {
+              setImmediate(() => {
+                sinon.assert.calledTwice(spy);
+                settings.hot = false;
+                done();
+              });
+            });
+          });
+        });
       });
     });
 
