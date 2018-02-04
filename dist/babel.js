@@ -11,7 +11,9 @@ exports.default = function (_ref) {
     inherits: _babelPluginSyntaxDynamicImport2.default,
 
     visitor: {
-      ImportDeclaration: function ImportDeclaration(path, file) {
+      ImportDeclaration: function ImportDeclaration(path, _ref2) {
+        var file = _ref2.file;
+
         var source = path.node.source.value;
         if (source !== 'react-imported-component') return;
 
@@ -41,8 +43,8 @@ exports.default = function (_ref) {
           var dynamicImports = [];
 
           loaderMethod.traverse({
-            Import: function Import(_ref2) {
-              var parentPath = _ref2.parentPath;
+            Import: function Import(_ref3) {
+              var parentPath = _ref3.parentPath;
 
               dynamicImports.push(parentPath);
             }
@@ -58,11 +60,9 @@ exports.default = function (_ref) {
             callExpression.node.arguments.push(options);
           }
 
-          console.log(dynamicImport);
-
           options.properties.push(t.objectProperty(t.identifier('mark'), t.stringLiteral(dynamicImports.map(function (dynamicImport) {
-            return dynamicImport.get('arguments')[0].node;
-          }).join('-') + file.opts.filename)));
+            return dynamicImport.get('arguments')[0].node.value;
+          }).join('-') + ':' + file.opts.filename)));
         });
       }
     }
