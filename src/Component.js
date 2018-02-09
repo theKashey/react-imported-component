@@ -74,12 +74,12 @@ export default class HotComponentLoader extends Component {
 
     if (AsyncComponent) {
       return (
-        <AppContainer>
-          <Fragment>
+        <Fragment>
+          <AppContainer>
             <AsyncComponent {...this.props} />
-            <NotSoPureComponent onUpdate={this.onHRM}/>
-          </Fragment>
-        </AppContainer>
+          </AppContainer>
+          <NotSoPureComponent onUpdate={this.onHRM}/>
+        </Fragment>
       );
     }
 

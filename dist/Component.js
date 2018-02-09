@@ -126,14 +126,14 @@ var HotComponentLoader = function (_Component) {
 
       if (AsyncComponent) {
         return _react2.default.createElement(
-          _reactHotLoader.AppContainer,
+          Fragment,
           null,
           _react2.default.createElement(
-            Fragment,
+            _reactHotLoader.AppContainer,
             null,
-            _react2.default.createElement(AsyncComponent, this.props),
-            _react2.default.createElement(_NotSoPureComponent2.default, { onUpdate: this.onHRM })
-          )
+            _react2.default.createElement(AsyncComponent, this.props)
+          ),
+          _react2.default.createElement(_NotSoPureComponent2.default, { onUpdate: this.onHRM })
         );
       }
 
