@@ -17,6 +17,10 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _detectNode = require('detect-node');
+
+var _detectNode2 = _interopRequireDefault(_detectNode);
+
 var _marks = require('./marks');
 
 var _NotSoPureComponent = require('./NotSoPureComponent');
@@ -81,6 +85,9 @@ var HotComponentLoader = function (_Component) {
     value: function componentWillMount() {
       // SSR support
       (0, _marks.useMark)(this.props.loadable.mark);
+      if (_detectNode2.default) {
+        this.reload();
+      }
     }
   }, {
     key: 'componentDidMount',

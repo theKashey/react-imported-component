@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.dryRender = exports.done = undefined;
+exports.assignImportedComponents = exports.dryRender = exports.done = undefined;
 
 var _detectNode = require('detect-node');
 
@@ -105,6 +105,12 @@ var done = exports.done = function done() {
 var dryRender = exports.dryRender = function dryRender(renderFunction) {
   renderFunction();
   return Promise.resolve().then(done);
+};
+
+var assignImportedComponents = exports.assignImportedComponents = function assignImportedComponents(set) {
+  Object.keys(set).forEach(function (key) {
+    return toLoadable(set[key]);
+  });
 };
 
 exports.default = toLoadable;

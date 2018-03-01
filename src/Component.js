@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import isNode from 'detect-node';
 import {useMark} from './marks';
 import NotSoPureComponent from "./NotSoPureComponent";
 
@@ -23,6 +24,9 @@ export default class HotComponentLoader extends Component {
   componentWillMount() {
     // SSR support
     useMark(this.props.loadable.mark);
+    if(isNode){
+      this.reload();
+    }
   }
 
   componentDidMount() {

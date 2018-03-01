@@ -43,17 +43,15 @@ export default function ({types: t, template}) {
 
     visitor: {
       Import({parentPath}, {file}) {
-        const localFile = file.opts.filename;
-        const newImport = parentPath.node;
-        const importName = parentPath.get('arguments')[0].node.value;
-        const requiredFile = resolveImport(importName, localFile);
-
-        console.error(parentPath.parentPath.type, importName, requiredFile);
-
         if (visitedNodes.has(parentPath.node)) {
           return;
         }
 
+        const localFile = file.opts.filename;
+        const newImport = parentPath.node;
+        const importName = parentPath.get('arguments')[0].node.value;
+        const requiredFile = resolveImport(importName, localFile);
+        
         let replace = null;
         if(parentPath.parentPath.type==='ArrowFunctionExpression') {
           replace = importCallRegistration({

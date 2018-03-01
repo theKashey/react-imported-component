@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './codeSplitAssets/NyanCat.css';
 import Go from './codeSplitAssets/NyanCat.js';
+import importedComponent from "react-imported-component";
+
+const HelloWorld3 = importedComponent(() => import('./HelloWorld3'));
 
 export default class Nyan extends Component {
 
@@ -33,6 +36,8 @@ export default class Nyan extends Component {
                     
                 </div>
             </div>
+            and nested cat....
+            <HelloWorld3 />
         </div>
     }
 }

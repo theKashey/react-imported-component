@@ -14,6 +14,7 @@
   "scripts": {
     "dev": "parcel app/index.html",
     "build": "rimraf dist && npm run build-client && npm run build-server",
+    "build-imported": "imported-components app app/imported-chunk.js",
     "build-client": "cross-env BABEL_ENV=client parcel build app/index.html -d dist/client --public-url /dist --no-minify --no-cache",
     "build-server": "cross-env BABEL_ENV=server parcel build server/index.js -d dist/server --public-url /dist --target=node6 --no-minify  --no-cache",
     "start": "node dist/server"

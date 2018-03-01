@@ -2,19 +2,22 @@
 // Start your React application and add the required containers
 // Here we have <BrowserRouter /> for react-router
 
-import { rehydrateMarks } from 'react-imported-component';
+import {rehydrateMarks, assignImportedComponents} from 'react-imported-component';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
+import imp from './imp';
 
 import App from './App';
 
 const element = document.getElementById('app');
 const app = (
   <BrowserRouter>
-    <App />
+    <App/>
   </BrowserRouter>
 );
+
+assignImportedComponents(imp)
 
 // rehydrate the bundle marks
 rehydrateMarks().then(() => {

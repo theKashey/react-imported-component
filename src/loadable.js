@@ -83,4 +83,10 @@ export const dryRender = (renderFunction) => {
     .then(done);
 };
 
+export const assignImportedComponents = (set) => {
+  Object
+    .keys(set)
+    .forEach(key => toLoadable(set[key]))
+};
+
 export default toLoadable;

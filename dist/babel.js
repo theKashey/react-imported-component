@@ -27,16 +27,14 @@ exports.default = function (_ref) {
         var parentPath = _ref2.parentPath;
         var file = _ref3.file;
 
+        if (visitedNodes.has(parentPath.node)) {
+          return;
+        }
+
         var localFile = file.opts.filename;
         var newImport = parentPath.node;
         var importName = parentPath.get('arguments')[0].node.value;
         var requiredFile = resolveImport(importName, localFile);
-
-        console.error(parentPath.parentPath.type, importName, requiredFile);
-
-        if (visitedNodes.has(parentPath.node)) {
-          return;
-        }
 
         var replace = null;
         if (parentPath.parentPath.type === 'ArrowFunctionExpression') {

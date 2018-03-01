@@ -1,3 +1,5 @@
+import toLoadable from "./loadable";
+
 let LOADABLE_MARKS = {};
 let USED_MARKS = {};
 
