@@ -11,9 +11,12 @@ Deliver a better experience with a single import.
 [![NPM](https://nodei.co/npm/react-imported-component.png?downloads=true&stars=true)](https://nodei.co/npm/react-imported-component/)
 
 Key features:
- - could handle any bunder, and could load all the used async chunks in one "wave".
- - could work with any import statement, passed from anywhere
- - Hot-Module-Replacement friendly.
+ - 🔥 Hot-Module-Replacement friendly.
+ - 🌟 Async on client, sync on server.
+ - 📦 could handle any bunder, and could load all the used async chunks in one "wave".
+ - ✂️ could work with any import statement, passed from anywhere 
+ - 🛠 HOC and Component API.
+ - 🧙🏻‍♂️ thus, composable.
 
 ## Usage
 
@@ -22,7 +25,11 @@ import importedComponent from 'react-imported-component';
 const Component = importedComponent( () => import('./Component'));
 ```
 
-The key feature - "could work with any import statement, passed from anywhere"
+The key feature - "could work with any import statement, passed from anywhere". 
+All others `full-cream` SSR bundlers relay on `import` statement inside their HOC,
+like in the example just above, disallowing any composition.
+
+React-imported-component is different. But still "full-cream".
 
 ```javascript
 import importedComponent from 'react-imported-component';
