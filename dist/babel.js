@@ -14,7 +14,10 @@ exports.default = function (_ref) {
 
   var importCallRegistration = template('() => importedWrapper(MARK, FILE, IMPORT)', templateOptions);
 
-  var importAwaitRegistration = template('importedWrapper(MARK, FILE, IMPORT)', templateOptions);
+  // const importAwaitRegistration = template(
+  //   'importedWrapper(MARK, FILE, IMPORT)',
+  //   templateOptions,
+  // );
 
   var hasImports = {};
   var visitedNodes = new Map();
@@ -34,7 +37,7 @@ exports.default = function (_ref) {
         var localFile = file.opts.filename;
         var newImport = parentPath.node;
         var importName = parentPath.get('arguments')[0].node.value;
-        var requiredFile = resolveImport(importName, localFile);
+        var requiredFile = (0, _utils.encipherImport)(resolveImport(importName, localFile));
 
         var replace = null;
         if (parentPath.parentPath.type === 'ArrowFunctionExpression') {
@@ -48,7 +51,9 @@ exports.default = function (_ref) {
           visitedNodes.set(newImport, true);
 
           parentPath.parentPath.replaceWith(replace);
-        } else {
+        }
+
+        if (parentPath.parentPath.type === 'ReturnStatement') {
           replace = importRegistration({
             MARK: t.stringLiteral("imported-component"),
             FILE: t.stringLiteral(requiredFile),
@@ -83,13 +88,13 @@ var _babelPluginSyntaxDynamicImport2 = _interopRequireDefault(_babelPluginSyntax
 
 var _path = require('path');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _utils = require('./utils');
 
-// this file is 99% babel.js from loadable-components
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var resolveImport = function resolveImport(importName, file) {
   if (importName.charAt(0) === '.') {
-    return (0, _path.relative)(process.cwd(), (0, _path.resolve)(file, importName));
+    return (0, _path.relative)(process.cwd(), (0, _path.resolve)((0, _path.dirname)(file), importName));
   }
   return importName;
 };

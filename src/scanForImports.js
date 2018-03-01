@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import scanDirectory from 'scan-directory';
 import {extname, resolve, relative, dirname, join, sep} from 'path';
 import {readFile, writeFile} from 'fs';
+import {encipherImport} from './utils';
 
 export const promisify = (fn, context, noReject) => (...args) => new Promise((resolve, reject) => {
   fn.call(context, ...args, (error, ok) => {
@@ -70,7 +71,7 @@ function scanTop(root, start, target) {
 
     const imports = {};
     const targetDir = resolve(root, dirname(target));
-    const map = data
+    data
       .map(({file, content}) => mapImports(file, getDynamicImports(content)))
       .forEach(importBlock => importBlock.forEach(name => {
         imports[getRelative(root, name)] = `() => import('${getRelative(targetDir, name)}')`
@@ -78,14 +79,18 @@ function scanTop(root, start, target) {
 
     console.log(`${Object.keys(imports).length} imports found, saving to ${target}`);
 
-    pWriteFile(target, `export default {
+    pWriteFile(target, `/* eslint-disable */ 
+    import {assignImportedComponents} from 'react-imported-component';
+    const applicationImports = {
       ${
       Object
         .keys(imports)
-        .map(key => `"${key}": ${imports[key]},`)
+        .map((key,index) => `"${(index)}": ${imports[key]},`)
         .join('\n')
       }
-    }`)
+    };
+    assignImportedComponents(applicationImports);
+    export default applicationImports;`)
   }
 
   return scan();

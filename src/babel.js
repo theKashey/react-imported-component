@@ -1,11 +1,10 @@
 import syntax from 'babel-plugin-syntax-dynamic-import'
-import {resolve, relative} from 'path';
-
-// this file is 99% babel.js from loadable-components
+import {resolve, relative, dirname} from 'path';
+import {encipherImport} from './utils';
 
 const resolveImport = (importName, file) => {
   if (importName.charAt(0) === '.') {
-    return relative(process.cwd(), resolve(file, importName));
+    return relative(process.cwd(), resolve(dirname(file), importName));
   }
   return importName;
 };
@@ -30,10 +29,10 @@ export default function ({types: t, template}) {
     templateOptions,
   );
 
-  const importAwaitRegistration = template(
-    'importedWrapper(MARK, FILE, IMPORT)',
-    templateOptions,
-  );
+  // const importAwaitRegistration = template(
+  //   'importedWrapper(MARK, FILE, IMPORT)',
+  //   templateOptions,
+  // );
 
   const hasImports = {};
   const visitedNodes = new Map();
@@ -50,8 +49,8 @@ export default function ({types: t, template}) {
         const localFile = file.opts.filename;
         const newImport = parentPath.node;
         const importName = parentPath.get('arguments')[0].node.value;
-        const requiredFile = resolveImport(importName, localFile);
-        
+        const requiredFile = encipherImport(resolveImport(importName, localFile));
+
         let replace = null;
         if(parentPath.parentPath.type==='ArrowFunctionExpression') {
           replace = importCallRegistration({
@@ -64,7 +63,9 @@ export default function ({types: t, template}) {
           visitedNodes.set(newImport, true);
 
           parentPath.parentPath.replaceWith(replace);
-        } else {
+        }
+
+        if(parentPath.parentPath.type==='ReturnStatement') {
           replace = importRegistration({
             MARK: t.stringLiteral("imported-component"),
             FILE: t.stringLiteral(requiredFile),
