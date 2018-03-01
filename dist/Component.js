@@ -17,8 +17,6 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactHotLoader = require('react-hot-loader');
-
 var _marks = require('./marks');
 
 var _NotSoPureComponent = require('./NotSoPureComponent');
@@ -71,14 +69,7 @@ var HotComponentLoader = function (_Component) {
       _this.setState({
         state: STATE_LOADING
       });
-      _this.remount().catch(function (err) {
-        /* eslint-disable */
-        console.error('[React-hot-component-loader]', err);
-        /* eslint-enable */
-        _this.setState({
-          state: STATE_ERROR
-        });
-      });
+      _this.remount();
     };
 
     _this.state = {};
@@ -88,12 +79,18 @@ var HotComponentLoader = function (_Component) {
   _createClass(HotComponentLoader, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      (0, _marks.useMark)(this.props.ssrMark);
+      // SSR support
+      (0, _marks.useMark)(this.props.loadable.mark);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      (0, _marks.useMark)(this.props.loadable.mark);
       this.reload();
     }
   }, {
-    key: 'remount',
-    value: function remount() {
+    key: 'loadAsyncComponent',
+    value: function loadAsyncComponent() {
       var _this2 = this;
 
       if (this.props.loadable.done) {
@@ -107,6 +104,25 @@ var HotComponentLoader = function (_Component) {
           _this2.setState({ AsyncComponent: _this2.props.exportPicker(payload) });
         });
       }
+    }
+  }, {
+    key: 'remount',
+    value: function remount() {
+      var _this3 = this;
+
+      this.loadAsyncComponent().catch(function (err) {
+        /* eslint-disable */
+        console.error('[React-imported-component]', err);
+        /* eslint-enable */
+        _this3.setState({
+          state: STATE_ERROR
+        });
+        if (_this3.props.onError) {
+          _this3.props.onError(err);
+        } else {
+          throw err;
+        }
+      });
     }
   }, {
     key: 'loader',
@@ -128,11 +144,7 @@ var HotComponentLoader = function (_Component) {
         return _react2.default.createElement(
           Fragment,
           null,
-          _react2.default.createElement(
-            _reactHotLoader.AppContainer,
-            null,
-            _react2.default.createElement(AsyncComponent, this.props)
-          ),
+          _react2.default.createElement(AsyncComponent, this.props),
           _react2.default.createElement(_NotSoPureComponent2.default, { onUpdate: this.onHRM })
         );
       }
@@ -159,7 +171,9 @@ HotComponentLoader.propTypes = {
   LoadingComponent: _propTypes2.default.func,
   ErrorComponent: _propTypes2.default.func,
   exportPicker: _propTypes2.default.func,
-  ssrMark: _propTypes2.default.string
+  ssrMark: _propTypes2.default.string,
+
+  onError: _propTypes2.default.func
 };
 
 var es6import = function es6import(module) {

@@ -25,20 +25,27 @@ var removeFromPending = function removeFromPending(promise) {
     return a !== promise;
   });
 };
+var trimImport = function trimImport(str) {
+  return str.replace(/['"]/g, '');
+};
 
 var toLoadable = function toLoadable(importFunction) {
   var autoImport = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  var mark = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   var _load = function _load() {
     return Promise.resolve().then(importFunction);
   };
+  var markMatch = importFunction.toString().match(/\(['"]imported-component['"],[ '"](.*),/i);
+  var mark = trimImport(markMatch && markMatch[1] || '');
+
   var loadable = {
     importFunction: importFunction,
+    mark: mark,
     done: false,
     ok: false,
     payload: undefined,
     promise: undefined,
+
     reset: function reset() {
       this.done = false;
       this.ok = true;

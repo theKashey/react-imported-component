@@ -5,15 +5,21 @@ let pending = [];
 
 const addPending = promise => pending.push(promise);
 const removeFromPending = promise => pending = pending.filter(a => a !== promise);
+const trimImport = str => str.replace(/['"]/g, '');
 
-const toLoadable = (importFunction, autoImport = true, mark = false) => {
+const toLoadable = (importFunction, autoImport = true) => {
   const _load = () => Promise.resolve().then(importFunction);
+  const markMatch = importFunction.toString().match(/\(['"]imported-component['"],[ '"](.*),/i)
+  const mark = trimImport(markMatch && markMatch[1] || '');
+
   const loadable = {
     importFunction,
+    mark,
     done: false,
     ok: false,
     payload: undefined,
     promise: undefined,
+
     reset() {
       this.done = false;
       this.ok = true;

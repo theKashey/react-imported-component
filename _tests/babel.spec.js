@@ -12,7 +12,7 @@ const testFolders = readdirSync(FIXTURE_PATH).filter(file =>
 function testPlugin(code) {
   const result = transform(code, {
     presets: ['react'],
-    plugins: [require.resolve('../src/babel.js')],
+    plugins: [require.resolve('../src/babel.js'), 'dynamic-import-node'],
   })
 
   return result.code

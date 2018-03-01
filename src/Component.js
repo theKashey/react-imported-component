@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {AppContainer} from 'react-hot-loader';
 import {useMark} from './marks';
 import NotSoPureComponent from "./NotSoPureComponent";
 
@@ -22,11 +21,16 @@ export default class HotComponentLoader extends Component {
   }
 
   componentWillMount() {
-    useMark(this.props.ssrMark);
+    // SSR support
+    useMark(this.props.loadable.mark);
+  }
+
+  componentDidMount() {
+    useMark(this.props.loadable.mark);
     this.reload();
   }
 
-  remount() {
+  loadAsyncComponent() {
     if (this.props.loadable.done) {
       this.setState({
         AsyncComponent: this.props.exportPicker(this.props.loadable.payload),
@@ -41,6 +45,22 @@ export default class HotComponentLoader extends Component {
     }
   }
 
+  remount() {
+    this.loadAsyncComponent().catch(err => {
+      /* eslint-disable */
+      console.error('[React-imported-component]', err);
+      /* eslint-enable */
+      this.setState({
+        state: STATE_ERROR
+      });
+      if (this.props.onError) {
+        this.props.onError(err);
+      } else {
+        throw err;
+      }
+    });
+  }
+
   loader() {
     return Promise.resolve(this.props.loadable());
   }
@@ -52,20 +72,13 @@ export default class HotComponentLoader extends Component {
         this.remount()
       });
     }
-  }
+  };
 
   reload = () => {
     this.setState({
       state: STATE_LOADING
     });
-    this.remount().catch(err => {
-      /* eslint-disable */
-      console.error('[React-hot-component-loader]', err);
-      /* eslint-enable */
-      this.setState({
-        state: STATE_ERROR
-      });
-    });
+    this.remount();
   };
 
   render() {
@@ -75,9 +88,7 @@ export default class HotComponentLoader extends Component {
     if (AsyncComponent) {
       return (
         <Fragment>
-          <AppContainer>
-            <AsyncComponent {...this.props} />
-          </AppContainer>
+          <AsyncComponent {...this.props} />
           <NotSoPureComponent onUpdate={this.onHRM}/>
         </Fragment>
       );
@@ -104,6 +115,8 @@ HotComponentLoader.propTypes = {
   ErrorComponent: PropTypes.func,
   exportPicker: PropTypes.func,
   ssrMark: PropTypes.string,
+
+  onError: PropTypes.func
 };
 
 

@@ -1,7 +1,11 @@
+function importedWrapper(marker, name, realImport) {
+  return realImport;
+}
+
 import imported from 'react-imported-component';
 
-const AsyncComponent = imported(() => import('./MyComponent'), {
-  mark: './MyComponent:unknown'
+const AsyncComponent = imported(() => {
+  importedWrapper('imported-component', 'unknown/MyComponent', Promise.resolve().then(() => require('./MyComponent')));
 });
 
 export default AsyncComponent;

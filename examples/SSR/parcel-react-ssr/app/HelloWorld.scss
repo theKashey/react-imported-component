@@ -1,0 +1,13 @@
+// With Parcel, you have nothing to setup for SCSS, you just write!
+
+$primary-color: #0098da;
+
+body {
+  margin: 0;
+}
+
+.hello-world {
+  background: $primary-color;
+  color: white;
+  text-align: center;
+}

@@ -1,7 +1,7 @@
 {
   "name": "react-imported-component",
-  "version": "2.0.1",
-  "description": "The simples universal way to defer/async load react component, keeping it sync on server side",
+  "version": "3.0.0",
+  "description": "I will import your component, and help to handle it",
   "main": "dist/index.js",
   "types": "module.d.ts",
   "scripts": {
@@ -24,8 +24,7 @@
     "hmr"
   ],
   "peerDependencies": {
-    "react": "*",
-    "react-hot-loader": "^3.0.0-beta.7 || ^4.0.0"
+    "react": "^15.0.0 || ^16.0.0"
   },
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
@@ -57,8 +56,8 @@
     "sinon": "^4.2.2"
   },
   "dependencies": {
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "detect-node": "^2.0.3",
-    "prop-types": "15.5.10",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0"
+    "prop-types": "15.5.10"
   }
 }
