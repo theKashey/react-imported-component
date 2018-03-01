@@ -9,7 +9,7 @@ declare module 'react-imported-component' {
     type ComponentOptions = {
         LoadingComponent?: Component<any>,
         ErrorComponent?: Component<any>,
-        exportPicker?: (a: any):any,
+        exportPicker?: (a: any) => any,
         mark?: string
     }
 
