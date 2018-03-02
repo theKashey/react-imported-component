@@ -97,5 +97,9 @@ function scanTop(root, start, target) {
 }
 
 
-//console.log(process.argv);
-scanTop(process.cwd(), process.argv[2], process.argv[3]);
+if(!process.argv[3]){
+  console.log('usage: imported-components sourceRoot targetFile');
+  console.log('example: imported-components src src/importedComponents');
+} else {
+  scanTop(process.cwd(), process.argv[2], process.argv[3]);
+}
