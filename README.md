@@ -153,36 +153,37 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
 
 
 ## Comparison
-* [react-loadable](https://github.com/thejameskyle/react-loadable).
-  * The most popular one  
-  * Loader: hybrid (import/require)
-  * Front-end: __HRM-not-friendly__.
+* [react-loadable](https://github.com/thejameskyle/react-loadable)
+  * The most popular one. Most tested one as a most used one.  
+  * Loader: hybrid (import/require), could handle sets of imports("maps").
+  * Front-end:HRM-not-friendly.
   * SSR: sync, webpack-bound, sees __all used chunks__.
   * Complex HOC based API. SSR will require additional pass(analyze webpack bundle)
 
-* [react-async-component](https://github.com/ctrlplusb/react-async-component)  
-  * The most strange one
+* [react-async-component](https://github.com/ctrlplusb/react-async-component)   
+  * The most magic one. Doing all the stuff underneaf, transparently to the user.
   * Loader: import only
-  * Front-end: __HRM-not-friendly__
+  * Front-end: HRM-not-friendly.
   * SSR: semi-async(async-bootstraper), __no wave reduction__, sees only currently loaded chunks.
-  * Magic HOC based API. All SSR work are hidden behind bootstraper. 
+  * Magic HOC based API. All SSR work are "magically" hidden behind bootstraper.
+  * ** not compatible with React-Hot-Loader **. I mean "at all". 
 
 * [loadable-components](https://github.com/smooth-code/loadable-components)
-  * The most complex(inside) one
+  * The most complex(inside) one. Just piece of Art. 
   * Loader: import only
-  * Front-end: __HRM-not-friendly__.
+  * Front-end: HRM-not-friendly.
   * SSR: semi-async(walkTree), __no wave reduction__, sees only currently loaded chunks.
   * Simple HOC based API
 
 * [react-universal-component](https://github.com/faceyspacey/react-universal-component)
-  * The most "webpack" one. 
+  * The most "webpack" one. Comprehensive solution, able to solve any case.
   * Loader: hybrid (import/require)
   * Front-end: HRM-friendly.
   * SSR: sync, webpack-bound, synchronous rendering. Sees __all used chunks__.
   * Very complex API
   
 * [react-imported-component](https://github.com/theKashey/react-imported-component)
-  * This library
+  * This library.
   * Loader: import only
   * Front-end: HRM-friendly.
   * SSR: semi-async(preload), bundler-independent, Sees __all used chunks__.
