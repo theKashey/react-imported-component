@@ -88,10 +88,13 @@ To enable full cream SSR follow these steps.
 Imported-Component will hook into dynamic imports, providing extra information about files you want to load.
 
 2. Add one more command into package.json
+CLI command `imported-components [sources ROOT] [targetFile]`
 ```js
  "generate-imported-component": "imported-components src src/imported.js"
 ```
 3. Execute this command, and react-imported-component __will generate__ a file with all dynamic imports you have used.
+> That's how the magic, bundle independent bundling works.
+
 4. Include this file on client-side, not important for server-side.
 ```js
 import importedComponents from 'src/imported';
@@ -121,39 +124,39 @@ import importedComponents from 'src/imported';
 
 ## Comparison
 * [react-loadable](https://github.com/thejameskyle/react-loadable).
-  * The most standard one  
+  * The most popular one  
   * Loader: hybrid (import/require)
-  * Front-end: Webpack bound. __HRM-not-friendly__.
-  * SSR: stable, sync, webpack-bound, sees __all used chunks__.
-  * Bad API 
+  * Front-end: __HRM-not-friendly__.
+  * SSR: sync, webpack-bound, sees __all used chunks__.
+  * Complex HOC based API. SSR will require additional pass(analyze webpack bundle)
 
 * [react-async-component](https://github.com/ctrlplusb/react-async-component)  
   * The most strange one
   * Loader: import only
   * Front-end: __HRM-not-friendly__
-  * SSR: stable, semi-async(async-bootstraper), sees only currently loaded chunks.
-  * Bad API
+  * SSR: semi-async(async-bootstraper), "waved", sees only currently loaded chunks.
+  * Magic HOC based API. All SSR work are hidden behind bootstraper. 
 
 * [loadable-components](https://github.com/smooth-code/loadable-components)
-  * The most complex one
+  * The most complex(inside) one
   * Loader: import only
   * Front-end: __HRM-not-friendly__.
-  * SSR: stable, semi-async(walkTree), sees only currently loaded chunks.
-  * Good API
+  * SSR: semi-async(walkTree), "waved", sees only currently loaded chunks.
+  * Simple HOC based API
 
 * [react-universal-component](https://github.com/faceyspacey/react-universal-component)
-  * The most "full" one. 
+  * The most "webpack" one. 
   * Loader: hybrid (import/require)
   * Front-end: HRM-friendly.
-  * SSR: stable, sync, webpack-bound, synchronous rendering. Sees __all used chunks__.
-  * Complex API
+  * SSR: sync, webpack-bound, synchronous rendering. Sees __all used chunks__.
+  * Very complex API
   
 * [react-imported-component](https://github.com/theKashey/react-imported-component)
-  * The most simple one
+  * This library
   * Loader: import only
   * Front-end: HRM-friendly.
-  * SSR: stable, semi-async(preload), bundler-independent, Sees __all used chunks__.
-  * Good API
+  * SSR: semi-async(preload), bundler-independent, Sees __all used chunks__.
+  * Component/HOC API, SSR could require additional pass (extract imports).
   
 For now __react-imported-component__ is the most intelligent loader, which will work for any bundler.
 
