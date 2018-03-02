@@ -218,10 +218,13 @@ But in complex cases, you can have a lot of nested async chunks - then better to
  
 #### React-Hot-Loader
 Very opinionated library. No loader __have__ to support it, as long this is altering the whole dev process and could not be repeated in production.
+Read [this article](https://codeburst.io/react-hot-loader-considered-harmful-321fe3b6ca74) about pros and cons using react-hot-loader among your project.
 
 #### Small Conclusion
 There is no "best" or "worst" loader. They all almost similar on front-end and could solve most SSR specific tasks.
-You are free to pick any. 
+They are all litteraly is a ONE command, just API a bit differs.
+
+You are free to pick any. Or found your own one. 
 
 ## Licence
 MIT
