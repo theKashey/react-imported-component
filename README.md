@@ -168,14 +168,14 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
 * [react-loadable](https://github.com/thejameskyle/react-loadable)
   * The most popular one. Most tested one as a most used one.  
   * Loader: hybrid (import/require), could handle sets of imports("maps").
-  * Front-end:HRM-not-friendly.
+  * Front-end: RHL-not-friendly.
   * SSR: sync, webpack-bound, sees __all used chunks__.
   * Complex HOC based API. SSR will require additional pass(analyze webpack bundle)
 
 * [react-async-component](https://github.com/ctrlplusb/react-async-component)   
   * The most magic one. Doing all the stuff underneath, invisible to the user.
   * Loader: import only
-  * Front-end: HRM-not-friendly.
+  * Front-end: RHL-not-friendly.
   * SSR: semi-async(async-bootstraper), __no wave reduction__, sees only currently loaded chunks.
   * Magic HOC based API. All SSR work are "magically" hidden behind bootstraper.
   * ** not compatible with React-Hot-Loader **. I mean "at all". 
@@ -183,25 +183,28 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
 * [loadable-components](https://github.com/smooth-code/loadable-components)
   * The most complex(inside) one. Just piece of Art. 
   * Loader: import only
-  * Front-end: HRM-not-friendly.
+  * Front-end: RHL-not-friendly.
   * SSR: semi-async(walkTree), __no wave reduction__, sees only currently loaded chunks.
   * Simple HOC based API
 
 * [react-universal-component](https://github.com/faceyspacey/react-universal-component)
   * The most "webpack" one. Comprehensive solution, able to solve any case.
   * Loader: hybrid (import/require)
-  * Front-end: HRM-friendly.
+  * Front-end: RHL-friendly.
   * SSR: sync, webpack-bound, synchronous rendering. Sees __all used chunks__.
   * Very complex API
   
 * [react-imported-component](https://github.com/theKashey/react-imported-component)
   * This library.
   * Loader: import only
-  * Front-end: HRM-friendly.
+  * Front-end: RHL-friendly.
   * SSR: semi-async(preload), bundler-independent, Sees __all used chunks__.
   * Component/HOC API, SSR could require additional pass (extract imports), or will lost wave reduction.
+
+> Note 1: "RHL friendly" means that "loader" works with React-Hot-Loader out of the box.
+In other case you will have to wrap async chunk's export with `hot` function, provided by Hot-Loader.
   
-> Note: "__no wave reduction__" means - loader is produce several loading "waves"
+> Note 2: "__no wave reduction__" means - loader is produce several loading "waves"
 #### Waves 
 Let's imagine complex case - index.js will async-load 2 chunks, and __they also__ will load 2 async chunks.
 SSR will result 6 marks, but only 2 of them will be resolved and executed on startup, as long the nested async calls
@@ -213,6 +216,12 @@ First you load files you can load(have imports to load them), next, a new code w
 In 99.9% cases you will have only one "wave", and could loader reduce "waves" or not - does not matter.
 But in complex cases, you can have a lot of nested async chunks - then better to use loader which could handle it. 
  
+#### React-Hot-Loader
+Very opinionated library. No loader __have__ to support it, as long this is altering the whole dev process and could not be repeated in production.
+
+#### Small Conclusion
+There is no "best" or "worst" loader. They all almost similar on front-end and could solve most SSR specific tasks.
+You are free to pick any. 
 
 ## Licence
 MIT
