@@ -134,14 +134,14 @@ import importedComponents from 'src/imported';
   * The most strange one
   * Loader: import only
   * Front-end: __HRM-not-friendly__
-  * SSR: semi-async(async-bootstraper), "waved", sees only currently loaded chunks.
+  * SSR: semi-async(async-bootstraper), __no wave reduction__, sees only currently loaded chunks.
   * Magic HOC based API. All SSR work are hidden behind bootstraper. 
 
 * [loadable-components](https://github.com/smooth-code/loadable-components)
   * The most complex(inside) one
   * Loader: import only
   * Front-end: __HRM-not-friendly__.
-  * SSR: semi-async(walkTree), "waved", sees only currently loaded chunks.
+  * SSR: semi-async(walkTree), __no wave reduction__, sees only currently loaded chunks.
   * Simple HOC based API
 
 * [react-universal-component](https://github.com/faceyspacey/react-universal-component)
@@ -156,9 +156,20 @@ import importedComponents from 'src/imported';
   * Loader: import only
   * Front-end: HRM-friendly.
   * SSR: semi-async(preload), bundler-independent, Sees __all used chunks__.
-  * Component/HOC API, SSR could require additional pass (extract imports).
+  * Component/HOC API, SSR could require additional pass (extract imports), or will lost wave reduction.
   
-For now __react-imported-component__ is the most intelligent loader, which will work for any bundler.
+> Note: "__no wave reduction__" means - loader is produce several loading "waves"
+#### Waves 
+Let's imagine complex case - index.js will async-load 2 chunks, and __they also__ will load 2 async chunks.
+SSR will result 6 marks, but only 2 of them will be resolved and executed on startup, as long the nested async calls
+are described in the async chunks, __which are not loaded yet__.
+Thus will result a two(or more) "waves" of loading. 
+
+First you load files you can load(have imports to load them), next, a new code will start next "wave".
+
+In 99.9% cases you will have only one "wave", and could loader reduce "waves" or not - does not matter.
+But in complex cases, you can have a lot of nested async chunks - then better to use loader which could handle it. 
+ 
 
 ## Licence
 MIT
