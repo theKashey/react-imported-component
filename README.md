@@ -39,12 +39,24 @@ const Component = importedComponent(myImportFunction);
 
 ```javascript
 import importedComponent from 'react-imported-component';
-export default const mySuperImportedFactory = importFunction => importedComponent(importFunction);
+const mySuperImportedFactory = importFunction => importedComponent(importFunction); 
+export default mySuperImportedFactory
 //... in another file
 mySuperImportedFactory(() => import('./Component'));
+mySuperImportedFactory(() => {
+  const Component = await import('./Component');
+  return () => <Component props />
+});
 ```
-> Note: due to babel plugin limitation react-imported-component could handle only "() => import('')"
-structures, not Promise.all(import('./a'),import('./a')).
+!!__BUT NOT__!!
+```javascript
+import importedComponent from 'react-imported-component';
+const myImportFunction = () => import('./Component')
+const myAnotherFunction = () => myImportFunction; 
+const Component = importedComponent(myAnotherFunction);
+```
+Function with `import inside` should be __passed directly__ to importedComponent,
+as long importedComponent will __analyze content of passed function__.
 
 To use webpack chunks - just add comments inside an import function
 ```js
@@ -161,7 +173,7 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
   * Complex HOC based API. SSR will require additional pass(analyze webpack bundle)
 
 * [react-async-component](https://github.com/ctrlplusb/react-async-component)   
-  * The most magic one. Doing all the stuff underneaf, transparently to the user.
+  * The most magic one. Doing all the stuff underneath, invisible to the user.
   * Loader: import only
   * Front-end: HRM-not-friendly.
   * SSR: semi-async(async-bootstraper), __no wave reduction__, sees only currently loaded chunks.
