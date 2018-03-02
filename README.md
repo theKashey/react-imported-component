@@ -122,6 +122,36 @@ import importedComponents from 'src/imported';
   });
 ```
 
+## SSR - Automagic
+In case you could not use babel plugin, you could use "dryRender" API
+```js
+ import {dryRender} from 'react-imported-component';
+
+ // extract your rendering function
+ const renderApplication = (targetElement) => {
+   ReactDOM.render(<App />, targetElement);
+ }
+ 
+ // create invisible offscreen element
+ const invisibleElement = document.createElement('div');
+ 
+ dryRender(
+   // render Application to offscreen
+   () => renderApplication(invisibleElement)
+   // await all components to be loaded
+ )
+   // unmount useless Application
+    .then(() => unmountComponentAtNode(invisibleElement))
+   // render and rehydrate the real application 
+   // better rehydrate
+    .then(() => renderApplication(document.getElementById('realElement')))
+```
+__dryRender__ will render application offscreen, await for all parts to be loaded, and then
+resolve the promise.
+It is super-not-fast, and you will literally re-render everything twice, but it works 
+(almost the same approach as react-async-component has).
+
+
 ## Comparison
 * [react-loadable](https://github.com/thejameskyle/react-loadable).
   * The most popular one  
