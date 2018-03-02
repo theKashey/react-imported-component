@@ -119,43 +119,5 @@ import importedComponents from 'src/imported';
   });
 ```
 
-## Comparison
-* [react-loadable](https://github.com/thejameskyle/react-loadable).
-  * The most standard one  
-  * Loader: hybrid (import/require)
-  * Front-end: Webpack bound. __HRM-not-friendly__.
-  * SSR: stable, sync, webpack-bound, sees __all used chunks__.
-  * Bad API 
-
-* [react-async-component](https://github.com/ctrlplusb/react-async-component)  
-  * The most strange one
-  * Loader: import only
-  * Front-end: __HRM-not-friendly__
-  * SSR: stable, semi-async(async-bootstraper), sees only currently loaded chunks.
-  * Bad API
-
-* [loadable-components](https://github.com/smooth-code/loadable-components)
-  * The most complex one
-  * Loader: import only
-  * Front-end: __HRM-not-friendly__.
-  * SSR: stable, semi-async(walkTree), sees only currently loaded chunks.
-  * Good API
-
-* [react-universal-component](https://github.com/faceyspacey/react-universal-component)
-  * The most "full" one. 
-  * Loader: hybrid (import/require)
-  * Front-end: HRM-friendly.
-  * SSR: stable, sync, webpack-bound, synchronous rendering. Sees __all used chunks__.
-  * Complex API
-  
-* [react-imported-component](https://github.com/theKashey/react-imported-component)
-  * The most simple one
-  * Loader: import only
-  * Front-end: HRM-friendly.
-  * SSR: stable, semi-async(preload), bundler-independent, Sees __all used chunks__.
-  * Good API
-  
-For now __react-imported-component__ is the most intelligent loader, which will work for any bundler.
-
 ## Licence
 MIT
