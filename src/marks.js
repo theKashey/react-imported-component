@@ -1,9 +1,9 @@
 let LOADABLE_MARKS = {};
 let USED_MARKS = {};
 
-export const useMark = (a) => {
-  if (a) {
-    USED_MARKS[a] = true;
+export const useMark = (marks) => {
+  if (marks && marks.length) {
+    marks.forEach(a => USED_MARKS[a] = true);
   }
 };
 

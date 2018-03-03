@@ -24,16 +24,6 @@ export default function ({types: t, template}) {
     templateOptions,
   );
 
-  const importCallRegistration = template(
-    '() => importedWrapper(MARK, FILE, IMPORT)',
-    templateOptions,
-  );
-
-  // const importAwaitRegistration = template(
-  //   'importedWrapper(MARK, FILE, IMPORT)',
-  //   templateOptions,
-  // );
-
   const hasImports = {};
   const visitedNodes = new Map();
 

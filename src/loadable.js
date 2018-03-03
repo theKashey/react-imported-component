@@ -9,8 +9,8 @@ const trimImport = str => str.replace(/['"]/g, '');
 
 const toLoadable = (importFunction, autoImport = true) => {
   const _load = () => Promise.resolve().then(importFunction);
-  const markMatch = importFunction.toString().match(/\(['"]imported-component['"],[ '"](.*),/i)
-  const mark = trimImport(markMatch && markMatch[1] || '');
+  const markMatches = importFunction.toString().match(/\(['"]imported-component['"],[ '"](.*),/g) || [];
+  const mark = markMatches.map( match => trimImport(match.match(/\(['"]imported-component['"],[ '"](.*),/i)[1]));
 
   const loadable = {
     importFunction,
@@ -26,6 +26,7 @@ const toLoadable = (importFunction, autoImport = true) => {
       this.payload = undefined;
       this.promise = undefined;
     },
+
     load() {
       if (!this.promise) {
         const promise = this.promise = _load()
@@ -49,7 +50,7 @@ const toLoadable = (importFunction, autoImport = true) => {
   };
 
   if (mark) {
-    LOADABLE_MARKS[mark] = loadable;
+    mark.forEach(subMark => LOADABLE_MARKS[subMark] = loadable)
   }
 
   if (isNode && autoImport) {

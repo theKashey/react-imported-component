@@ -16,10 +16,13 @@ describe('SSR Component', () => {
   }
 
   describe('marks', (done) => {
-    it('should generate marks', () => {
+    it('should generate marks', (done) => {
       expect(drainHydrateMarks()).to.have.length(0);
       const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true);
-      const loader2 = toLoadable(() => importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent)), true);
+      const loader2 = toLoadable(() => {
+        importedWrapper('imported-component', 'mark2-1', Promise.resolve(TargetComponent))
+        return importedWrapper('imported-component', 'mark2-2', Promise.resolve(TargetComponent));
+      }, true);
       const loader3 = toLoadable(() => Promise.resolve(TargetComponent), true);
 
       // await loaders to load
@@ -30,7 +33,7 @@ describe('SSR Component', () => {
         expect(mount(<HotComponentLoader loadable={loader2}/>)).to.contain.text(42);
         expect(mount(<HotComponentLoader loadable={loader3}/>)).to.contain.text(42);
 
-        expect(drainHydrateMarks()).to.be.deep.equal(['mark1', 'mark2']);
+        expect(drainHydrateMarks()).to.be.deep.equal(['mark1', 'mark2-1', 'mark2-2']);
         expect(drainHydrateMarks()).to.have.length(0);
 
         done();
@@ -71,7 +74,10 @@ describe('SSR Component', () => {
     it('red case', () => {
       expect(drainHydrateMarks()).to.have.length(0);
       const loader1 = toLoadable(() => new Promise(resolve => setImmediate(() => resolve(TargetComponent))), false);
-      const loader2 = toLoadable(() => { loader1.load(); return importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent))}, false);
+      const loader2 = toLoadable(() => {
+        loader1.load();
+        return importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent))
+      }, false);
       expect(loader1.done).to.be.equal(false);
       expect(loader2.done).to.be.equal(false);
       return whenDone()
@@ -90,7 +96,10 @@ describe('SSR Component', () => {
     it('should report loading complete', () => {
       expect(drainHydrateMarks()).to.have.length(0);
       const loader1 = toLoadable(() => new Promise(resolve => setImmediate(() => resolve(TargetComponent))), false);
-      const loader2 = toLoadable(() => { loader1.load(); return importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent))}, false);
+      const loader2 = toLoadable(() => {
+        loader1.load();
+        return importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent))
+      }, false);
       expect(loader1.done).to.be.equal(false);
       expect(loader2.done).to.be.equal(false);
       return whenDone()

@@ -8,9 +8,8 @@ import toLoadable from './loadable';
  * @param {Object} [options]
  * @param {React.Component} [options.LoadingComponent]
  * @param {React.Component} [options.ErrorComponent]
- * @param {React.
  * @param {Function} [options.exportPicker] - default behaviour - picks default export
- * @param {String} [options.mark] - SSR mark
+ * @param {Function} [options.onError] - error handler. Will consume the real error.
  */
 const loader = (loaderFunction, options = {}) => {
   const loadable = toLoadable(loaderFunction, !options.noAutoImport)

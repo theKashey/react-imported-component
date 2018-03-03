@@ -35,7 +35,7 @@ describe('Async Component', () => {
       const wrapper = mount(<Component payload={42}/>);
       setImmediate(() => {
         sinon.assert.calledOnce(spy);
-        wrapper.setProps({payload:42});
+        wrapper.setProps({payload: 42});
         setImmediate(() => {
           sinon.assert.calledOnce(spy);
           wrapper.setProps({payload: 43});
@@ -73,6 +73,20 @@ describe('Async Component', () => {
       expect(wrapper.find(HotComponentLoader)).to.have.prop('exportPicker', exportPicker);
       setImmediate(() => {
         expect(wrapper.find(TargetComponent)).to.be.present();
+        done();
+      });
+    });
+  });
+
+  describe('Component API', () => {
+    it('should provide the same API via React Component', () => {
+      const TargetComponent = ({payload}) => <div>{payload}</div>;
+      const importStatement = () => Promise.resolve(TargetComponent);
+      const wrapper = mount(<HotComponentLoader loadable={importStatement} payload={42}/>);
+      expect(wrapper.find(TargetComponent)).to.be.not.present();
+      setImmediate(() => {
+        expect(wrapper.find(TargetComponent)).to.be.present();
+        expect(wrapper.find(TargetComponent)).to.contain.text('42');
         done();
       });
     });
@@ -148,7 +162,9 @@ describe('Async Component', () => {
 
     it('component error state', (done) => {
       const ErrorComponent = () => <div>error</div>;
-      const loader = toLoadable(() => Promise.reject('error'));
+      const loader = toLoadable(() => Promise.reject('component error'));
+      const onException = sinon.stub();
+      process.on('unhandledRejection', onException);
 
       const wrapper = mount(<HotComponentLoader
         loadable={loader}
@@ -156,6 +172,29 @@ describe('Async Component', () => {
       />);
       setImmediate(() => {
         expect(wrapper.find(ErrorComponent)).to.be.present();
+        sinon.assert.calledWith(onException, 'component error');
+        process.removeListener('unhandledRejection', onException);
+        done();
+      });
+    });
+
+    it('component error state catched', (done) => {
+      const ErrorComponent = () => <div>error</div>;
+      const loader = toLoadable(() => Promise.reject('component error'));
+      const onError = sinon.stub();
+      const onException = sinon.stub();
+      process.on('unhandledRejection', onException);
+
+      const wrapper = mount(<HotComponentLoader
+        loadable={loader}
+        ErrorComponent={ErrorComponent}
+        onError={onError}
+      />);
+      setImmediate(() => {
+        expect(wrapper.find(ErrorComponent)).to.be.present();
+        sinon.assert.notCalled(onException);
+        sinon.assert.calledWith(onError, 'component error');
+        process.removeListener('unhandledRejection', onException);
         done();
       });
     });

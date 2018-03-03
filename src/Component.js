@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import isNode from 'detect-node';
 import {useMark} from './marks';
 import NotSoPureComponent from "./NotSoPureComponent";
+import toLoadable from "./loadable";
 
 const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
@@ -14,6 +15,13 @@ export const settings = {
   hot: !!module.hot
 };
 
+const getLoadable = importFunction => {
+  if ('promise' in importFunction) {
+    return importFunction;
+  }
+  return toLoadable(importFunction, false);
+}
+
 export default class HotComponentLoader extends Component {
 
   constructor(props) {
@@ -24,7 +32,7 @@ export default class HotComponentLoader extends Component {
   componentWillMount() {
     // SSR support
     useMark(this.props.loadable.mark);
-    if(isNode){
+    if (isNode) {
       this.reload();
     }
   }
@@ -35,14 +43,15 @@ export default class HotComponentLoader extends Component {
   }
 
   loadAsyncComponent() {
-    if (this.props.loadable.done) {
+    const loadable = getLoadable(this.props.loadable)
+    if (loadable.done) {
       this.setState({
-        AsyncComponent: this.props.exportPicker(this.props.loadable.payload),
-        state: this.props.loadable.ok ? STATE_OK : STATE_ERROR
+        AsyncComponent: this.props.exportPicker(loadable.payload),
+        state: loadable.ok ? STATE_OK : STATE_ERROR
       });
-      return this.props.loadable.promise;
+      return loadable.promise;
     } else {
-      return this.props.loadable.load()
+      return loadable.load()
         .then((payload) => {
           this.setState({AsyncComponent: this.props.exportPicker(payload)});
         });
@@ -63,10 +72,6 @@ export default class HotComponentLoader extends Component {
         throw err;
       }
     });
-  }
-
-  loader() {
-    return Promise.resolve(this.props.loadable());
   }
 
   onHRM = () => {
