@@ -10,23 +10,22 @@ declare module 'react-imported-component' {
         LoadingComponent?: Component<any>,
         ErrorComponent?: Component<any>,
         exportPicker?: (a: any) => any,
-        mark?: string
+        onError?: (a: any) => any,
     }
 
     interface HOC {
         <P>(loader: () => Promise<DefaultComponent<P>>, options: ComponentOptions): Component<P>;
 
-        (loader: () => Promise<any>, options: ComponentOptions): Component<any>;
+        <P>(loader: () => Promise<P>, options: ComponentOptions): Component<P>;
     }
 
     var importedComponent: HOC;
 
     export default importedComponent;
-    export function addPlugin(plugin: Plugin): void;
+
     export function printDrainHydrateMarks(): string;
     export function drainHydrateMarks(): Array<string>;
     export function rehydrateMarks(marks?: Array<string>): void;
     export function whenComponentsReady(): Promise<void>;
     export function dryRender(renderFunction: () => any): Promise<void>;
-
 }

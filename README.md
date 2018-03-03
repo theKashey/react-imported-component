@@ -16,7 +16,7 @@ Key features:
  - 📦 could handle any bunder, and could load all the used async chunks in one "wave".
  - ✂️ could work with any import statement, passed from anywhere 
  - 🛠 HOC and Component API.
- - 🧙🏻‍♂️ thus, composable.
+ - 🧙️ thus, composable.
 
 ## Usage
 
@@ -25,7 +25,29 @@ import importedComponent from 'react-imported-component';
 const Component = importedComponent( () => import('./Component'));
 ```
 
-The key feature - "could work with any import statement, passed from anywhere". 
+## API
+- `importedComponent(importFunction, [options])` - main API, default export, HOC to create imported component.
+  - importFunction - function which resolves with Component to be imported.
+  - options - optional settings
+  - options.LoadingComponent - component to be shown in Loading state
+  - options.ErrorComponent - component to be shown in Error state
+  - options.onError - function to consume the error, if one will thrown. Will rethrow a real error if not set.
+  - options.exportPicker - function to pick `not default` export from a `importFunction`
+
+- ComponentLoader, the React Component variant of importedComponent. accepts `importFunction` as a `loadable` prop.
+- printDrainHydrateMarks(), print our the `drainHydrateMarks`.
+- drainHydrateMarks(), returns the currently used marks, and clears the list.
+- rehydrateMarks(), loads _marked_ async chunks.
+- whenComponentsReady():Promise, will be resolved, when all marks loaded.
+- dryRender(renderFunction):Promise, perform sandboxed render, and resolves "whenComponentsReady".
+   
+
+There is no build in timeouts to display Error or Loading states. You could control everything by yourself
+- use react-delay or `suspence` :P.   
+
+## Using dynamic import
+
+One of the key features - "could work with any import statement, passed from anywhere". 
 All others `full-cream` SSR bundlers relay on `import` statement inside their HOC,
 like in the example just above, disallowing any composition.
 
@@ -43,11 +65,24 @@ const mySuperImportedFactory = importFunction => importedComponent(importFunctio
 export default mySuperImportedFactory
 //... in another file
 mySuperImportedFactory(() => import('./Component'));
-mySuperImportedFactory(() => {
+mySuperImportedFactory(async () => {
   const Component = await import('./Component');
   return () => <Component props />
 });
 ```
+
+If you need something complex, load more that one source for example.
+```js
+importedComponent(async () => {
+  const [Component1, Component2, i18n] = await Promise.all([ 
+    import('./Component1'),
+    import('./Component2'),
+    import('./i18n')
+  ]);
+  return (props) => <Component1><Component2 i18n={i18n} {...props} /></Component1>;
+});
+```
+
 !!__BUT NOT__!!
 ```javascript
 import importedComponent from 'react-imported-component';
@@ -71,14 +106,6 @@ React-imported-component break this cycle, making ServerSide rendering sync, and
 comprehensive ways to rehydrate rendered tree on client. 
 It will detect server-side environment and precache all used components.
 
-React-imported component provides two different SSR mode.
-#### Magic-less "oneliner"
-```js
- // just wait all components to be loaded  
-  whenComponentsReady().then(() => {
-   ReactDOM.hydrate(<App />,document.getElementById('main'));
-  });
-```
 #### Full-cream SSR-to-Client
  
 To enable full cream SSR follow these steps.
