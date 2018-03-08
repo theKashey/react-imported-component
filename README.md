@@ -1,6 +1,20 @@
 ### react-imported-component ✂
 
-[![CircleCI status](https://img.shields.io/circleci/project/github/theKashey/react-imported-component/master.svg?style=flat-square)](https://circleci.com/gh/theKashey/react-imported-component/tree/master)
+<div align="center">
+  <h1>IMPORTED COMPONENT</h1>
+  <br/>
+  <img src="./assets/logo.png" alt="imported components" width="600" align="center">
+  <br/>
+  <br/>
+  Customs clearance for React Components shipped from overseas... 
+  <br/>
+  <br/>
+  <a href="https://circleci.com/gh/theKashey/react-imported-component/tree/master">
+   <img src="https://img.shields.io/circleci/project/github/theKashey/react-imported-component/master.svg?style=flat-square)" alt="Build status">
+  </a> 
+  <br/>
+</div>
+
 
 ### World first any-bundler SSR-friendly loader.
 Formerly - simple, but usable Async Component loader to be used with [React-Hot-Loader](https://github.com/gaearon/react-hot-loader).
