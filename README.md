@@ -1,7 +1,7 @@
 <div align="center">
   <h1>IMPORTED COMPONENT ✂</h1>
   <br/>
-  <img src="./assets/imported-logo.png" alt="imported components" width="600" align="center">
+  <img src="./assets/imported-logo.png" alt="imported components" width="409" align="center">
   <br/>
   <br/>
   Customs clearance for React Components shipped from overseas... 
