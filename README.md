@@ -1,9 +1,7 @@
-### react-imported-component ✂
-
 <div align="center">
-  <h1>IMPORTED COMPONENT</h1>
+  <h1>IMPORTED COMPONENT ✂</h1>
   <br/>
-  <img src="./assets/logo.png" alt="imported components" width="600" align="center">
+  <img src="./assets/imported-logo.png" alt="imported components" width="600" align="center">
   <br/>
   <br/>
   Customs clearance for React Components shipped from overseas... 
@@ -16,7 +14,7 @@
 </div>
 
 
-### World first any-bundler SSR-friendly loader.
+### react-imported-component - world first any-bundler SSR-friendly loader.
 Formerly - simple, but usable Async Component loader to be used with [React-Hot-Loader](https://github.com/gaearon/react-hot-loader).
 
 Easy, universal, and could provide top results without any extra configuration. 
