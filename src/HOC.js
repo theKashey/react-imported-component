@@ -14,7 +14,7 @@ import toLoadable from './loadable';
 const loader = (loaderFunction, options = {}) => {
   const loadable = toLoadable(loaderFunction, !options.noAutoImport)
 
-  return (props) => (
+  const Imported = (props) => (
     <HotComponentLoader
       loadable={loadable}
       LoadingComponent={options.LoadingComponent}
@@ -24,6 +24,9 @@ const loader = (loaderFunction, options = {}) => {
       {...props}
     />
   );
+  Imported.preload = loadable.load().catch( () => {});
+
+  return Imported;
 };
 
 export default loader;

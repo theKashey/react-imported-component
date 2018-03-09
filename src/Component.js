@@ -22,7 +22,7 @@ const getLoadable = importFunction => {
   return toLoadable(importFunction, false);
 }
 
-export default class HotComponentLoader extends Component {
+class ReactImportedComponent extends Component {
 
   constructor(props) {
     super(props);
@@ -118,7 +118,7 @@ export default class HotComponentLoader extends Component {
   }
 }
 
-HotComponentLoader.propTypes = {
+ReactImportedComponent.propTypes = {
   loadable: PropTypes.object.isRequired,
   LoadingComponent: PropTypes.func,
   ErrorComponent: PropTypes.func,
@@ -135,7 +135,9 @@ const es6import = (module) => (
     : module
 );
 
-HotComponentLoader.defaultProps = {
+ReactImportedComponent.defaultProps = {
   exportPicker: es6import
 };
 
+
+export default ReactImportedComponent;

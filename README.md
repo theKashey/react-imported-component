@@ -35,27 +35,36 @@ Key features:
 ```javascript
 import importedComponent from 'react-imported-component';
 const Component = importedComponent( () => import('./Component'));
+
+const Component = importedComponent( () => import('./Component'), {
+  LoadingComponent: Spinner,
+  ErrorComponent: FatalError
+});
+
+Component.preload();
 ```
 
 ## API
-- `importedComponent(importFunction, [options])` - main API, default export, HOC to create imported component.
+- `importedComponent(importFunction, [options]): ComponentLoader` - main API, default export, HOC to create imported component.
   - importFunction - function which resolves with Component to be imported.
   - options - optional settings
   - options.LoadingComponent - component to be shown in Loading state
   - options.ErrorComponent - component to be shown in Error state
   - options.onError - function to consume the error, if one will thrown. Will rethrow a real error if not set.
   - options.exportPicker - function to pick `not default` export from a `importFunction`
+  - adds static method `.preload` to the result component.
 
-- ComponentLoader, the React Component variant of importedComponent. accepts `importFunction` as a `loadable` prop.
-- printDrainHydrateMarks(), print our the `drainHydrateMarks`.
-- drainHydrateMarks(), returns the currently used marks, and clears the list.
-- rehydrateMarks(), loads _marked_ async chunks.
-- whenComponentsReady():Promise, will be resolved, when all marks loaded.
-- dryRender(renderFunction):Promise, perform sandboxed render, and resolves "whenComponentsReady".
+- `ComponentLoader`, the React Component variant of importedComponent. accepts `importFunction` as a `loadable` prop.
+- `printDrainHydrateMarks()`, print our the `drainHydrateMarks`.
+- `drainHydrateMarks()`, returns the currently used marks, and clears the list.
+- `rehydrateMarks():Promise`, loads _marked_ async chunks.
+- `whenComponentsReady():Promise`, will be resolved, when all marks loaded.
+- `dryRender(renderFunction):Promise`, perform sandboxed render, and resolves "whenComponentsReady".
    
+    
 
 There is no build in timeouts to display Error or Loading states. You could control everything by yourself
-- use react-delay or `suspence` :P.   
+- use react-delay, p-delay, p-timeout, or `suspence` :P.   
 
 ## Using dynamic import
 
