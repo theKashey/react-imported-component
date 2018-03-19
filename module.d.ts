@@ -6,15 +6,21 @@ declare module 'react-imported-component' {
     default: Component<P>
   };
 
-  type ComponentOptions = {
+  interface LoadableComponentState {
+    state: 'loading' | 'done' | 'error'
+    AsyncComponent: any;
+  }
+
+  type ComponentOptions<P> = {
     LoadingComponent?: Component<any>,
     ErrorComponent?: Component<any>,
     exportPicker?: (a: any) => any,
     onError?: (a: any) => any,
+    render?: (component: Component<P>, state: LoadableComponentState, props: any) => JSX.Element;
   }
 
   interface HOC {
-    <P>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions): Component<P>;
+    <P>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions<P>): Component<P>;
   }
 
   var importedComponent: HOC;
