@@ -52,6 +52,7 @@ Component.preload();
   - options.ErrorComponent - component to be shown in Error state
   - options.onError - function to consume the error, if one will thrown. Will rethrow a real error if not set.
   - options.exportPicker - function to pick `not default` export from a `importFunction`
+  - options.render(Component, state, props) - function to render the result. Could be used to tune the rendering. 
   - adds static method `.preload` to the result component.
 
 - `ComponentLoader`, the React Component variant of importedComponent. accepts `importFunction` as a `loadable` prop.

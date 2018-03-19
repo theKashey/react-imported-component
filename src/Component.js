@@ -7,7 +7,7 @@ import toLoadable from "./loadable";
 
 const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
-const STATE_OK = 'ok';
+const STATE_DONE = 'done';
 
 const Fragment = React.Fragment ? React.Fragment : ({children}) => <div>{children}</div>;
 
@@ -47,7 +47,7 @@ class ReactImportedComponent extends Component {
     if (loadable.done) {
       this.setState({
         AsyncComponent: this.props.exportPicker(loadable.payload),
-        state: loadable.ok ? STATE_OK : STATE_ERROR
+        state: loadable.ok ? STATE_DONE : STATE_ERROR
       });
       return loadable.promise;
     } else {
@@ -64,7 +64,8 @@ class ReactImportedComponent extends Component {
       console.error('[React-imported-component]', err);
       /* eslint-enable */
       this.setState({
-        state: STATE_ERROR
+        state: STATE_ERROR,
+        error: err
       });
       if (this.props.onError) {
         this.props.onError(err);
@@ -90,17 +91,28 @@ class ReactImportedComponent extends Component {
     this.remount();
   };
 
+  fragmentedRender(payload) {
+    if (settings.hot) {
+      return (
+        <Fragment>
+          {payload}
+          <NotSoPureComponent onUpdate={this.onHRM}/>
+        </Fragment>
+      );
+    }
+    return payload;
+  }
+
   render() {
     const {AsyncComponent, state} = this.state;
     const {LoadingComponent, ErrorComponent} = this.props;
 
+    if (this.props.render) {
+      return this.fragmentedRender(this.props.render(AsyncComponent, state, this.props))
+    }
+
     if (AsyncComponent) {
-      return (
-        <Fragment>
-          <AsyncComponent {...this.props} />
-          <NotSoPureComponent onUpdate={this.onHRM}/>
-        </Fragment>
-      );
+      return this.fragmentedRender(<AsyncComponent {...this.props} />)
     }
 
     switch (state) {
@@ -110,7 +122,7 @@ class ReactImportedComponent extends Component {
           : null;
       case STATE_ERROR:
         return ErrorComponent
-          ? React.Children.only(<ErrorComponent retryImport={this.reload} {...this.props} />)
+          ? React.Children.only(<ErrorComponent retryImport={this.reload} error={this.state.error} {...this.props} />)
           : null;
       default:
         return null;
@@ -123,6 +135,7 @@ ReactImportedComponent.propTypes = {
   LoadingComponent: PropTypes.func,
   ErrorComponent: PropTypes.func,
   exportPicker: PropTypes.func,
+  render: PropTypes.func,
   ssrMark: PropTypes.string,
 
   onError: PropTypes.func

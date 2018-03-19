@@ -21,6 +21,7 @@ const loader = (loaderFunction, options = {}) => {
       ErrorComponent={options.ErrorComponent}
       exportPicker={options.exportPicker}
       onError={options.onError}
+      render={options.render}
       {...props}
     />
   );
