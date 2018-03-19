@@ -85,7 +85,7 @@ function scanTop(root, start, target) {
       ${
       Object
         .keys(imports)
-        .map((key,index) => `"${(index)}": ${imports[key]},`)
+        .map((key,index) => `${index}: ${imports[key]},`)
         .join('\n')
       }
     };
