@@ -25,7 +25,7 @@ declare module 'react-imported-component' {
 
     export function printDrainHydrateMarks(): string;
     export function drainHydrateMarks(): Array<string>;
-    export function rehydrateMarks(marks?: Array<string>): void;
+    export function rehydrateMarks(marks?: Array<string>): Promise<void>;
     export function whenComponentsReady(): Promise<void>;
     export function dryRender(renderFunction: () => any): Promise<void>;
 }
