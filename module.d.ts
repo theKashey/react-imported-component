@@ -14,9 +14,9 @@ declare module 'react-imported-component' {
     }
 
     interface HOC {
-        <P>(loader: () => Promise<DefaultComponent<P>>, options: ComponentOptions): Component<P>;
+        <P>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions): Component<P>;
 
-        <P>(loader: () => Promise<P>, options: ComponentOptions): Component<P>;
+        <P>(loader: () => Promise<P>, options?: ComponentOptions): Component<P>;
     }
 
     var importedComponent: HOC;
