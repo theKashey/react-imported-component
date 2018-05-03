@@ -3,10 +3,10 @@ import { Helmet } from "react-helmet";
 //import { Switch, Route, Redirect } from "react-router-dom";
 import Home from "./components/Home";
 import favicon from "./assets/favicon.ico";
-// import importedComponent from "react-imported-component";
+import importedComponent from "react-imported-component";
 
 const Another = importedComponent(() => import("./components/Another"));
-import Another from "./components/Another";
+//import Another from "./components/Another";
 
 export default function App() {
   return (
@@ -18,11 +18,6 @@ export default function App() {
       <Home />
 
       <Home/>
-      {/* <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/another" component={Another} />
-        <Redirect to="/" />
-      </Switch> */}
       <Another/>
     </div>
   );

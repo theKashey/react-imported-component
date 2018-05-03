@@ -152,7 +152,7 @@ To enable full cream SSR follow these steps.
 Imported-Component will hook into dynamic imports, providing extra information about files you want to load.
 
 2. Add one more command into package.json
-CLI command `imported-components [sources ROOT] [targetFile]`
+CLI command `imported-components [sources ROOT] [targetFile]` (use .ts for TypeScript)
 ```js
  "generate-imported-component": "imported-components src src/imported.js"
 ```
