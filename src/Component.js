@@ -9,7 +9,11 @@ const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
 const STATE_DONE = 'done';
 
-const Fragment = React.Fragment ? React.Fragment : ({children}) => <div>{children}</div>;
+const FragmentNode = ({children}) => <div>{children}</div>;
+FragmentNode.propTypes = {
+  children: PropTypes.any
+};
+const Fragment = React.Fragment ? React.Fragment : FragmentNode;
 
 export const settings = {
   hot: !!module.hot

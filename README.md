@@ -42,6 +42,9 @@ const Component = importedComponent( () => import('./Component'), {
 });
 
 Component.preload();
+
+// render it
+<Component... />
 ```
 
 ## API
