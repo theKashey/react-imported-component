@@ -7,10 +7,14 @@ const addPending = promise => pending.push(promise);
 const removeFromPending = promise => pending = pending.filter(a => a !== promise);
 const trimImport = str => str.replace(/['"]/g, '');
 
+export const importMatch = functionString => {
+  const markMatches = functionString.match(/\(['"]imported-component['"],[ '"](.*),/g) || [];
+  return markMatches.map( match => trimImport(match.match(/\(['"]imported-component['"],[ '"](.*)['"],/i)[1]));
+}
+
 const toLoadable = (importFunction, autoImport = true) => {
   const _load = () => Promise.resolve().then(importFunction);
-  const markMatches = importFunction.toString().match(/\(['"]imported-component['"],[ '"](.*),/g) || [];
-  const mark = markMatches.map( match => trimImport(match.match(/\(['"]imported-component['"],[ '"](.*),/i)[1]));
+  const mark = importMatch(importFunction.toString());
 
   const loadable = {
     importFunction,

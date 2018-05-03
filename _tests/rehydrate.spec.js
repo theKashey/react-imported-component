@@ -6,6 +6,8 @@ import HotComponentLoader from '../src/Component';
 import toLoadable, {done as whenDone} from '../src/loadable';
 import {drainHydrateMarks, rehydrateMarks} from '../src/marks';
 
+import {importMatch} from "../src/loadable";
+
 chai.use(chaiEnzyme());
 
 describe('SSR Component', () => {
@@ -14,6 +16,22 @@ describe('SSR Component', () => {
   function importedWrapper(marker, name, realImport) {
     return realImport;
   }
+
+  describe('match', () => {
+    it('standard', () => {
+      expect(importMatch(`() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true)`)).to.be.deep.equal(['mark1']);
+    });
+
+    it('webpack', () => {
+      expect(importMatch(`() => importedWrapper('imported-component', 'mark1', __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)).to.be.deep.equal(['mark1']);
+    })
+
+    it('parcel', () => {
+      expect(importMatch(`function _() {
+        return importedWrapper('imported-component', 'mark1', require("_bundle_loader")(require.resolve('./HelloWorld3')));
+    }`)).to.be.deep.equal(['mark1']);
+    })
+  });
 
   describe('marks', (done) => {
     it('should generate marks', (done) => {
@@ -49,6 +67,7 @@ describe('SSR Component', () => {
         expect(drainHydrateMarks()).to.be.deep.equal(['mark1']);
         expect(wrapper1.find(TargetComponent)).not.to.be.present();
         setImmediate(() => {
+          wrapper1.update();
           expect(wrapper1.find(TargetComponent)).to.contain.text('42');
           done();
         })

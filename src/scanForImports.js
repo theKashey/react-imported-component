@@ -2,7 +2,8 @@ import 'babel-polyfill';
 import scanDirectory from 'scan-directory';
 import {extname, resolve, relative, dirname, join, sep} from 'path';
 import {readFile, writeFile} from 'fs';
-import {encipherImport} from './utils';
+
+/* eslint-disable no-console */
 
 export const promisify = (fn, context, noReject) => (...args) => new Promise((resolve, reject) => {
   fn.call(context, ...args, (error, ok) => {
