@@ -1,12 +1,15 @@
 import React from 'react';
 import chai, {expect} from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import {mount} from 'enzyme';
+import Enzyme, {mount} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import sinon from 'sinon';
 import deepForceUpdate from 'react-deep-force-update';
 import loader from '../src/HOC';
 import HotComponentLoader, {settings} from '../src/Component';
 import toLoadable from '../src/loadable';
+
+Enzyme.configure({adapter: new Adapter()});
 
 chai.use(chaiEnzyme());
 
@@ -18,6 +21,7 @@ describe('Async Component', () => {
       const wrapper = mount(<Component payload={42}/>);
       expect(wrapper.find(TargetComponent)).to.be.not.present();
       setImmediate(() => {
+        wrapper.update();
         expect(wrapper.find(TargetComponent)).to.be.present();
         expect(wrapper.find(TargetComponent)).to.contain.text('42');
         done();
@@ -41,8 +45,9 @@ describe('Async Component', () => {
           wrapper.setProps({payload: 43});
           setImmediate(() => {
             sinon.assert.calledOnce(spy);
-            deepForceUpdate(wrapper.find(HotComponentLoader).get(0));
-            //wrapper.find(HotComponentLoader).get(0).forceUpdate();
+            wrapper.update();
+            const Hot = wrapper.find(HotComponentLoader).instance();
+            deepForceUpdate(Hot);
             setImmediate(() => {
               setImmediate(() => {
                 sinon.assert.calledTwice(spy);
@@ -72,6 +77,7 @@ describe('Async Component', () => {
       expect(wrapper.find(HotComponentLoader)).to.have.prop('ErrorComponent', ErrorComponent);
       expect(wrapper.find(HotComponentLoader)).to.have.prop('exportPicker', exportPicker);
       setImmediate(() => {
+        wrapper.update();
         expect(wrapper.find(TargetComponent)).to.be.present();
         done();
       });
@@ -128,6 +134,7 @@ describe('Async Component', () => {
         expect(wrapper.find(LoadingComponent)).to.be.present();
         expect(wrapper.find(TargetComponent)).not.to.be.present();
         setImmediate(() => {
+          wrapper.update();
           expect(wrapper.find(LoadingComponent)).not.to.be.present();
           expect(wrapper.find(TargetComponent)).to.be.present();
           done();
@@ -153,6 +160,7 @@ describe('Async Component', () => {
       expect(wrapper.find(TargetComponent)).to.be.not.present();
 
       setImmediate(() => {
+        wrapper.update();
         expect(wrapper.find(LoadingComponent)).not.to.be.present();
         expect(wrapper.find(TargetComponent)).to.be.present();
         expect(wrapper.find(TargetComponent)).to.contain.text('42');
@@ -171,6 +179,7 @@ describe('Async Component', () => {
         ErrorComponent={ErrorComponent}
       />);
       setImmediate(() => {
+        wrapper.update();
         expect(wrapper.find(ErrorComponent)).to.be.present();
         sinon.assert.calledWith(onException, 'component error');
         process.removeListener('unhandledRejection', onException);
@@ -191,6 +200,7 @@ describe('Async Component', () => {
         onError={onError}
       />);
       setImmediate(() => {
+        wrapper.update();
         expect(wrapper.find(ErrorComponent)).to.be.present();
         sinon.assert.notCalled(onException);
         sinon.assert.calledWith(onError, 'component error');
