@@ -6,7 +6,7 @@ import './HelloWorld.scss';
 
 export default function HelloWorld() {
   return <div>
-    <h1 className="hello-world">Hello world!</h1>
+    <h1 className="hello-world">Hello world</h1>
     <p style={{ textAlign: 'center' }}>
       This is an ordinary react component.
       <br />

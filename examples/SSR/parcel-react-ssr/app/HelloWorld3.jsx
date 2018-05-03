@@ -11,7 +11,7 @@ export default class Nyan extends Component {
 
   render() {
     return <div style={{position:'absolute',top:'500px'}}>
-      I am nested cat
+      I am async cat
       <div className="wrapper">
         <div className="rainbow">
           <span></span>

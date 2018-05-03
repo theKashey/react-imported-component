@@ -18,6 +18,7 @@ export default function generateHtml(markup) {
     helmet.title.toString() + helmet.meta.toString() + helmet.link.toString()
   );
   $template('#app').html(markup);
+  console.log(markup);
 
   return $template.html();
 }

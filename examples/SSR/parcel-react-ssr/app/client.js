@@ -2,6 +2,7 @@
 // Start your React application and add the required containers
 // Here we have <BrowserRouter /> for react-router
 
+import 'react-hot-loader';
 import {rehydrateMarks} from 'react-imported-component';
 import React from 'react';
 import ReactDOM from 'react-dom';
