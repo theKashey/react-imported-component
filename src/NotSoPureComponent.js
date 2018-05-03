@@ -6,7 +6,7 @@ class NotSoPureComponent extends PureComponent {
     onUpdate: PropTypes.func.isRequired
   };
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     this.props.onUpdate();
   }
 
