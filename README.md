@@ -232,7 +232,7 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
 * [loadable-components](https://github.com/smooth-code/loadable-components)
   * The most complex(inside) one. Just piece of Art. 
   * Loader: import only
-  * Front-end: RHL-not-friendly.
+  * Front-end: RHL-friendly. (by forced preloading)
   * SSR: semi-async(walkTree), __no wave reduction__, sees only currently loaded chunks.
   * Simple HOC based API
 
