@@ -2,12 +2,17 @@ import React from 'react';
 import chai, {expect} from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import {mount} from 'enzyme';
-import HotComponentLoader from '../src/Component';
+import sinon from 'sinon';
+import ReactDOM from "react-dom/server";
+import HotComponentLoader, {settings} from '../src/Component';
 import toLoadable, {done as whenDone} from '../src/loadable';
 import {drainHydrateMarks, rehydrateMarks} from '../src/marks';
 
 import {importMatch} from "../src/loadable";
+import Adapter from "enzyme-adapter-react-16/build/index";
+import Enzyme from "enzyme/build/index";
 
+Enzyme.configure({adapter: new Adapter()});
 chai.use(chaiEnzyme());
 
 describe('SSR Component', () => {
@@ -33,7 +38,56 @@ describe('SSR Component', () => {
     })
   });
 
-  describe('marks', (done) => {
+  describe('client-rehydrate', () => {
+    beforeEach(() => {
+      settings.SSR = false
+    });
+    afterEach(() => {
+      settings.SSR = true
+    });
+    it('green case', () => {
+      const renderSpy1 = sinon.stub().callsFake(A => <div>{A && <A/>}</div>);
+      const renderSpy2 = sinon.stub().callsFake(A => <div>{A && <A/>}</div>);
+      const Component = () => <div>loaded!</div>;
+
+      const loader = toLoadable(() => Promise.resolve(Component));
+
+      const wrapper1 = mount(<div><HotComponentLoader loadable={loader} render={renderSpy1}/></div>);
+      expect(wrapper1).not.to.contain.text('loaded!');
+
+      sinon.assert.calledWith(renderSpy1, undefined);
+      return loader.load().then(() => {
+        const wrapper2 = mount(<div><HotComponentLoader loadable={loader} render={renderSpy2}/></div>);
+        expect(wrapper2).to.contain.text('loaded!');
+        sinon.assert.calledWith(renderSpy1, Component);
+        sinon.assert.calledWith(renderSpy2, Component);
+        sinon.assert.calledThrice(renderSpy1);
+        sinon.assert.calledOnce(renderSpy2);
+      })
+    })
+  });
+
+  describe('server-rehydrate', () => {
+    beforeEach(() => {
+      settings.SSR = true
+    });
+    afterEach(() => {
+      settings.SSR = true
+    });
+    it('green case', () => {
+      const renderSpy2 = sinon.stub().callsFake(A => <div>{A && <A/>}</div>);
+      const Component = () => <div>loaded!</div>;
+
+      const loader = toLoadable(() => Promise.resolve(Component));
+      return loader.load().then(() => {
+        const wrapper2 = ReactDOM.renderToString(<div>so it<HotComponentLoader loadable={loader} render={renderSpy2}/></div>);
+        expect(wrapper2).to.be.equal('<div data-reactroot="">so it<div><div>loaded!</div></div></div>');
+        sinon.assert.calledWith(renderSpy2, Component);
+      })
+    })
+  });
+
+  describe('marks', () => {
     it('should generate marks', (done) => {
       expect(drainHydrateMarks()).to.have.length(0);
       const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true);

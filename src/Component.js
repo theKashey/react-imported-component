@@ -16,7 +16,8 @@ FragmentNode.propTypes = {
 const Fragment = React.Fragment ? React.Fragment : FragmentNode;
 
 export const settings = {
-  hot: !!module.hot
+  hot: !!module.hot,
+  SSR: true
 };
 
 const getLoadable = importFunction => {
@@ -30,29 +31,38 @@ class ReactImportedComponent extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
-  }
+    this.state = this.pickPrecached() || {};
 
-  componentWillMount() {
-    // SSR support
-    useMark(this.props.loadable.mark);
-    if (isNode) {
-      this.reload();
+    if (isNode && settings.SSR) {
+      useMark(this.props.loadable.mark);
+      if (this.state.state !== STATE_DONE) {
+        this.reload();
+      }
     }
   }
 
   componentDidMount() {
     useMark(this.props.loadable.mark);
-    this.reload();
+    if (this.state.state !== STATE_DONE) {
+      this.reload();
+    }
+  }
+
+  pickPrecached() {
+    const loadable = getLoadable(this.props.loadable);
+    if (loadable.done) {
+      return {
+        AsyncComponent: this.props.exportPicker(loadable.payload),
+        state: loadable.ok ? STATE_DONE : STATE_ERROR
+      };
+    }
+    return null;
   }
 
   loadAsyncComponent() {
-    const loadable = getLoadable(this.props.loadable)
+    const loadable = getLoadable(this.props.loadable);
     if (loadable.done) {
-      this.setState({
-        AsyncComponent: this.props.exportPicker(loadable.payload),
-        state: loadable.ok ? STATE_DONE : STATE_ERROR
-      });
+      this.setState(this.pickPrecached());
       return loadable.promise;
     } else {
       return loadable.load()

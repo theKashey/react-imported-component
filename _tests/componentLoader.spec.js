@@ -10,7 +10,6 @@ import HotComponentLoader, {settings} from '../src/Component';
 import toLoadable from '../src/loadable';
 
 Enzyme.configure({adapter: new Adapter()});
-
 chai.use(chaiEnzyme());
 
 describe('Async Component', () => {
