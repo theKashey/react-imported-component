@@ -16,9 +16,8 @@ export default function App() {
         <link rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
       <Home />
-
-      <Home/>
       <Another/>
+      <Home/>
     </div>
   );
 }

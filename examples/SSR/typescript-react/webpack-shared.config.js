@@ -46,6 +46,6 @@ module.exports = function (node) {
         ),
       },
     },
-    mode: process.env.WEBPACK_MODE || "development"
+    mode: "development"
   };
 };
