@@ -15,8 +15,8 @@ const templateOptions = {
 
 export default function ({types: t, template}) {
   var headerTemplate = template(`function importedWrapper(marker, name, realImport) { 
-      if (typeof __deoptimization_sidEffect__ !== 'undefined') {
-        __deoptimization_sidEffect__(marker, name, realImport);
+      if (typeof __deoptimization_sideEffect__ !== 'undefined') {
+        __deoptimization_sideEffect__(marker, name, realImport);
       }
       return realImport;
   }`, templateOptions);
