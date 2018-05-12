@@ -7,6 +7,7 @@ import ReactDOM from "react-dom/server";
 import HotComponentLoader, {settings} from '../src/Component';
 import toLoadable, {done as whenDone} from '../src/loadable';
 import {drainHydrateMarks, rehydrateMarks} from '../src/marks';
+import imported from '../src/HOC';
 
 import {importMatch} from "../src/loadable";
 import Adapter from "enzyme-adapter-react-16/build/index";
@@ -64,6 +65,32 @@ describe('SSR Component', () => {
         sinon.assert.calledThrice(renderSpy1);
         sinon.assert.calledOnce(renderSpy2);
       })
+    });
+
+    it('with precache', () => {
+      const renderSpy1 = sinon.stub().callsFake(A => <div>{A && <A/>}</div>);
+      const Component = () => <div>loaded!</div>;
+
+      const HotComponent = imported(() => Promise.resolve(Component), {noAutoImport: true})
+      HotComponent.preload();
+      return Promise.resolve().then(()=>{}).then(() => {
+        const wrapper2 = mount(<div><HotComponent render={renderSpy1}/></div>);
+        expect(wrapper2).to.contain.text('loaded!');
+        sinon.assert.calledWith(renderSpy1, Component);
+        sinon.assert.calledOnce(renderSpy1);
+      })
+    })
+
+    it('without precache', () => {
+      const renderSpy2 = sinon.stub().callsFake(A => <div>{A && <A/>}</div>);
+      const Component = () => <div>loaded!</div>;
+
+      const HotComponent = imported(() => Promise.resolve(Component), {noAutoImport: true})
+      //HotComponent.preload();
+      return Promise.resolve().then(() => {
+        const wrapper2 = mount(<div><HotComponent render={renderSpy2}/></div>);
+        expect(wrapper2).not.to.contain.text('loaded!');
+      })
     })
   });
 
@@ -80,7 +107,8 @@ describe('SSR Component', () => {
 
       const loader = toLoadable(() => Promise.resolve(Component));
       return loader.load().then(() => {
-        const wrapper2 = ReactDOM.renderToString(<div>so it<HotComponentLoader loadable={loader} render={renderSpy2}/></div>);
+        const wrapper2 = ReactDOM.renderToString(<div>so it<HotComponentLoader loadable={loader} render={renderSpy2}/>
+        </div>);
         expect(wrapper2).to.be.equal('<div data-reactroot="">so it<div><div>loaded!</div></div></div>');
         sinon.assert.calledWith(renderSpy2, Component);
       })

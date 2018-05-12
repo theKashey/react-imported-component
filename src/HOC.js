@@ -25,7 +25,7 @@ const loader = (loaderFunction, options = {}) => {
       {...props}
     />
   );
-  Imported.preload = loadable.load().catch( () => {});
+  Imported.preload = () => loadable.load().catch( () => {});
 
   return Imported;
 };
