@@ -1,5 +1,7 @@
 import imported from 'react-imported-component';
 
+const AsyncComponent0 = imported(() => import(/* webpackChunkName:namedChunk */'./MyComponent'));
+
 const AsyncComponent1 = imported(() => import('./MyComponent'));
 
 const AsyncComponent2 = imported(async () => await import('./MyComponent'));

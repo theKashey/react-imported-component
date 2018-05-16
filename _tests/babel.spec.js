@@ -9,14 +9,25 @@ const testFolders = readdirSync(FIXTURE_PATH).filter(file =>
   statSync(join(FIXTURE_PATH, file)).isDirectory(),
 )
 
-function testPlugin(code) {
-  const result = transform(code, {
-    presets: ['react'],
-    plugins: [require.resolve('../src/babel.js'), 'dynamic-import-node'],
-  })
+const testPlugin = {
+  node: (code) => {
+    const result = transform(code, {
+      presets: ['react'],
+      plugins: [require.resolve('../src/babel.js'), 'dynamic-import-node'],
+    })
 
-  return result.code
+    return result.code
+  },
+  webpack: (code) => {
+    const result = transform(code, {
+      presets: ['react'],
+      plugins: [require.resolve('../src/babel.js')]
+    })
+
+    return result.code
+  }
 }
+
 
 describe('babel', () => {
   testFolders.forEach(folderName => {
@@ -30,7 +41,7 @@ describe('babel', () => {
     )
 
     it(`works with ${folderName}`, () => {
-      const result = testPlugin(actual)
+      const result = testPlugin[folderName](actual)
       expect(result.trim()).to.be.equal(expected.trim())
     })
   })

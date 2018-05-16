@@ -8,6 +8,8 @@ function importedWrapper(marker, name, realImport) {
 
 import imported from 'react-imported-component';
 
+const AsyncComponent0 = imported(() => importedWrapper('imported-component', '18g2v0c', Promise.resolve().then(() => require('./MyComponent'))));
+
 const AsyncComponent1 = imported(() => importedWrapper('imported-component', '18g2v0c', Promise.resolve().then(() => require('./MyComponent'))));
 
 const AsyncComponent2 = imported(async () => await importedWrapper('imported-component', '18g2v0c', Promise.resolve().then(() => require('./MyComponent'))));
