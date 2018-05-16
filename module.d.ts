@@ -1,10 +1,11 @@
 declare module 'react-imported-component' {
-  import { StatelessComponent, ComponentClass, PureComponent, ReactElement } from "react";
+  import { StatelessComponent, ComponentType, ComponentClass, PureComponent, ReactNode } from "react";
 
-  type Component<P> = ComponentClass<P> | StatelessComponent<P>;
-  type DefaultComponent<P> = {
-    default: Component<P>
-  };
+  interface DefaultImportedComponent<P> {
+    default: ComponentType<P>;
+  }
+
+  type DefaultComponent<P> = ComponentType<P> | DefaultImportedComponent<P>;
 
   interface LoadableComponentState {
     state: 'loading' | 'done' | 'error'
@@ -12,18 +13,18 @@ declare module 'react-imported-component' {
   }
 
   type ComponentOptions<P> = {
-    LoadingComponent?: Component<any>,
-    ErrorComponent?: Component<any>,
+    LoadingComponent?: ComponentType<any>,
+    ErrorComponent?: ComponentType<any>,
     exportPicker?: (a: any) => any,
     onError?: (a: any) => any,
-    render?: (component: Component<P>, state: LoadableComponentState, props: any) => JSX.Element;
+    render?: (component: ComponentType<P>, state: LoadableComponentState, props: P) => ReactNode<P>;
   }
 
   interface HOC {
-    <P>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions<P>): Component<P>;
+    <P>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions<P>): ComponentType<P>;
   }
 
-  var importedComponent: HOC;
+  const importedComponent: HOC;
 
   interface ImportedComponents {
     [index: number]: () => Promise<DefaultComponent<any>>;
