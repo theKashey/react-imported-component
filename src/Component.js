@@ -25,11 +25,11 @@ const getLoadable = importFunction => {
     return importFunction;
   }
   return toLoadable(importFunction, false);
-}
+};
 
 class ReactImportedComponent extends Component {
 
-  mounted = false;mounted
+  mounted = false;
 
   constructor(props) {
     super(props);
