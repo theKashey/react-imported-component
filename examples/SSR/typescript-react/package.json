@@ -1,6 +1,7 @@
 {
   "scripts": {
     "generate-imported-component": "imported-components app app/imported.ts",
+    "build": "yarn webpack",
     "start": "node dist/server/index.js"
   },
   "dependencies": {
