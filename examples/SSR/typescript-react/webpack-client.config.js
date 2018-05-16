@@ -11,7 +11,8 @@ module.exports = {
   output: {
     // publicPath: "/dist",
     filename: "client.js",
-    path: path.resolve(__dirname, "dist", "client")
+    path: path.resolve(__dirname, "dist", "client"),
+    chunkFilename: '[name].client.js',
   },
   plugins: [
     new HtmlWebpackPlugin({
