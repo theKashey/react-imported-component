@@ -29,6 +29,8 @@ const getLoadable = importFunction => {
 
 class ReactImportedComponent extends Component {
 
+  mounted = false;mounted
+
   constructor(props) {
     super(props);
     this.state = this.pickPrecached() || {};
@@ -42,10 +44,15 @@ class ReactImportedComponent extends Component {
   }
 
   componentDidMount() {
+    this.mounted =true;
     useMark(this.props.loadable.mark);
     if (this.state.state !== STATE_DONE) {
       this.reload();
     }
+  }
+
+  componentWillUnmount(){
+    this.mounted = false;
   }
 
   pickPrecached() {
@@ -67,7 +74,9 @@ class ReactImportedComponent extends Component {
     } else {
       return loadable.load()
         .then((payload) => {
-          this.setState({AsyncComponent: this.props.exportPicker(payload)});
+          if(this.mounted) {
+            this.setState({AsyncComponent: this.props.exportPicker(payload)});
+          }
         });
     }
   }
