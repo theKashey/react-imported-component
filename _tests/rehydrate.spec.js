@@ -72,8 +72,7 @@ describe('SSR Component', () => {
       const Component = () => <div>loaded!</div>;
 
       const HotComponent = imported(() => Promise.resolve(Component), {noAutoImport: true})
-      HotComponent.preload();
-      return Promise.resolve().then(()=>{}).then(() => {
+      return HotComponent.preload().then(() => {
         const wrapper2 = mount(<div><HotComponent render={renderSpy1}/></div>);
         expect(wrapper2).to.contain.text('loaded!');
         sinon.assert.calledWith(renderSpy1, Component);

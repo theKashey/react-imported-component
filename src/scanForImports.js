@@ -33,21 +33,48 @@ const pWriteFile = promisify(writeFile);
 const trimImport = str => str.replace(/['"]/g, '');
 export const getFileContent = file => pReadFile(file, 'utf8');
 
-const getImportString = (pattern, selected) => str => (
+const getMatchString = (pattern, selected) => str => (
   (str.match(new RegExp(pattern, 'g')) || [])
-    .map(statement => trimImport(statement.match(new RegExp(pattern, 'i'))[selected]))
+    .map(statement =>
+      statement.match(new RegExp(pattern, 'i'))[selected]
+    )
 );
 
-const getDynamicImports = getImportString(`import\\((['"]?[\\w-/.]+['"]?)\\)`, 1);
+const getImports = getMatchString(`(['"]?[\\w-/.]+['"]?)\\)`, 1);
+const getComment = getMatchString(/\/\*.*\*\//, 0);
+
+const getImportString = (pattern, selected) => str => (
+  getMatchString(pattern, selected)(str)
+    .map(statement => {
+      return {
+        name: trimImport(getImports(statement+')')[0]),
+        comment: getComment(statement)[0] || '',
+      }
+    })
+);
+
+export const getDynamicImports = getImportString(`import\\((([^)])+['"]?)\\)`, 1);
 
 const mapImports = (file, imports) => imports.map(dep => {
-  if (dep && dep.charAt(0) === '.') {
-    return resolve(dirname(file), dep)
+  const {name, comment} = dep;
+  if (name && name.charAt(0) === '.') {
+    return {
+      name: resolve(dirname(file), name),
+      comment
+    }
   }
   return dep;
 });
 
 const rejectSystem = (file, stats) => stats.isDirectory() && file.match(/node_modules/) || file.match(/(\/\.\w+)/)
+
+export const remapImports = (data, root, targetDir, getRelative, imports) => (
+  data
+    .map(({file, content}) => mapImports(file, getDynamicImports(content)))
+    .forEach(importBlock => importBlock.forEach(({name, comment}) => {
+      imports[getRelative(root, name)] = `() => import(${comment}'${getRelative(targetDir, name)}')`
+    }))
+);
 
 function scanTop(root, start, target) {
 
@@ -72,11 +99,7 @@ function scanTop(root, start, target) {
 
     const imports = {};
     const targetDir = resolve(root, dirname(target));
-    data
-      .map(({file, content}) => mapImports(file, getDynamicImports(content)))
-      .forEach(importBlock => importBlock.forEach(name => {
-        imports[getRelative(root, name)] = `() => import('${getRelative(targetDir, name)}')`
-      }));
+    remapImports(data, root, targetDir, getRelative, imports);
 
     console.log(`${Object.keys(imports).length} imports found, saving to ${target}`);
 
@@ -86,7 +109,7 @@ function scanTop(root, start, target) {
       ${
       Object
         .keys(imports)
-        .map((key,index) => `${index}: ${imports[key]},`)
+        .map((key, index) => `${index}: ${imports[key]},`)
         .join('\n')
       }
     };
@@ -98,7 +121,7 @@ function scanTop(root, start, target) {
 }
 
 
-if(!process.argv[3]){
+if (!process.argv[3]) {
   console.log('usage: imported-components sourceRoot targetFile');
   console.log('example: imported-components src src/importedComponents');
 } else {
