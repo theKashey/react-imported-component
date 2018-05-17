@@ -8,6 +8,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
+    chunkFilename: '[name].client.js',
   },
   module: {
     rules: [

@@ -6,6 +6,7 @@
   "plugins": [
     "react-hot-loader/babel",
     "transform-class-properties",
-    "dynamic-import-node"
+    "syntax-dynamic-import",
+//    "dynamic-import-node"
   ]
 }
