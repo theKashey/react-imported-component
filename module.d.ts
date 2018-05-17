@@ -17,7 +17,7 @@ declare module 'react-imported-component' {
     ErrorComponent?: ComponentType<any>,
     exportPicker?: (a: any) => any,
     onError?: (a: any) => any,
-    render?: (component: ComponentType<P>, state: LoadableComponentState, props: P) => ReactNode<P>;
+    render?: (Component: ComponentType<P>, State: LoadableComponentState, props: P) => ReactNode;
   }
 
   interface HOC {
