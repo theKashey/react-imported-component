@@ -84,12 +84,13 @@ describe('Async Component', () => {
   });
 
   describe('Component API', () => {
-    it('should provide the same API via React Component', () => {
+    it('should provide the same API via React Component', (done) => {
       const TargetComponent = ({payload}) => <div>{payload}</div>;
       const importStatement = () => Promise.resolve(TargetComponent);
       const wrapper = mount(<HotComponentLoader loadable={importStatement} payload={42}/>);
       expect(wrapper.find(TargetComponent)).to.be.not.present();
       setImmediate(() => {
+        wrapper.update();
         expect(wrapper.find(TargetComponent)).to.be.present();
         expect(wrapper.find(TargetComponent)).to.contain.text('42');
         done();

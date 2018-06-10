@@ -38,20 +38,21 @@ class ReactImportedComponent extends Component {
     if (isNode && settings.SSR) {
       useMark(this.props.loadable.mark);
       if (this.state.state !== STATE_DONE) {
+        this.state.state = STATE_LOADING;
         this.reload();
       }
     }
   }
 
   componentDidMount() {
-    this.mounted =true;
+    this.mounted = true;
     useMark(this.props.loadable.mark);
     if (this.state.state !== STATE_DONE) {
       this.reload();
     }
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.mounted = false;
   }
 
@@ -74,7 +75,7 @@ class ReactImportedComponent extends Component {
     } else {
       return loadable.load()
         .then((payload) => {
-          if(this.mounted) {
+          if (this.mounted) {
             this.setState({AsyncComponent: this.props.exportPicker(payload)});
           }
         });
@@ -108,9 +109,11 @@ class ReactImportedComponent extends Component {
   };
 
   reload = () => {
-    this.setState({
-      state: STATE_LOADING
-    });
+    if (this.mounted) {
+      this.setState({
+        state: STATE_LOADING
+      });
+    }
     this.remount();
   };
 
@@ -154,7 +157,7 @@ class ReactImportedComponent extends Component {
 }
 
 ReactImportedComponent.propTypes = {
-  loadable: PropTypes.object.isRequired,
+  loadable: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
   LoadingComponent: PropTypes.func,
   ErrorComponent: PropTypes.func,
   exportPicker: PropTypes.func,
