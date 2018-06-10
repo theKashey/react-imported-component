@@ -1,0 +1,12 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "examples/SSR/parcel-react-ssr/package.json",
+        "examples/SSR/typescript-react/package.json",
+        "examples/react-hot-loader/package.json",
+        "package.json"
+      ]
+    }
+  }
+}

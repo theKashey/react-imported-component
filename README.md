@@ -20,7 +20,7 @@ Formerly - simple, but usable Async Component loader to be used with [React-Hot-
 Easy, universal, and could provide top results without any extra configuration. 
 Deliver a better experience with a single import.
 
-[![NPM](https://nodei.co/npm/react-imported-component.png?downloads=true&stars=true)](https://nodei.co/npm/react-imported-component/)
+[![NPM](https://nodei.co/npm/react-imported-component.png?downloads=true&stars=true)](https://nodei.co/npm/react-imported-component/) [![Greenkeeper badge](https://badges.greenkeeper.io/theKashey/react-imported-component.svg)](https://greenkeeper.io/)
 
 Key features:
  - 🔥 Hot-Module-Replacement friendly.
