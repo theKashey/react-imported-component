@@ -13,7 +13,7 @@ importedComponent(() => import(/* webpackChunkName: namedChunk-0 */"./components
     if (state.state === "loading") {
       return <span/>
     }
-    return <div><Component prop1={1}/></div>
+    return <div><Component/></div>
   }
 });
 //import Another from "./components/Another";

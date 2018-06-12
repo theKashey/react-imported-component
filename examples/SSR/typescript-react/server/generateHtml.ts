@@ -10,7 +10,7 @@ import { printDrainHydrateMarks } from "react-imported-component";
 const templatePath = path.join(__dirname, "..", "client", "index.html");
 const HTML_TEMPLATE = fs.readFileSync(templatePath).toString();
 
-export default function generateHtml(markup, state) {
+export default function generateHtml(markup, state, getStream) {
   // Get the serer-rendering values for the <head />
   const helmet = Helmet.renderStatic();
 
@@ -23,7 +23,7 @@ export default function generateHtml(markup, state) {
       state
     ).replace(/</g, "\\u003c")};</script>`
   );
-  $template("head").append(printDrainHydrateMarks());
+  $template("head").append(printDrainHydrateMarks(getStream()));
   $template("#app").html(markup);
 
   return $template.html();
