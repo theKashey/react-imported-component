@@ -2,11 +2,11 @@ import React from 'react';
 import chai, {expect} from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import Enzyme, {mount} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from './ReactSixteenAdapter';
 import sinon from 'sinon';
 import deepForceUpdate from 'react-deep-force-update';
 import loader from '../src/HOC';
-import HotComponentLoader, {settings} from '../src/Component';
+import HotComponentLoader, {settings, UnconnectedReactImportedComponent} from '../src/Component';
 import toLoadable from '../src/loadable';
 
 Enzyme.configure({adapter: new Adapter()});
@@ -45,7 +45,7 @@ describe('Async Component', () => {
           setImmediate(() => {
             sinon.assert.calledOnce(spy);
             wrapper.update();
-            const Hot = wrapper.find(HotComponentLoader).instance();
+            const Hot = wrapper.find(UnconnectedReactImportedComponent).instance();
             deepForceUpdate(Hot);
             setImmediate(() => {
               setImmediate(() => {

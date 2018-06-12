@@ -10,8 +10,9 @@ import {drainHydrateMarks, rehydrateMarks} from '../src/marks';
 import imported from '../src/HOC';
 
 import {importMatch} from "../src/loadable";
-import Adapter from "enzyme-adapter-react-16/build/index";
+import Adapter from "./ReactSixteenAdapter";
 import Enzyme from "enzyme/build/index";
+import {ImportedStream} from "../src/context";
 
 Enzyme.configure({adapter: new Adapter()});
 chai.use(chaiEnzyme());
@@ -167,6 +168,42 @@ describe('SSR Component', () => {
         done();
       });
     });
+
+    describe('stream marks', () => {
+      it('multy stream render', () => {
+        expect(drainHydrateMarks()).to.have.length(0);
+        const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)));
+        const loader2 = toLoadable(() => importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent)));
+        const loader3 = toLoadable(() => importedWrapper('imported-component', 'mark3', Promise.resolve(TargetComponent)));
+
+        let uid2 = 0;
+        let uid3 = 0;
+
+        const w1 = mount(<HotComponentLoader loadable={loader1}/>);
+        const w2 = mount(
+          <ImportedStream takeUID={uid => {
+            uid2 = uid
+          }}>
+            <HotComponentLoader
+              loadable={loader2}/>
+          </ImportedStream>
+        );
+        const w3 = mount(
+          <ImportedStream takeUID={uid => {
+            uid3 = uid
+          }}>
+            <HotComponentLoader
+              loadable={loader3}/>
+            <HotComponentLoader
+              loadable={loader2}/>
+          </ImportedStream>
+        );
+
+        expect(drainHydrateMarks()).to.be.deep.equal(['mark1']);
+        expect(drainHydrateMarks(uid2)).to.be.deep.equal(['mark2']);
+        expect(drainHydrateMarks(uid3)).to.be.deep.equal(['mark3', 'mark2']);
+      });
+    })
   });
 
   describe('done markers', () => {
@@ -216,4 +253,5 @@ describe('SSR Component', () => {
     });
   });
 
-});
+})
+;

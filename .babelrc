@@ -1,4 +1,4 @@
 {
-  "presets": ["latest","react"],
-  "plugins": ["transform-class-properties","dynamic-import-node"]
+  "presets": ["env","react"],
+  "plugins": ["transform-class-properties", "transform-object-rest-spread", "dynamic-import-node"]
 }

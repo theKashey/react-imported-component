@@ -1,10 +1,19 @@
 let LOADABLE_MARKS = {};
 let USED_MARKS = {};
 
-export const useMark = (marks) => {
+export const useMark = (stream, marks) => {
   if (marks && marks.length) {
-    marks.forEach(a => USED_MARKS[a] = true);
+    if (!USED_MARKS[stream]) {
+      USED_MARKS[stream] = {};
+    }
+    marks.forEach(a => USED_MARKS[stream][a] = true);
   }
+};
+
+export const drainHydrateMarks = (stream = 0) => {
+  const used = Object.keys(USED_MARKS[stream] || {});
+  delete USED_MARKS[stream];
+  return used;
 };
 
 export const rehydrateMarks = (marks = false) => {
@@ -17,14 +26,8 @@ export const rehydrateMarks = (marks = false) => {
   );
 };
 
-export const drainHydrateMarks = () => {
-  const used = Object.keys(USED_MARKS);
-  USED_MARKS = {};
-  return used;
-};
-
-export const printDrainHydrateMarks = () => {
-  return `<script>window.___REACT_DEFERRED_COMPONENT_MARKS=${JSON.stringify(drainHydrateMarks())}</script>`;
+export const printDrainHydrateMarks = (stream = 0) => {
+  return `<script>window.___REACT_DEFERRED_COMPONENT_MARKS=${JSON.stringify(drainHydrateMarks(stream))}</script>`;
 };
 
 export default LOADABLE_MARKS;

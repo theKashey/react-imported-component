@@ -186,7 +186,23 @@ import importedComponents from 'src/imported';
   });
 ```
 
-## SSR - Automagic
+#### Async SSR (renderToStream)
+In case you have more than one rendering thread, for example in case of react-bootstrapper,
+ReactDOM.renderToStream or _suspense_, default approach will not work.
+You need one more component, to separate components my "rendering streams".
+```js
+import {ImportedStream, drainHydrateMarks} from 'react-imported-component';
+
+let streamUID = 0;
+const html = renderToString(
+  <ImportedStream takeUID={uid => streamUID=uid}>
+    <YourApp />
+  </ImportedStream>) + printDrainHydrateMarks(streamUID);
+``` 
+Use `ImportedStream` to bound all imported component to one "streamId", and then - get used components.
+Without `ImportedStream` streamId will be just 0 for all renders. With `ImportedStream` - it is a counter.
+
+## SSR - Automagic (🤯, forget about it)
 In case you could not use babel plugin, you could use "dryRender" API
 ```js
  import {dryRender} from 'react-imported-component';

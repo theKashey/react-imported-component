@@ -4,6 +4,7 @@ import isNode from 'detect-node';
 import {useMark} from './marks';
 import NotSoPureComponent from "./NotSoPureComponent";
 import toLoadable from "./loadable";
+import {UIDConsumer} from "./context";
 
 const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
@@ -27,7 +28,7 @@ const getLoadable = importFunction => {
   return toLoadable(importFunction, false);
 };
 
-class ReactImportedComponent extends Component {
+export class UnconnectedReactImportedComponent extends Component {
 
   mounted = false;
 
@@ -36,7 +37,7 @@ class ReactImportedComponent extends Component {
     this.state = this.pickPrecached() || {};
 
     if (isNode && settings.SSR) {
-      useMark(this.props.loadable.mark);
+      useMark(this.props.streamId, this.props.loadable.mark);
       if (this.state.state !== STATE_DONE) {
         this.state.state = STATE_LOADING;
         this.reload();
@@ -46,7 +47,7 @@ class ReactImportedComponent extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    useMark(this.props.loadable.mark);
+    useMark(this.props.streamId, this.props.loadable.mark);
     if (this.state.state !== STATE_DONE) {
       this.reload();
     }
@@ -156,7 +157,13 @@ class ReactImportedComponent extends Component {
   }
 }
 
-ReactImportedComponent.propTypes = {
+const es6import = (module) => (
+  module.default
+    ? module.default
+    : module
+);
+
+const BaseProps = {
   loadable: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
   LoadingComponent: PropTypes.func,
   ErrorComponent: PropTypes.func,
@@ -167,16 +174,21 @@ ReactImportedComponent.propTypes = {
   onError: PropTypes.func
 };
 
+UnconnectedReactImportedComponent.propTypes = {
+  ...BaseProps,
+  streamId: PropTypes.number
+};
 
-const es6import = (module) => (
-  module.default
-    ? module.default
-    : module
-);
-
-ReactImportedComponent.defaultProps = {
+UnconnectedReactImportedComponent.defaultProps = {
   exportPicker: es6import
 };
 
+const ReactImportedComponent = (props) => (
+  settings.SSR
+    ? <UIDConsumer>{UID => <UnconnectedReactImportedComponent {...props} streamId={UID | 0}/>}</UIDConsumer>
+    : <UnconnectedReactImportedComponent {...props} streamId={0}/>
+);
+
+ReactImportedComponent.propTypes = BaseProps;
 
 export default ReactImportedComponent;
