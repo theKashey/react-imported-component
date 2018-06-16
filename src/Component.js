@@ -74,12 +74,12 @@ export class UnconnectedReactImportedComponent extends Component {
       this.setState(this.pickPrecached());
       return loadable.promise;
     } else {
-      return loadable.load()
-        .then((payload) => {
-          if (this.mounted) {
-            this.setState({AsyncComponent: this.props.exportPicker(payload)});
-          }
-        });
+      this.loadingPromise = loadable.load();
+      return this.loadingPromise.then((payload) => {
+        if (this.mounted) {
+          this.setState({AsyncComponent: this.props.exportPicker(payload)});
+        }
+      });
     }
   }
 
@@ -144,6 +144,9 @@ export class UnconnectedReactImportedComponent extends Component {
 
     switch (state) {
       case STATE_LOADING:
+        if (this.props.async) {
+          throw this.loadingPromise;
+        }
         return LoadingComponent
           ? React.Children.only(<LoadingComponent {...this.props} />)
           : null;
@@ -170,6 +173,7 @@ const BaseProps = {
   exportPicker: PropTypes.func,
   render: PropTypes.func,
   ssrMark: PropTypes.string,
+  async: PropTypes.bool,
 
   onError: PropTypes.func
 };
@@ -180,7 +184,8 @@ UnconnectedReactImportedComponent.propTypes = {
 };
 
 UnconnectedReactImportedComponent.defaultProps = {
-  exportPicker: es6import
+  exportPicker: es6import,
+  async: false
 };
 
 const ReactImportedComponent = (props) => (

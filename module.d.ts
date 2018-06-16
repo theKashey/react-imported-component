@@ -18,6 +18,7 @@ declare module 'react-imported-component' {
     exportPicker?: (a: any) => any,
     onError?: (a: any) => any,
     render?: (Component: ComponentType<P>, State: LoadableComponentState, props: P) => ReactNode;
+    async: boolean;
   }
 
   interface HOC {

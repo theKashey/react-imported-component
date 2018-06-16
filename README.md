@@ -125,6 +125,10 @@ importedComponent( () => import(/* webpackChunkName:'pages' */'./Component'));
 
 That is all. Component will be loaded in time and then displayed. And updated on module replacement of course.
 
+## Suspense (React Async)
+Just pass down an option for `importedComponent`, or prop for `ComponentLoader, and 
+catch the loading promise, imported component will throw if _loading state_ will took a place.
+
 ## SSR (Server side rendering)
 It was usually a headache - async components and SSR, which is currently sync.
 React-imported-component break this cycle, making ServerSide rendering sync, and providing

@@ -5,6 +5,7 @@ import Enzyme, {mount} from 'enzyme';
 import Adapter from './ReactSixteenAdapter';
 import sinon from 'sinon';
 import deepForceUpdate from 'react-deep-force-update';
+import TestRenderer from 'react-test-renderer';
 import loader from '../src/HOC';
 import HotComponentLoader, {settings, UnconnectedReactImportedComponent} from '../src/Component';
 import toLoadable from '../src/loadable';
@@ -207,6 +208,55 @@ describe('Async Component', () => {
         process.removeListener('unhandledRejection', onException);
         done();
       });
+    });
+  });
+
+  describe('async loader', () => {
+
+    const spy = sinon.spy();
+
+    class ErrorBoundary extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {hasError: false};
+      }
+
+      componentDidCatch(error, info) {
+        spy(error, info);
+      }
+
+      render() {
+        return this.props.children;
+      }
+    }
+
+    it('suspence loader, not to be called without flag', () => {
+      const loader = toLoadable(() => Promise.resolve(() => <div>42</div>));
+      const wrapper = mount(
+        <ErrorBoundary>
+          <HotComponentLoader
+            loadable={loader}
+          />
+        </ErrorBoundary>
+      );
+      sinon.assert.notCalled(spy);
+    });
+
+    it('suspence loader, be called', () => {
+      const promise = Promise.resolve(() => <div>42</div>);
+      const loader = toLoadable(() => promise);
+
+      const testRenderer = TestRenderer.create(
+        <ErrorBoundary>
+          <HotComponentLoader
+            loadable={loader}
+            async
+          />
+        </ErrorBoundary>
+      );
+      sinon.assert.calledOnce(spy);
+      console.log(spy);
+      sinon.assert.calledWithMatch(spy, promise);
     });
   });
 });

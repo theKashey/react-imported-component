@@ -10,6 +10,7 @@ import toLoadable from './loadable';
  * @param {React.Component} [options.ErrorComponent]
  * @param {Function} [options.exportPicker] - default behaviour - picks default export
  * @param {Function} [options.onError] - error handler. Will consume the real error.
+ * @param {Function} [options.async] - enable React 16+ suspense.
  */
 const loader = (loaderFunction, options = {}) => {
   const loadable = toLoadable(loaderFunction, !options.noAutoImport)
@@ -22,6 +23,7 @@ const loader = (loaderFunction, options = {}) => {
       exportPicker={options.exportPicker}
       onError={options.onError}
       render={options.render}
+      async={options.async}
       {...props}
     />
   );
