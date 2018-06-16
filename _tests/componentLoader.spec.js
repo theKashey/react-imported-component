@@ -24,6 +24,7 @@ describe('Async Component', () => {
         wrapper.update();
         expect(wrapper.find(TargetComponent)).to.be.present();
         expect(wrapper.find(TargetComponent)).to.contain.text('42');
+        wrapper.unmount();
         done();
       });
     });

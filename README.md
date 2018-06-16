@@ -7,9 +7,17 @@
   Customs clearance for React Components shipped from overseas... 
   <br/>
   <br/>
+  
+  <a href="https://www.npmjs.com/package/react-imported-component">
+    <img src="https://img.shields.io/npm/v/react-imported-component.svg?style=flat-square" />
+  </a>
+    
   <a href="https://circleci.com/gh/theKashey/react-imported-component/tree/master">
    <img src="https://img.shields.io/circleci/project/github/theKashey/react-imported-component/master.svg?style=flat-square)" alt="Build status">
   </a> 
+    
+  <img src="https://badges.greenkeeper.io/theKashey/react-imported-component.svg" />
+    
   <br/>
 </div>
 
@@ -19,9 +27,7 @@ Formerly - simple, but usable Async Component loader to be used with [React-Hot-
 
 Easy, universal, and could provide top results without any extra configuration. 
 Deliver a better experience with a single import.
-
-[![NPM](https://nodei.co/npm/react-imported-component.png?downloads=true&stars=true)](https://nodei.co/npm/react-imported-component/) [![Greenkeeper badge](https://badges.greenkeeper.io/theKashey/react-imported-component.svg)](https://greenkeeper.io/)
-
+ 
 Key features:
  - 🔥 Hot-Module-Replacement friendly.
  - 🌟 Async on client, sync on server.
