@@ -25,8 +25,8 @@
 ### react-imported-component - world first any-bundler SSR-friendly loader.
 Formerly - simple, but usable Async Component loader to be used with [React-Hot-Loader](https://github.com/gaearon/react-hot-loader).
 
-Easy, universal, and could provide top results without any extra configuration. 
-Deliver a better experience with a single import.
+Easy, universal, and could provide top results without any extra configuration.
+ > Deliver a better experience with a single import.
  
 Key features:
  - 🔥 Hot-Module-Replacement friendly.
@@ -54,6 +54,8 @@ Component.preload();
 ```
 
 ## API
+
+### Code splitting components
 - `importedComponent(importFunction, [options]): ComponentLoader` - main API, default export, HOC to create imported component.
   - importFunction - function which resolves with Component to be imported.
   - options - optional settings
@@ -61,12 +63,18 @@ Component.preload();
   - options.ErrorComponent - component to be shown in Error state
   - options.onError - function to consume the error, if one will thrown. Will rethrow a real error if not set.
   - options.exportPicker - function to pick `not default` export from a `importFunction`
-  - options.render(Component, state, props) - function to render the result. Could be used to tune the rendering. 
-  - adds static method `.preload` to the result component.
+  - options.render(Component, state, props) - function to render the result. Could be used to tune the rendering.
+  - options.async - activates react suspense support.
+  
+- importedComponent`.preload` - static method to preload components.
 
 - `ComponentLoader`, the React Component variant of importedComponent. accepts `importFunction` as a `loadable` prop.
+
+### Server side API
 - `printDrainHydrateMarks()`, print our the `drainHydrateMarks`.
 - `drainHydrateMarks()`, returns the currently used marks, and clears the list.
+
+### Client side API
 - `rehydrateMarks():Promise`, loads _marked_ async chunks.
 - `whenComponentsReady():Promise`, will be resolved, when all marks loaded.
 - `dryRender(renderFunction):Promise`, perform sandboxed render, and resolves "whenComponentsReady".
