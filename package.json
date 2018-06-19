@@ -69,7 +69,7 @@
     "babel-polyfill": "^6.26.0",
     "crc-32": "^1.2.0",
     "detect-node": "^2.0.3",
-    "prop-types": "15.6.1",
+    "prop-types": "15.6.2",
     "scan-directory": "^1.0.0"
   }
 }
