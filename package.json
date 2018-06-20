@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "types": "module.d.ts",
   "scripts": {
-    "build": "babel src -d dist",
+    "build:babel": "babel src -d dist",
+    "build:flow": "cp ./module.js.flow ./dist/index.js.flow",
+    "build": "yarn build:babel && yarn build:flow",
     "test": "npm run test:pick -- '_tests/**/*spec.js'",
     "test:pick": "BABEL_ENV=test mocha --compilers js:babel-core/register -r jsdom-global/register",
     "prepublish": "npm run build",

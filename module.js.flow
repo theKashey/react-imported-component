@@ -1,0 +1,61 @@
+// @flow
+import * as React from 'react'
+
+interface DefaultImportedComponent<P> {
+  default: React.ComponentType<P>
+}
+
+type DefaultComponent<P> = React.ComponentType<P> | DefaultImportedComponent<P>;
+
+interface LoadableComponentState {
+  state: 'loading' | 'done' | 'error',
+  AsyncComponent: any
+}
+
+type ComponentOptions<P> = {
+  LoadingComponent?: React.ComponentType<any>,
+  ErrorComponent?: React.ComponentType<any>,
+  exportPicker?: (a: any) => any,
+  onError?: (a: any) => any,
+  render?: (
+    Component: React.ComponentType<P>,
+    State: LoadableComponentState,
+    props: P) => React.Node,
+  async?: boolean
+};
+
+
+interface ImportedComponents {
+  [index: number]: () => Promise<DefaultComponent<any>>
+}
+
+type LoadableResource<P> = {};
+type IComponentLoaderProps<P> = ComponentOptions<P> & {
+  loadable: LoadableResource<P> | Promise<DefaultComponent<P>>
+};
+
+declare interface importedComponent {
+  <P>(loader: () => Promise<DefaultComponent<P>>, options?: $Exact<ComponentOptions<P>>): React.ComponentType<P>
+}
+
+declare export class ComponentLoader<T> extends React.Component<$Exact<IComponentLoaderProps<T>>> {
+}
+
+declare export function ImportedStream ({takeUID: (streamId: number) => any}): null;
+
+declare export function printDrainHydrateMarks(streamId?: number): string
+
+declare export function drainHydrateMarks(streamId?: number): Array<string>
+
+declare export function rehydrateMarks(marks?: Array<string>): Promise<void>
+
+declare export function whenComponentsReady(): Promise<void>
+
+declare export function dryRender(renderFunction: () => any): Promise<void>
+
+declare export function assignImportedComponents(importedComponents: ImportedComponents): void
+
+declare export function loadableResource<P>(loader: () => Promise<DefaultComponent<P>>): LoadableResource<P>
+
+declare export default importedComponent;
+
