@@ -139,6 +139,33 @@ importedComponent( () => import(/* webpackChunkName:'pages' */'./Component'));
 
 That is all. Component will be loaded in time and then displayed. And updated on module replacement of course.
 
+#### Component loader.
+As long `importedComponent` is a fabric function, which will produce React Component, which will perform the loading,
+you may use React Component without calling fabric function.
+```js
+import {ComponentLoader} from 'react-imported-component';
+
+const MyPage = () => (
+   <ComponentLoader
+       loadable={() => import('./Page.js')}
+       // all fields are optional, and matches the same field of importedComponent.
+       LoadingComponent={Loading}
+       ErrorComponent={Error}
+       onError
+       
+       exportPicker
+       render
+       async                 
+   />
+);
+```
+Actually `loadable` awaits for `loadableResource`, but could do auto transformation. 
+```js
+import {loadableResource} from 'react-imported-component';
+loadable = {loadableResource(() => import('xxx'))}
+```
+loadableResource is just a sugar around `import`.
+
 ## Suspense (React Async)
 Just pass down an option for `importedComponent`, or prop for `ComponentLoader, and 
 catch the loading promise, imported component will throw if _loading state_ will took a place.
