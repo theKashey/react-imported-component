@@ -1,9 +1,10 @@
 import deferred from './HOC';
 import {drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks} from './marks';
 import loadableResource, {done as whenComponentsReady, dryRender, assignImportedComponents} from './loadable';
-import ComponentLoader from './Component';
+import ComponentLoader, {settings} from './Component';
 import {ImportedStream} from "./context";
 
+const setConfiguration = (config) => Object.assign(settings, config);
 
 export {
   printDrainHydrateMarks,
@@ -16,6 +17,7 @@ export {
   ComponentLoader,
   loadableResource,
 
-  ImportedStream
+  ImportedStream,
+  setConfiguration
 }
 export default deferred;

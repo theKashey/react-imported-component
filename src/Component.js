@@ -36,7 +36,8 @@ export class UnconnectedReactImportedComponent extends Component {
     super(props);
     this.state = this.pickPrecached() || {};
 
-    if (isNode && settings.SSR) {
+    if (isNode && settings.SSR &&
+      this.props.streamId) {
       useMark(this.props.streamId, this.props.loadable.mark);
       if (this.state.state !== STATE_DONE) {
         this.state.state = STATE_LOADING;
@@ -77,7 +78,10 @@ export class UnconnectedReactImportedComponent extends Component {
       this.loadingPromise = loadable.load();
       return this.loadingPromise.then((payload) => {
         if (this.mounted) {
-          this.setState({AsyncComponent: this.props.exportPicker(payload)});
+          this.setState({
+            AsyncComponent: this.props.exportPicker(payload),
+            state: STATE_DONE
+          });
         }
       });
     }
