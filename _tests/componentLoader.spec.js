@@ -29,38 +29,6 @@ describe('Async Component', () => {
       });
     });
 
-    it('should re-load component', (done) => {
-      const spy = sinon.spy();
-      const TargetComponent = ({payload}) => <div>{payload}</div>;
-      const Component = loader(() => {
-        spy();
-        return TargetComponent
-      }, {noAutoImport: true});
-      settings.hot = true;
-      const wrapper = mount(<Component payload={42}/>);
-      setImmediate(() => {
-        sinon.assert.calledOnce(spy);
-        wrapper.setProps({payload: 42});
-        setImmediate(() => {
-          sinon.assert.calledOnce(spy);
-          wrapper.setProps({payload: 43});
-          setImmediate(() => {
-            sinon.assert.calledOnce(spy);
-            wrapper.update();
-            const Hot = wrapper.find(UnconnectedReactImportedComponent).instance();
-            deepForceUpdate(Hot);
-            setImmediate(() => {
-              setImmediate(() => {
-                sinon.assert.calledTwice(spy);
-                settings.hot = false;
-                done();
-              });
-            });
-          });
-        });
-      });
-    });
-
     it('should pass props', (done) => {
       const TargetComponent = ({payload}) => <div>{payload}</div>;
       const LoadingComponent = () => <div>loading</div>;
@@ -89,7 +57,7 @@ describe('Async Component', () => {
     it('should provide the same API via React Component', (done) => {
       const TargetComponent = ({payload}) => <div>{payload}</div>;
       const importStatement = () => Promise.resolve(TargetComponent);
-      const wrapper = mount(<HotComponentLoader loadable={importStatement} payload={42}/>);
+      const wrapper = mount(<HotComponentLoader loadable={importStatement} forwardProps={{payload:42}}/>);
       expect(wrapper.find(TargetComponent)).to.be.not.present();
       setImmediate(() => {
         wrapper.update();
@@ -112,7 +80,7 @@ describe('Async Component', () => {
         const wrapper = mount(<HotComponentLoader
           loadable={loader}
           LoadingComponent={LoadingComponent}
-          payload={42}
+          forwardProps={{payload:42}}
         />);
         expect(wrapper.find(LoadingComponent)).not.to.be.present();
         expect(wrapper.find(TargetComponent)).to.be.present();
@@ -156,7 +124,7 @@ describe('Async Component', () => {
         loadable={loader}
         LoadingComponent={LoadingComponent}
         ErrorComponent={ErrorComponent}
-        payload={42}
+        forwardProps={{payload:42}}
       />);
       expect(wrapper.find(LoadingComponent)).to.be.present();
       expect(wrapper.find(TargetComponent)).to.be.not.present();
@@ -256,7 +224,6 @@ describe('Async Component', () => {
         </ErrorBoundary>
       );
       sinon.assert.calledOnce(spy);
-      console.log(spy);
       sinon.assert.calledWithMatch(spy, promise);
     });
   });

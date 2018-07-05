@@ -25,6 +25,14 @@ describe('SSR Component', () => {
   }
 
   describe('match', () => {
+
+    beforeEach(() => {
+      settings.SSR = true
+    });
+    afterEach(() => {
+      settings.SSR = true
+    });
+
     it('standard', () => {
       expect(importMatch(`() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true)`)).to.be.deep.equal(['mark1']);
     });
@@ -74,7 +82,7 @@ describe('SSR Component', () => {
 
       const HotComponent = imported(() => Promise.resolve(Component), {noAutoImport: true})
       return HotComponent.preload().then(() => {
-        const wrapper2 = mount(<div><HotComponent render={renderSpy1}/></div>);
+        const wrapper2 = mount(<div><HotComponent importedProps={{render:renderSpy1}}/></div>);
         expect(wrapper2).to.contain.text('loaded!');
         sinon.assert.calledWith(renderSpy1, Component);
         sinon.assert.calledOnce(renderSpy1);

@@ -15,7 +15,7 @@ import toLoadable from './loadable';
 const loader = (loaderFunction, options = {}) => {
   const loadable = toLoadable(loaderFunction, !options.noAutoImport)
 
-  const Imported = (props) => (
+  const Imported = ({importedProps={}, ...props}) => (
     <HotComponentLoader
       loadable={loadable}
       LoadingComponent={options.LoadingComponent}
@@ -24,7 +24,8 @@ const loader = (loaderFunction, options = {}) => {
       onError={options.onError}
       render={options.render}
       async={options.async}
-      {...props}
+      forwardProps={props || {}}
+      {...importedProps}
     />
   );
   Imported.preload = () => loadable.load().catch( () => {});

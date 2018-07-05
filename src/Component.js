@@ -18,7 +18,7 @@ const Fragment = React.Fragment ? React.Fragment : FragmentNode;
 
 export const settings = {
   hot: !!module.hot,
-  SSR: true
+  SSR: isNode
 };
 
 const getLoadable = importFunction => {
@@ -35,6 +35,8 @@ export class UnconnectedReactImportedComponent extends Component {
   constructor(props) {
     super(props);
     this.state = this.pickPrecached() || {};
+
+    getLoadable(this.props.loadable).load().catch( () => {});
 
     if (isNode && settings.SSR &&
       this.props.streamId) {
@@ -104,15 +106,6 @@ export class UnconnectedReactImportedComponent extends Component {
     });
   }
 
-  onHRM = () => {
-    if (settings.hot) {
-      setImmediate(() => {
-        this.props.loadable.reset();
-        this.remount()
-      });
-    }
-  };
-
   reload = () => {
     if (this.mounted) {
       this.setState({
@@ -122,28 +115,16 @@ export class UnconnectedReactImportedComponent extends Component {
     this.remount();
   };
 
-  fragmentedRender(payload) {
-    if (settings.hot) {
-      return (
-        <Fragment>
-          {payload}
-          <NotSoPureComponent onUpdate={this.onHRM}/>
-        </Fragment>
-      );
-    }
-    return payload;
-  }
-
   render() {
     const {AsyncComponent, state} = this.state;
     const {LoadingComponent, ErrorComponent} = this.props;
 
     if (this.props.render) {
-      return this.fragmentedRender(this.props.render(AsyncComponent, state, this.props))
+      return this.props.render(AsyncComponent, state, this.props.forwardProps)
     }
 
     if (AsyncComponent) {
-      return this.fragmentedRender(<AsyncComponent {...this.props} />)
+      return <AsyncComponent {...this.props.forwardProps} />
     }
 
     switch (state) {
@@ -152,11 +133,11 @@ export class UnconnectedReactImportedComponent extends Component {
           throw this.loadingPromise;
         }
         return LoadingComponent
-          ? React.Children.only(<LoadingComponent {...this.props} />)
+          ? React.Children.only(<LoadingComponent {...this.forwardProps} />)
           : null;
       case STATE_ERROR:
         return ErrorComponent
-          ? React.Children.only(<ErrorComponent retryImport={this.reload} error={this.state.error} {...this.props} />)
+          ? React.Children.only(<ErrorComponent retryImport={this.reload} error={this.state.error} {...this.forwardProps} />)
           : null;
       default:
         return null;
@@ -179,7 +160,8 @@ const BaseProps = {
   ssrMark: PropTypes.string,
   async: PropTypes.bool,
 
-  onError: PropTypes.func
+  onError: PropTypes.func,
+  forwardProps: PropTypes.shape(PropTypes.any),
 };
 
 UnconnectedReactImportedComponent.propTypes = {
