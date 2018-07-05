@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import isNode from 'detect-node';
 import {useMark} from './marks';
-import NotSoPureComponent from "./NotSoPureComponent";
 import toLoadable from "./loadable";
 import {UIDConsumer} from "./context";
 
