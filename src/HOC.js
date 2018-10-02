@@ -15,6 +15,7 @@ import toLoadable from './loadable';
 const loader = (loaderFunction, options = {}) => {
   const loadable = toLoadable(loaderFunction, !options.noAutoImport)
 
+  // eslint-disable-next-line
   const Imported = ({importedProps={}, ...props}) => (
     <HotComponentLoader
       loadable={loadable}

@@ -13,7 +13,6 @@ const FragmentNode = ({children}) => <div>{children}</div>;
 FragmentNode.propTypes = {
   children: PropTypes.any
 };
-const Fragment = React.Fragment ? React.Fragment : FragmentNode;
 
 export const settings = {
   hot: !!module.hot,
