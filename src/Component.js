@@ -37,8 +37,7 @@ export class UnconnectedReactImportedComponent extends Component {
 
     getLoadable(this.props.loadable).load().catch( () => {});
 
-    if (isNode && settings.SSR &&
-      this.props.streamId) {
+    if (isNode && settings.SSR && typeof this.props.streamId !== 'undefined') {
       useMark(this.props.streamId, this.props.loadable.mark);
       if (this.state.state !== STATE_DONE) {
         this.state.state = STATE_LOADING;

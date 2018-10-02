@@ -1,7 +1,7 @@
 import React from 'react';
 import chai, {expect} from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import {mount} from 'enzyme';
+import {mount, shallow} from 'enzyme';
 import sinon from 'sinon';
 import ReactDOM from "react-dom/server";
 import HotComponentLoader, {settings} from '../src/Component';
@@ -82,7 +82,7 @@ describe('SSR Component', () => {
 
       const HotComponent = imported(() => Promise.resolve(Component), {noAutoImport: true})
       return HotComponent.preload().then(() => {
-        const wrapper2 = mount(<div><HotComponent importedProps={{render:renderSpy1}}/></div>);
+        const wrapper2 = mount(<div><HotComponent importedProps={{render: renderSpy1}}/></div>);
         expect(wrapper2).to.contain.text('loaded!');
         sinon.assert.calledWith(renderSpy1, Component);
         sinon.assert.calledOnce(renderSpy1);
@@ -124,6 +124,42 @@ describe('SSR Component', () => {
   });
 
   describe('marks', () => {
+    it('SSR Marks without stream', (done) => {
+      expect(drainHydrateMarks()).to.have.length(0);
+      const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true);
+      // await loaders to load
+      setTimeout(() => {
+        expect(drainHydrateMarks()).to.have.length(0);
+        ReactDOM.renderToString(<HotComponentLoader loadable={loader1}/>);
+
+        expect(drainHydrateMarks()).to.be.deep.equal(['mark1']);
+        expect(drainHydrateMarks()).to.have.length(0);
+
+        done();
+      }, 32);
+    });
+
+    it('SSR Marks with stream', (done) => {
+      expect(drainHydrateMarks()).to.have.length(0);
+      const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true);
+      // await loaders to load
+      setTimeout(() => {
+        expect(drainHydrateMarks()).to.have.length(0);
+        let stream = 0;
+        ReactDOM.renderToString(
+          <ImportedStream takeUID={st => stream = st}>
+            <HotComponentLoader loadable={loader1}/>
+          </ImportedStream>
+        );
+
+        expect(stream).not.to.equal(0);
+        expect(drainHydrateMarks(stream)).to.be.deep.equal(['mark1']);
+        expect(drainHydrateMarks(stream)).to.have.length(0);
+
+        done();
+      }, 32);
+    });
+
     it('should generate marks', (done) => {
       expect(drainHydrateMarks()).to.have.length(0);
       const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true);

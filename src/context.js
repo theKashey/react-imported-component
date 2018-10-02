@@ -16,6 +16,9 @@ export class ImportedStream extends React.Component {
   constructor(props) {
     super(props);
     this.UID = UID++;
+    if (!this.props.takeUID) {
+      throw new Error('You have to provide takeUID prop to ImportedStream');
+    }
     this.props.takeUID(this.UID);
   }
 
