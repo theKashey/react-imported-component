@@ -1,7 +1,8 @@
 import React from 'react';
 import chai, {expect} from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import {mount, shallow} from 'enzyme';
+import Enzyme, {mount} from 'enzyme';
+import Adapter from "enzyme-adapter-react-16";
 import sinon from 'sinon';
 import ReactDOM from "react-dom/server";
 import HotComponentLoader, {settings} from '../src/Component';
@@ -10,8 +11,6 @@ import {drainHydrateMarks, rehydrateMarks} from '../src/marks';
 import imported from '../src/HOC';
 
 import {importMatch} from "../src/loadable";
-import Adapter from "./ReactSixteenAdapter";
-import Enzyme from "enzyme/build/index";
 import {ImportedStream} from "../src/context";
 
 Enzyme.configure({adapter: new Adapter()});
