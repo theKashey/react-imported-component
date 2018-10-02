@@ -6,7 +6,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import sinon from 'sinon';
 import TestRenderer from 'react-test-renderer';
 import loader from '../src/HOC';
-import HotComponentLoader, {settings, UnconnectedReactImportedComponent} from '../src/Component';
+import HotComponentLoader from '../src/Component';
 import toLoadable from '../src/loadable';
 
 Enzyme.configure({adapter: new Adapter()});

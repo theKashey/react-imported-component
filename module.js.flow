@@ -18,8 +18,9 @@ type ComponentOptions<P, K> = {
   onError?: (a: any) => any,
   render?:ComponentRenderOption<P,K>,
   async?: boolean
+  forwardProps?: P;
+  forwardRef?: React.Ref<P>;
 };
-
 
 interface ImportedComponents {
   [index: number]: () => Promise<DefaultComponent<any>>

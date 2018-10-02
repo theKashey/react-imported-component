@@ -121,7 +121,7 @@ export class UnconnectedReactImportedComponent extends Component {
     }
 
     if (AsyncComponent) {
-      return <AsyncComponent {...this.props.forwardProps} />
+      return <AsyncComponent {...this.props.forwardProps} ref={this.props.forwardRef}/>
     }
 
     switch (state) {
@@ -159,6 +159,7 @@ const BaseProps = {
 
   onError: PropTypes.func,
   forwardProps: PropTypes.shape(PropTypes.any),
+  forwardRef: PropTypes.func,
 };
 
 UnconnectedReactImportedComponent.propTypes = {

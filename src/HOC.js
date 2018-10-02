@@ -13,10 +13,10 @@ import toLoadable from './loadable';
  * @param {Function} [options.async] - enable React 16+ suspense.
  */
 const loader = (loaderFunction, options = {}) => {
-  const loadable = toLoadable(loaderFunction, !options.noAutoImport)
+  const loadable = toLoadable(loaderFunction, !options.noAutoImport);
 
   // eslint-disable-next-line
-  const Imported = ({importedProps={}, ...props}) => (
+  const ImportedComponent = ({importedProps = {}, ...props}) => (
     <HotComponentLoader
       loadable={loadable}
       LoadingComponent={options.LoadingComponent}
@@ -29,7 +29,18 @@ const loader = (loaderFunction, options = {}) => {
       {...importedProps}
     />
   );
-  Imported.preload = () => loadable.load().catch( () => {});
+
+  const Imported = React.forwardRef
+    ? React.forwardRef(
+      ({importedProps = {}, ...props}, ref) => (
+        <ImportedComponent
+          {...props}
+          importedProps={{...importedProps, forwardRef: ref}}
+        />
+      ))
+    : ImportedComponent;
+
+  Imported.preload = () => loadable.load().catch(() => ({}));
 
   return Imported;
 };
