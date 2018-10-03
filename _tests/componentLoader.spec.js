@@ -70,8 +70,9 @@ describe('Async Component', () => {
       const wrapper = mount(<HotComponentLoader loadable={importStatement} forwardProps={{payload:42}}/>);
       expect(wrapper.find(TargetComponent)).to.be.not.present();
       setImmediate(() => {
-        console.log(ref);
-        expect(ref.current).not.to.be(null);
+        wrapper.update();
+        expect(wrapper.find(TargetComponent)).to.be.present();
+        expect(wrapper.find(TargetComponent)).to.contain.text('42');
         done();
       });
     });
