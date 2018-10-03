@@ -1,6 +1,6 @@
 {
   "name": "react-imported-component",
-  "version": "4.6.2",
+  "version": "5.0.0",
   "description": "I will import your component, and help to handle it",
   "main": "dist/index.js",
   "types": "module.d.ts",
