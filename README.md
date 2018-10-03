@@ -30,6 +30,8 @@ Easy, universal, and could provide top results without any extra configuration.
  
 Key features:
  - 🔥 Hot-Module-Replacement friendly.
+ - ⛓️ support forwardRef.
+ - 💡 TS, Flow, Rect 16/Async ready.
  - 🌟 Async on client, sync on server.
  - 📦 could handle any bunder, and could load all the used async chunks in one "wave".
  - ✂️ could work with any import statement, passed from anywhere 

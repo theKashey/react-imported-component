@@ -47,7 +47,7 @@ const getImportString = (pattern, selected) => str => (
   getMatchString(pattern, selected)(str)
     .map(statement => {
       return {
-        name: trimImport(getImports(statement+')')[0]),
+        name: trimImport(getImports(statement+')')[0] || ''),
         comment: getComment(statement)[0] || '',
       }
     })

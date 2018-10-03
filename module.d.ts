@@ -1,5 +1,5 @@
 declare module 'react-imported-component' {
-  import {StatelessComponent, ComponentType, ReactNode, Component} from "react";
+  import {StatelessComponent, ComponentType, ReactNode, Component, Ref} from "react";
 
   interface DefaultImportedComponent<P> {
     default: ComponentType<P>;
@@ -18,6 +18,8 @@ declare module 'react-imported-component' {
     onError?: (a: any) => any,
     render?: ComponentRenderOption<RenderComponent, K>
     async?: boolean;
+    forwardProps?: P;
+    forwardRef?: Ref<P>;
   }
 
   interface HOC {

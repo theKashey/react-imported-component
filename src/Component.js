@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import isNode from 'detect-node';
 import {useMark} from './marks';
-import NotSoPureComponent from "./NotSoPureComponent";
 import toLoadable from "./loadable";
 import {UIDConsumer} from "./context";
 
@@ -14,11 +13,10 @@ const FragmentNode = ({children}) => <div>{children}</div>;
 FragmentNode.propTypes = {
   children: PropTypes.any
 };
-const Fragment = React.Fragment ? React.Fragment : FragmentNode;
 
 export const settings = {
   hot: !!module.hot,
-  SSR: true
+  SSR: isNode
 };
 
 const getLoadable = importFunction => {
@@ -36,8 +34,9 @@ export class UnconnectedReactImportedComponent extends Component {
     super(props);
     this.state = this.pickPrecached() || {};
 
-    if (isNode && settings.SSR &&
-      this.props.streamId) {
+    getLoadable(this.props.loadable).load().catch( () => {});
+
+    if (isNode && settings.SSR && typeof this.props.streamId !== 'undefined') {
       useMark(this.props.streamId, this.props.loadable.mark);
       if (this.state.state !== STATE_DONE) {
         this.state.state = STATE_LOADING;
@@ -104,15 +103,6 @@ export class UnconnectedReactImportedComponent extends Component {
     });
   }
 
-  onHRM = () => {
-    if (settings.hot) {
-      setImmediate(() => {
-        this.props.loadable.reset();
-        this.remount()
-      });
-    }
-  };
-
   reload = () => {
     if (this.mounted) {
       this.setState({
@@ -122,28 +112,16 @@ export class UnconnectedReactImportedComponent extends Component {
     this.remount();
   };
 
-  fragmentedRender(payload) {
-    if (settings.hot) {
-      return (
-        <Fragment>
-          {payload}
-          <NotSoPureComponent onUpdate={this.onHRM}/>
-        </Fragment>
-      );
-    }
-    return payload;
-  }
-
   render() {
     const {AsyncComponent, state} = this.state;
     const {LoadingComponent, ErrorComponent} = this.props;
 
     if (this.props.render) {
-      return this.fragmentedRender(this.props.render(AsyncComponent, state, this.props))
+      return this.props.render(AsyncComponent, state, this.props.forwardProps)
     }
 
     if (AsyncComponent) {
-      return this.fragmentedRender(<AsyncComponent {...this.props} />)
+      return <AsyncComponent {...this.props.forwardProps} ref={this.props.forwardRef}/>
     }
 
     switch (state) {
@@ -152,11 +130,11 @@ export class UnconnectedReactImportedComponent extends Component {
           throw this.loadingPromise;
         }
         return LoadingComponent
-          ? React.Children.only(<LoadingComponent {...this.props} />)
+          ? React.Children.only(<LoadingComponent {...this.forwardProps} />)
           : null;
       case STATE_ERROR:
         return ErrorComponent
-          ? React.Children.only(<ErrorComponent retryImport={this.reload} error={this.state.error} {...this.props} />)
+          ? React.Children.only(<ErrorComponent retryImport={this.reload} error={this.state.error} {...this.forwardProps} />)
           : null;
       default:
         return null;
@@ -179,7 +157,9 @@ const BaseProps = {
   ssrMark: PropTypes.string,
   async: PropTypes.bool,
 
-  onError: PropTypes.func
+  onError: PropTypes.func,
+  forwardProps: PropTypes.shape(PropTypes.any),
+  forwardRef: PropTypes.func,
 };
 
 UnconnectedReactImportedComponent.propTypes = {
