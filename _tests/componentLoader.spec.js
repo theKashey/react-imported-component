@@ -50,6 +50,17 @@ describe('Async Component', () => {
         done();
       });
     });
+
+    it('forwardRef', (done) => {
+      const TargetComponent = React.forwardRef(({payload}, ref) => <div ref={ref}>{payload}</div>);
+      const Component = loader(() => TargetComponent);
+      const ref = React.createRef();
+      mount(<Component payload={42} ref={ref}/>);
+      setImmediate(() => {
+        expect(ref.current).not.to.equal(null);
+        done();
+      });
+    });
   });
 
   describe('Component API', () => {
@@ -59,9 +70,23 @@ describe('Async Component', () => {
       const wrapper = mount(<HotComponentLoader loadable={importStatement} forwardProps={{payload:42}}/>);
       expect(wrapper.find(TargetComponent)).to.be.not.present();
       setImmediate(() => {
-        wrapper.update();
-        expect(wrapper.find(TargetComponent)).to.be.present();
-        expect(wrapper.find(TargetComponent)).to.contain.text('42');
+        console.log(ref);
+        expect(ref.current).not.to.be(null);
+        done();
+      });
+    });
+
+    it('forwardRef', (done) => {
+      class TargetClass extends React.Component {
+        render() {
+          return <div>42</div>
+        }
+      }
+      const ref = React.createRef();
+      const importStatement = () => Promise.resolve(TargetClass);
+      mount(<HotComponentLoader loadable={importStatement} forwardProps={{payload: 42}} forwardRef={ref}/>);
+      setImmediate(() => {
+        expect(ref.current.constructor.name).to.equal('TargetClass');
         done();
       });
     });
@@ -79,7 +104,7 @@ describe('Async Component', () => {
         const wrapper = mount(<HotComponentLoader
           loadable={loader}
           LoadingComponent={LoadingComponent}
-          forwardProps={{payload:42}}
+          forwardProps={{payload: 42}}
         />);
         expect(wrapper.find(LoadingComponent)).not.to.be.present();
         expect(wrapper.find(TargetComponent)).to.be.present();
@@ -123,7 +148,7 @@ describe('Async Component', () => {
         loadable={loader}
         LoadingComponent={LoadingComponent}
         ErrorComponent={ErrorComponent}
-        forwardProps={{payload:42}}
+        forwardProps={{payload: 42}}
       />);
       expect(wrapper.find(LoadingComponent)).to.be.present();
       expect(wrapper.find(TargetComponent)).to.be.not.present();
