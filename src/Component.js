@@ -130,11 +130,11 @@ export class UnconnectedReactImportedComponent extends Component {
           throw this.loadingPromise;
         }
         return LoadingComponent
-          ? React.Children.only(<LoadingComponent {...this.forwardProps} />)
+          ? React.Children.only(<LoadingComponent {...this.props.forwardProps} />)
           : null;
       case STATE_ERROR:
         return ErrorComponent
-          ? React.Children.only(<ErrorComponent retryImport={this.reload} error={this.state.error} {...this.forwardProps} />)
+          ? React.Children.only(<ErrorComponent retryImport={this.reload} error={this.state.error} {...this.props.forwardProps} />)
           : null;
       default:
         return null;
@@ -158,7 +158,7 @@ const BaseProps = {
   async: PropTypes.bool,
 
   onError: PropTypes.func,
-  forwardProps: PropTypes.shape(PropTypes.any),
+  forwardProps: PropTypes.object,
   forwardRef: PropTypes.func,
 };
 
