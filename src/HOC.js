@@ -45,4 +45,6 @@ const loader = (loaderFunction, options = {}) => {
   return Imported;
 };
 
+export const lazy = loaderFunction => loader(loaderFunction, { async: true });
+
 export default loader;

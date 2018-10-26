@@ -1,4 +1,4 @@
-import deferred from './HOC';
+import imported, {lazy}  from './HOC';
 import {drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks} from './marks';
 import loadableResource, {done as whenComponentsReady, dryRender, assignImportedComponents} from './loadable';
 import ComponentLoader, {settings} from './Component';
@@ -18,6 +18,8 @@ export {
   loadableResource,
 
   ImportedStream,
-  setConfiguration
+  setConfiguration,
+
+  lazy
 }
-export default deferred;
+export default imported;

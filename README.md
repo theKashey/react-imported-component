@@ -32,7 +32,7 @@ Key features:
  - 🔥 Hot-Module-Replacement friendly.
  - ⛓️ support forwardRef.
  - 💡 TS, Flow, Rect 16/Async ready.
- - 🌟 Async on client, sync on server.
+ - 🌟 Async on client, sync on server. Supports Suspense.
  - 📦 could handle any bunder, and could load all the used async chunks in one "wave".
  - ✂️ could work with any import statement, passed from anywhere 
  - 🛠 HOC and Component API.
@@ -53,8 +53,16 @@ Component.preload();
 
 // render it
 <Component... />
-```
 
+//
+import {lazy} from 'react-imported-component'
+const Component = lazy( () => import('./Component'));
+
+<Suspense>
+ <Component />
+</Suspense> 
+```
+Example: [React.lazy vs Imported-component](https://codesandbox.io/s/wkl95r0qw8)
 ## API
 
 ### Code splitting components
@@ -69,6 +77,8 @@ Component.preload();
   - options.async - activates react suspense support.
   
 - importedComponent`.preload` - static method to preload components.
+
+- `lazy` - helper to mimic __React.lazy__ behavior, just _importedComponent_(fn, { async: true }).
 
 - `ComponentLoader`, the React Component variant of importedComponent. accepts `importFunction` as a `loadable` prop.
 
@@ -280,6 +290,10 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
 
 
 ## Comparison
+* React.lazy
+  * The same API, and the same behavior (as imported `lazy` helper).
+  * No SSR(yet), no preload, no control
+  
 * [react-loadable](https://github.com/thejameskyle/react-loadable)
   * The most popular one. Most tested one as a most used one.  
   * Loader: hybrid (import/require), could handle sets of imports("maps").
@@ -301,6 +315,7 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
   * Front-end: RHL-friendly. (by forced preloading)
   * SSR: semi-async(walkTree), __no wave reduction__, sees only currently loaded chunks.
   * Simple HOC based API
+  * Support Suspense
 
 * [react-universal-component](https://github.com/faceyspacey/react-universal-component)
   * The most "webpack" one. Comprehensive solution, able to solve any case.
@@ -315,6 +330,7 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
   * Front-end: RHL-friendly.
   * SSR: semi-async(preload), bundler-independent, Sees __all used chunks__.
   * Component/HOC API, SSR could require additional pass (extract imports), or will lost wave reduction.
+  * Support Suspense
 
 > Note 1: "RHL friendly" means that "loader" works with React-Hot-Loader out of the box.
 In other case you will have to wrap async chunk's export with `hot` function, provided by Hot-Loader.
