@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import chai, {expect} from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import Enzyme, {mount} from 'enzyme';
@@ -240,16 +240,15 @@ describe('Async Component', () => {
       const promise = Promise.resolve(() => <div>42</div>);
       const loader = toLoadable(() => promise);
 
-      const testRenderer = TestRenderer.create(
-        <ErrorBoundary>
+      TestRenderer.create(
+        <Suspense fallback="not loaded">
           <HotComponentLoader
             loadable={loader}
             async
           />
-        </ErrorBoundary>
+        </Suspense>
       );
-      sinon.assert.calledOnce(spy);
-      sinon.assert.calledWithMatch(spy, promise);
+
     });
   });
 });
