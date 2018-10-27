@@ -116,6 +116,10 @@ export class UnconnectedReactImportedComponent extends Component {
     const {AsyncComponent, state} = this.state;
     const {LoadingComponent, ErrorComponent} = this.props;
 
+    if(state === STATE_LOADING && this.props.async) {
+      throw this.loadingPromise;
+    }
+
     if (this.props.render) {
       return this.props.render(AsyncComponent, state, this.props.forwardProps)
     }
@@ -126,9 +130,6 @@ export class UnconnectedReactImportedComponent extends Component {
 
     switch (state) {
       case STATE_LOADING:
-        if (this.props.async) {
-          throw this.loadingPromise;
-        }
         return LoadingComponent
           ? React.Children.only(<LoadingComponent {...this.props.forwardProps} />)
           : null;
