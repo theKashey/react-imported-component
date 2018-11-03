@@ -43,12 +43,18 @@ const getMatchString = (pattern, selected) => str => (
 const getImports = getMatchString(`(['"]?[\\w-/.]+['"]?)\\)`, 1);
 const getComment = getMatchString(/\/\*.*\*\//, 0);
 
+const clearComment = str => (
+  str
+    .replace("webpackPrefetch: true", '')
+    .replace("webpackPreload: true", '')
+);
+
 const getImportString = (pattern, selected) => str => (
   getMatchString(pattern, selected)(str)
     .map(statement => {
       return {
-        name: trimImport(getImports(statement+')')[0] || ''),
-        comment: getComment(statement)[0] || '',
+        name: trimImport(getImports(statement + ')')[0] || ''),
+        comment: clearComment(getComment(statement)[0] || ''),
       }
     })
 );

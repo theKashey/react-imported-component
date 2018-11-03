@@ -38,4 +38,16 @@ describe('scanForImports', () => {
     console.log(imports);
   })
 
+  it('should remove webpackPrefetch and webpackPreload', () => {
+    const imports = {};
+    remapImports(
+      [{file: 'a', content: 'blabla;import(/* webpackPrefetch: true *//* webpack: "123" */"./a.js"); blabla; import(/* webpackPreload: true */ \'./b.js\');'}],
+      '.', '.',
+      (a, b) => a + b,
+      imports
+    );
+    console.log(imports);
+  })
+
+
 })
