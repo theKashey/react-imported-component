@@ -21,6 +21,7 @@ const toLoadable = (importFunction, autoImport = true) => {
     mark,
     done: false,
     ok: false,
+    error: null,
     payload: undefined,
     promise: undefined,
 
@@ -38,6 +39,7 @@ const toLoadable = (importFunction, autoImport = true) => {
             this.done = true;
             this.ok = true;
             this.payload = payload;
+            this.error = null;
             removeFromPending(promise);
             return payload;
           }, (err) => {

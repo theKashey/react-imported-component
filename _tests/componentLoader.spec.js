@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, {Suspense} from 'react';
 import chai, {expect} from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import Enzyme, {mount} from 'enzyme';
@@ -13,6 +13,20 @@ Enzyme.configure({adapter: new Adapter()});
 chai.use(chaiEnzyme());
 
 describe('Async Component', () => {
+
+  class ErrorBoundary extends React.Component {
+    state = {error: 0};
+
+    componentDidCatch() {
+      this.setState({error: 1});
+      this.props.spy();
+    }
+
+    render() {
+      return this.state.error ? "error" : this.props.children;
+    }
+  }
+
   describe('loader', () => {
     it('should load component', (done) => {
       const TargetComponent = ({payload}) => <div>{payload}</div>;
@@ -67,7 +81,7 @@ describe('Async Component', () => {
     it('should provide the same API via React Component', (done) => {
       const TargetComponent = ({payload}) => <div>{payload}</div>;
       const importStatement = () => Promise.resolve(TargetComponent);
-      const wrapper = mount(<HotComponentLoader loadable={importStatement} forwardProps={{payload:42}}/>);
+      const wrapper = mount(<HotComponentLoader loadable={importStatement} forwardProps={{payload: 42}}/>);
       expect(wrapper.find(TargetComponent)).to.be.not.present();
       setImmediate(() => {
         wrapper.update();
@@ -83,6 +97,7 @@ describe('Async Component', () => {
           return <div>42</div>
         }
       }
+
       const ref = React.createRef();
       const importStatement = () => Promise.resolve(TargetClass);
       mount(<HotComponentLoader loadable={importStatement} forwardProps={{payload: 42}} forwardRef={ref}/>);
@@ -167,16 +182,43 @@ describe('Async Component', () => {
       const ErrorComponent = () => <div>error</div>;
       const loader = toLoadable(() => Promise.reject('component error'));
       const onException = sinon.stub();
+      const spy = sinon.stub();
       process.on('unhandledRejection', onException);
 
-      const wrapper = mount(<HotComponentLoader
-        loadable={loader}
-        ErrorComponent={ErrorComponent}
-      />);
+      const wrapper = mount(
+        <ErrorBoundary spy={spy}>
+          <HotComponentLoader
+            loadable={loader}
+            ErrorComponent={ErrorComponent}
+          />
+        </ErrorBoundary>
+      );
       setImmediate(() => {
         wrapper.update();
         expect(wrapper.find(ErrorComponent)).to.be.present();
+        sinon.assert.notCalled(spy);
         sinon.assert.calledWith(onException, 'component error');
+        process.removeListener('unhandledRejection', onException);
+        done();
+      });
+    });
+
+    it('component error state without Error component', (done) => {
+      const loader = toLoadable(() => Promise.reject('component error'));
+      const onException = sinon.stub();
+      const spy = sinon.stub();
+      process.on('unhandledRejection', onException);
+
+      const wrapper = mount(
+        <ErrorBoundary spy={spy}>
+          <HotComponentLoader
+            loadable={loader}
+          />
+        </ErrorBoundary>
+      );
+      setImmediate(() => {
+        wrapper.update();
+        sinon.assert.calledOnce(spy);
         process.removeListener('unhandledRejection', onException);
         done();
       });

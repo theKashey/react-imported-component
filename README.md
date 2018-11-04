@@ -85,10 +85,11 @@ Example: [React.lazy vs Imported-component](https://codesandbox.io/s/wkl95r0qw8)
 ### Server side API
 - `printDrainHydrateMarks()`, print our the `drainHydrateMarks`.
 - `drainHydrateMarks()`, returns the currently used marks, and clears the list.
+- `whenComponentsReady():Promise`, will be resolved, when all components are loaded. Usually on the next "Promise" tick.
 
 ### Client side API
 - `rehydrateMarks():Promise`, loads _marked_ async chunks.
-- `whenComponentsReady():Promise`, will be resolved, when all marks loaded.
+- `whenComponentsReady():Promise`, will be resolved, when all marks are loaded.
 - `dryRender(renderFunction):Promise`, perform sandboxed render, and resolves "whenComponentsReady".
    
     

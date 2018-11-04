@@ -34,7 +34,8 @@ export class UnconnectedReactImportedComponent extends Component {
     super(props);
     this.state = this.pickPrecached() || {};
 
-    getLoadable(this.props.loadable).load().catch( () => {});
+    getLoadable(this.props.loadable).load().catch(() => {
+    });
 
     if (isNode && settings.SSR && typeof this.props.streamId !== 'undefined') {
       useMark(this.props.streamId, this.props.loadable.mark);
@@ -62,7 +63,8 @@ export class UnconnectedReactImportedComponent extends Component {
     if (loadable.done) {
       return {
         AsyncComponent: this.props.exportPicker(loadable.payload),
-        state: loadable.ok ? STATE_DONE : STATE_ERROR
+        state: loadable.ok ? STATE_DONE : STATE_ERROR,
+        error: loadable.error,
       };
     }
     return null;
@@ -88,17 +90,20 @@ export class UnconnectedReactImportedComponent extends Component {
 
   remount() {
     this.loadAsyncComponent().catch(err => {
-      /* eslint-disable */
-      console.error('[React-imported-component]', err);
-      /* eslint-enable */
-      this.setState({
-        state: STATE_ERROR,
-        error: err
-      });
-      if (this.props.onError) {
-        this.props.onError(err);
-      } else {
-        throw err;
+      if (this.mounted) {
+        /* eslint-disable */
+        console.error('[React-imported-component]', err);
+        /* eslint-enable */
+        this.setState({
+          state: STATE_ERROR,
+          error: err
+        });
+
+        if (this.props.onError) {
+          this.props.onError(err);
+        } else {
+          throw err;
+        }
       }
     });
   }
@@ -116,7 +121,7 @@ export class UnconnectedReactImportedComponent extends Component {
     const {AsyncComponent, state} = this.state;
     const {LoadingComponent, ErrorComponent} = this.props;
 
-    if(state === STATE_LOADING && this.props.async) {
+    if (state === STATE_LOADING && this.props.async) {
       throw this.loadingPromise;
     }
 
@@ -134,9 +139,14 @@ export class UnconnectedReactImportedComponent extends Component {
           ? React.Children.only(<LoadingComponent {...this.props.forwardProps} />)
           : null;
       case STATE_ERROR:
-        return ErrorComponent
-          ? React.Children.only(<ErrorComponent retryImport={this.reload} error={this.state.error} {...this.props.forwardProps} />)
-          : null;
+        if (ErrorComponent) {
+          return React.Children.only(<ErrorComponent
+            retryImport={this.reload}
+            error={this.state.error}
+            {...this.props.forwardProps}
+          />)
+        }
+        throw this.state.error;
       default:
         return null;
     }
