@@ -70,11 +70,12 @@ Example: [React.lazy vs Imported-component](https://codesandbox.io/s/wkl95r0qw8)
   - importFunction - function which resolves with Component to be imported.
   - options - optional settings
   - options.LoadingComponent - component to be shown in Loading state
-  - options.ErrorComponent - component to be shown in Error state
+  - options.async - activates react suspense support. Will throw a Promise in a Loading State.
+  - options.ErrorComponent - component to be shown in Error state. Will re-throw error if ErrorComponent is not set. 
+  Use ErrorBoundary to catch it.  
   - options.onError - function to consume the error, if one will thrown. Will rethrow a real error if not set.
   - options.exportPicker - function to pick `not default` export from a `importFunction`
-  - options.render(Component, state, props) - function to render the result. Could be used to tune the rendering.
-  - options.async - activates react suspense support.
+  - options.render(Component, state, props) - function to render the result. Could be used to tune the rendering.  
   
 - importedComponent`.preload` - static method to preload components.
 
