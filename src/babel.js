@@ -1,6 +1,14 @@
-import syntax from 'babel-plugin-syntax-dynamic-import'
 import {resolve, relative, dirname} from 'path';
 import {encipherImport} from './utils';
+
+// Babel v7 compat
+let syntax
+try {
+  syntax = require('babel-plugin-syntax-dynamic-import');
+} catch (err) {
+  syntax = require('@babel/plugin-syntax-dynamic-import');
+}
+syntax = syntax.default || syntax
 
 const resolveImport = (importName, file) => {
   if (importName.charAt(0) === '.') {
