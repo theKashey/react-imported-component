@@ -1,7 +1,12 @@
-import 'babel-polyfill';
 import scanDirectory from 'scan-directory';
 import {extname, resolve, relative, dirname, join, sep} from 'path';
 import {readFile, writeFile} from 'fs';
+
+try {
+  require('babel-polyfill');
+} catch (err) {
+  require('@babel/polyfill');
+}
 
 /* eslint-disable no-console */
 
