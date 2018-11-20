@@ -46,6 +46,9 @@ export default function ({types: t, template}) {
               const localFile = file.opts.filename;
               const newImport = parentPath.node;
               const importName = parentPath.get('arguments')[0].node.value;
+              if (!importName) {
+                return;
+              }
               const requiredFile = encipherImport(resolveImport(importName, localFile));
 
               let replace = null;
