@@ -5,7 +5,11 @@ import {readFile, writeFile} from 'fs';
 try {
   require('babel-polyfill');
 } catch (err) {
-  require('@babel/polyfill');
+  try {
+    require('@babel/polyfill');
+  } catch (e) {
+    throw Error('react-imported-component: scanImports is requiring babel-polyfill, or @babel/polyfill to work. Please add this dependency.')
+  }
 }
 
 /* eslint-disable no-console */

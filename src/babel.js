@@ -6,7 +6,11 @@ let syntax
 try {
   syntax = require('babel-plugin-syntax-dynamic-import');
 } catch (err) {
-  syntax = require('@babel/plugin-syntax-dynamic-import');
+  try {
+    syntax = require('@babel/plugin-syntax-dynamic-import');
+  } catch (e) {
+    throw new Error('react-imported-component babel plugin is requiring `babel-plugin-syntax-dynamic-import` or `@babel/plugin-syntax-dynamic-import` to work. Please add this dependency.')
+  }
 }
 syntax = syntax.default || syntax
 
