@@ -252,11 +252,27 @@ You need one more component, to separate components my "rendering streams".
 ```js
 import {ImportedStream, drainHydrateMarks} from 'react-imported-component';
 
-let streamUID = 0;
-const html = renderToString(
-  <ImportedStream takeUID={uid => streamUID=uid}>
-    <YourApp />
-  </ImportedStream>) + printDrainHydrateMarks(streamUID);
+// assuming res === express response
+function renderApplication(res) {
+    let streamUID = 0;
+    // ImportedStream is a async rendering "provider"
+    const stream = renderToStream(
+      <ImportedStream takeUID={uid => streamUID=uid}>
+        <YourApp />
+      </ImportedStream>);
+    
+    // you'd then pipe the stream into the response object until it's done
+    stream.pipe(
+      res,
+      { end: false },
+    )
+    
+    // and finalize the response with closing HTML
+    stream.on('end', () =>
+      // print marks used in the file
+      res.end(`${printDrainHydrateMarks(streamUID)}</body></html>`),
+    )
+}
 ``` 
 Use `ImportedStream` to bound all imported component to one "streamId", and then - get used components.
 Without `ImportedStream` streamId will be just 0 for all renders. With `ImportedStream` - it is a counter.
