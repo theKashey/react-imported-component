@@ -34,10 +34,12 @@ export class UnconnectedReactImportedComponent extends Component {
     super(props);
     this.state = this.pickPrecached() || {};
 
-    getLoadable(this.props.loadable).load().catch(() => ({}));
+    const loadable = getLoadable(this.props.loadable);
+    loadable.load().catch(() => ({}));
+    this.state.mark = loadable.mark;
 
     if (isNode && settings.SSR && typeof this.props.streamId !== 'undefined') {
-      useMark(this.props.streamId, this.props.loadable.mark);
+      useMark(this.props.streamId, loadable.mark);
       if (this.state.state !== STATE_DONE) {
         this.state.state = STATE_LOADING;
         this.reload();
@@ -47,7 +49,7 @@ export class UnconnectedReactImportedComponent extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    useMark(this.props.streamId, this.props.loadable.mark);
+    useMark(this.props.streamId, this.state.mark);
     if (this.state.state !== STATE_DONE) {
       this.reload();
     }
@@ -60,7 +62,7 @@ export class UnconnectedReactImportedComponent extends Component {
   componentDidUpdate(oldProps) {
     // this.props.loadable would change only on HRM (or direct component usage)
     // just load it, do not use result
-    if (oldProps.loadable!==this.props.loadable) {
+    if (oldProps.loadable !== this.props.loadable) {
       getLoadable(this.props.loadable).load().catch(() => ({}));
     }
   }
