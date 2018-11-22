@@ -2,8 +2,9 @@
 import {hot, setConfig} from 'react-hot-loader'
 import * as React from 'react'
 import Counter from './Counter'
-import imported, {ComponentLoader} from 'react-imported-component'
+import imported, {ComponentLoader, printDrainHydrateMarks} from 'react-imported-component'
 import Portal from './Portal'
+import Indirect from './indirectUsage';
 
 imported(() => import(/* webpackChunkName: "namedChunk-1" */'./DeferredRender'), {
   async: true
@@ -23,10 +24,13 @@ const App = () => (
     <p>A1: <Async/></p>
     <p>A2: <Async2/></p>
     <p>P: <Portal/></p>
+    <Indirect/>
     {Date.now() < 0 && <ShouldNotBeImported/>}
   </h1>
 )
 
 setConfig({logLevel: 'debug'})
+
+setTimeout(() => console.log('marks', printDrainHydrateMarks()), 1000);
 
 export default hot(module)(App)

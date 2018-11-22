@@ -7,6 +7,7 @@
     "react-hot-loader/babel",
     "transform-class-properties",
     "syntax-dynamic-import",
+    "react-imported-component/babel"
 //    "dynamic-import-node"
   ]
 }
