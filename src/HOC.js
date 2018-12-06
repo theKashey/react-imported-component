@@ -40,11 +40,15 @@ const loader = (loaderFunction, options = {}) => {
       ))
     : ImportedComponent;
 
-  Imported.preload = () => loadable.load().catch(() => ({}));
+  Imported.preload = () => {
+    loadable.load().catch(() => ({}));
+    return loadable.resolution;
+  };
+  Imported.done = loadable.resolution;
 
   return Imported;
 };
 
-export const lazy = loaderFunction => loader(loaderFunction, { async: true });
+export const lazy = loaderFunction => loader(loaderFunction, {async: true});
 
 export default loader;

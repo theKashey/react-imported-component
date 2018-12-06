@@ -9,16 +9,22 @@ const trimImport = str => str.replace(/['"]/g, '');
 
 export const importMatch = functionString => {
   const markMatches = functionString.match(/\(['"]imported-component['"],\s['"](.*),/g) || [];
-  return markMatches.map( match => trimImport(match.match(/\(['"]imported-component['"],\s['"]([^'"]*)['"],/i)[1]));
+  return markMatches.map(match => trimImport(match.match(/\(['"]imported-component['"],\s['"]([^'"]*)['"],/i)[1]));
 }
 
 const toLoadable = (importFunction, autoImport = true) => {
   const _load = () => Promise.resolve().then(importFunction);
   const mark = importMatch(importFunction.toString());
 
+  let resolveResolution;
+  const resolution = new Promise(r => {
+    resolveResolution = r;
+  });
+
   const loadable = {
     importFunction,
     mark,
+    resolution,
     done: false,
     ok: false,
     error: null,
@@ -41,6 +47,7 @@ const toLoadable = (importFunction, autoImport = true) => {
             this.payload = payload;
             this.error = null;
             removeFromPending(promise);
+            resolveResolution(payload);
             return payload;
           }, (err) => {
             this.done = true;

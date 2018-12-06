@@ -49,7 +49,7 @@ const Component = importedComponent( () => import('./Component'), {
   ErrorComponent: FatalError
 });
 
-Component.preload();
+Component.preload(); // force preload
 
 // render it
 <Component... />
@@ -79,7 +79,7 @@ Example: [React.lazy vs Imported-component](https://codesandbox.io/s/wkl95r0qw8)
   
 - importedComponent`.preload` - static method to preload components.
 
-- `lazy` - helper to mimic __React.lazy__ behavior, just _importedComponent_(fn, { async: true }).
+- `lazy` - helper to mimic __React.lazy__ behavior (it is just `_importedComponent_(fn, { async: true })`).
 
 - `ComponentLoader`, the React Component variant of importedComponent. accepts `importFunction` as a `loadable` prop.
 
@@ -306,6 +306,26 @@ resolve the promise.
 It is super-not-fast, and you will literally re-render everything twice, but it works 
 (almost the same approach as react-async-component has).
 
+### Works better in pair
+You might not need to wait for all the chunks to be loaded before you can render you app - 
+just use [react-prerendered-component](https://github.com/theKashey/react-prerendered-component).
+```js
+import imported from 'react-imported-component';
+import {PrerenderedComponent} from "react-prerendered-component";
+
+const AsyncComponent = imported(() => import('./myComponent.js'));
+
+<PrerenderedComponent
+  // component will "go live" when chunk loading would be done
+  live={AsyncComponent.preload()}
+>
+  // until component is not "live" prerendered HTML code would be used
+  // that's why you need to `preload`
+  <AsyncComponent/>
+</PrerenderedComponent>
+
+```
+
 
 ## Comparison
 * React.lazy
@@ -331,8 +351,7 @@ It is super-not-fast, and you will literally re-render everything twice, but it 
   * The most complex(inside) one. Just piece of Art. 
   * Loader: import only
   * Front-end: RHL-friendly. (by forced preloading)
-  * SSR: semi-async(walkTree), __no wave reduction__, sees only currently loaded chunks.
-  * Simple HOC based API
+  * SSR: sync, webpack-bound. 
   * Support Suspense
 
 * [react-universal-component](https://github.com/faceyspacey/react-universal-component)

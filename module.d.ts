@@ -7,9 +7,14 @@ declare module 'react-imported-component' {
 
   type DefaultComponent<P> = ComponentType<P> | DefaultImportedComponent<P>;
 
-  type LoadableComponentState ='loading' | 'done' | 'error';
+  type LoadableComponentState = 'loading' | 'done' | 'error';
 
   type ComponentRenderOption<P, K> = (Component: P, State: LoadableComponentState, props: K) => ReactNode;
+
+  type AdditionalHOC<T> = {
+    preload(): Promise<T>;
+    done: Promise<T>;
+  }
 
   type ComponentOptions<P, K, RenderComponent = ComponentType<P>> = {
     LoadingComponent?: ComponentType<any>,
@@ -22,10 +27,12 @@ declare module 'react-imported-component' {
     forwardRef?: Ref<P>;
   }
 
-  interface HOC {
-    <P, K={}>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions<P, K>): ComponentType<P | K>;
+  type HOCType<P, K> = ComponentType<P | K> & AdditionalHOC<DefaultComponent<P>>;
 
-    <P, K={}>(loader: () => Promise<P>, options?: ComponentOptions<P, K, P> & { render: ComponentRenderOption<P, K> }): ComponentType<K>;
+  interface HOC {
+    <P, K = {}>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions<P, K>): HOCType<P, K>;
+
+    <P, K = {}>(loader: () => Promise<P>, options?: ComponentOptions<P, K, P> & { render: ComponentRenderOption<P, K> }): HOCType<P, K>;
   }
 
   const importedComponent: HOC;
@@ -48,6 +55,8 @@ declare module 'react-imported-component' {
 
   export default importedComponent;
 
+  export function lazy<P>(loader: () => Promise<DefaultComponent<P>>): HOCType<P, {}>;
+
   export function printDrainHydrateMarks(streamId?: number): string;
 
   export function drainHydrateMarks(streamId?: number): Array<string>;
@@ -62,5 +71,5 @@ declare module 'react-imported-component' {
 
   export function loadableResource<P>(loader: () => Promise<DefaultComponent<P>>): LoadableResource<P>;
 
-  export function setConfiguration(config: {SSR?: boolean, hot?: boolean}): void;
+  export function setConfiguration(config: { SSR?: boolean, hot?: boolean }): void;
 }
