@@ -118,7 +118,9 @@ function scanTop(root, start, target) {
 
     console.log(`${Object.keys(imports).length} imports found, saving to ${target}`);
 
-    pWriteFile(target, `/* eslint-disable */ 
+    pWriteFile(target, `/* eslint-disable */
+    /* tslint:disable */
+     
     import {assignImportedComponents} from 'react-imported-component';
     const applicationImports = {
       ${
