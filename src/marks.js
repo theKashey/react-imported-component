@@ -37,5 +37,3 @@ export const rehydrateMarks = (marks = false) => {
 export const printDrainHydrateMarks = (stream = 0) => {
   return `<script>window.___REACT_DEFERRED_COMPONENT_MARKS=${JSON.stringify(drainHydrateMarks(stream))};/*stream ${stream}*/</script>`;
 };
-
-export default LOADABLE_MARKS;
