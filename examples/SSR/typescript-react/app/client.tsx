@@ -1,5 +1,5 @@
 import { rehydrateMarks } from "react-imported-component";
-import React from "react";
+import * as React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -14,6 +14,7 @@ delete window.__PRELOADED_STATE__;
 const store = configureStore(preloadedState);
 
 const element = document.getElementById("app");
+
 const app = (
   <Provider store={store}>
     <BrowserRouter>
@@ -23,5 +24,7 @@ const app = (
 );
 
   rehydrateMarks().then(() => {
+    console.log(element.innerHTML);
     ReactDOM.hydrate(app, element);
+    console.log(element.innerHTML);
   });

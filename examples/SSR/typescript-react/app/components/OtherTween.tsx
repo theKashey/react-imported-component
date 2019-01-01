@@ -1,4 +1,4 @@
 import React from "react";
 
-const Another = () => <a>Other!</a>;
+const Another: React.SFC = () => <a>Other!</a>;
 export default Another;
