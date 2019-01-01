@@ -27,12 +27,12 @@ declare module 'react-imported-component' {
     forwardRef?: Ref<P>;
   }
 
-  type HOCType<P, K> = ComponentType<P | K> & AdditionalHOC<DefaultComponent<P>>;
+  type HOCType<P, K> = ComponentType<K> & AdditionalHOC<DefaultComponent<P>>;
 
   interface HOC {
-    <P, K = {}>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions<P, K>): HOCType<P, K>;
+    <P, K = P>(loader: () => Promise<DefaultComponent<P>>, options?: ComponentOptions<P, K>): HOCType<P, K>;
 
-    <P, K = {}>(loader: () => Promise<P>, options?: ComponentOptions<P, K, P> & { render: ComponentRenderOption<P, K> }): HOCType<P, K>;
+    <P, K = P>(loader: () => Promise<P>, options?: ComponentOptions<P, K, P> & { render: ComponentRenderOption<P, K> }): HOCType<P, K>;
   }
 
   const importedComponent: HOC;
