@@ -15,7 +15,7 @@ import toLoadable from './loadable';
 const loader = (loaderFunction, options = {}) => {
   const loadable = toLoadable(loaderFunction, !options.noAutoImport);
 
-  // eslint-disable-next-line
+  /* eslint-disable react/display-name, react/prop-types */
   const ImportedComponent = ({importedProps = {}, ...props}) => (
     <HotComponentLoader
       loadable={loadable}
@@ -39,6 +39,8 @@ const loader = (loaderFunction, options = {}) => {
         />
       ))
     : ImportedComponent;
+
+  /* eslint-enable */
 
   Imported.preload = () => {
     loadable.load().catch(() => ({}));
