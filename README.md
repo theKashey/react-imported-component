@@ -241,6 +241,9 @@ import importedComponents from 'src/imported';
 
   // this will trigger all marked imports, and await for competition.
   rehydrateMarks().then(() => {
+    // better
+    ReactDOM.hydrate(<App />,document.getElementById('main'));
+    // or
     ReactDOM.render(<App />,document.getElementById('main'));
   });
 ```
