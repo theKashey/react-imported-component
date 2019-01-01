@@ -38,19 +38,23 @@ describe('SSR Component', () => {
 
     it('webpack', () => {
       expect(importMatch(`() => importedWrapper('imported-component', 'mark1', __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)).to.be.deep.equal(['mark1']);
-    })
+    });
+
+    it('webpack-prod', () => {
+      expect(importMatch(`() => importedWrapper('imported-component','mark1',__webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)).to.be.deep.equal(['mark1']);
+    });
 
     it('functional', () => {
       expect(importMatch(`"function loadable() {
         return importedWrapper('imported-component', '1ubbetg', __webpack_require__.e(/*! import() | namedChunk-1 */ "namedChunk-1").then(__webpack_require__.t.bind(null, /*! ./DeferredRender */ "./src/DeferredRender.js", 7)));
       }"`)).to.be.deep.equal(['1ubbetg']);
-    })
+    });
 
     it('parcel', () => {
       expect(importMatch(`function _() {
         return importedWrapper('imported-component', 'mark1', require("_bundle_loader")(require.resolve('./HelloWorld3')));
     }`)).to.be.deep.equal(['mark1']);
-    })
+    });
   });
 
   describe('client-rehydrate', () => {
