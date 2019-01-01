@@ -10,6 +10,13 @@ export const useMark = (stream, marks) => {
   }
 };
 
+export const loadMark = (markId, loadable) => {
+  if (!LOADABLE_MARKS[markId]) {
+    LOADABLE_MARKS[markId] = []
+  }
+  LOADABLE_MARKS[markId].push(loadable)
+};
+
 export const drainHydrateMarks = (stream = 0) => {
   const used = Object.keys(USED_MARKS[stream] || {});
   delete USED_MARKS[stream];
@@ -21,6 +28,7 @@ export const rehydrateMarks = (marks = false) => {
   return Promise.all(
     rehydrate
       .map(mark => LOADABLE_MARKS[mark])
+      .reduce((acc, loadable) => [...acc, ...loadable], [])
       .filter(it => !!it)
       .map(loadable => loadable.load())
   );

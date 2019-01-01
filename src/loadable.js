@@ -1,5 +1,5 @@
 import isNode from 'detect-node';
-import LOADABLE_MARKS from './marks';
+import {loadMark} from './marks';
 
 let pending = [];
 
@@ -63,7 +63,7 @@ const toLoadable = (importFunction, autoImport = true) => {
   };
 
   if (mark) {
-    mark.forEach(subMark => LOADABLE_MARKS[subMark] = loadable)
+    mark.forEach(subMark => loadMark(subMark, loadable))
   }
 
   if (isNode && autoImport) {
