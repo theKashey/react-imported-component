@@ -27,12 +27,14 @@ export const promisify = (fn, context, noReject) => (...args) => new Promise((re
   });
 });
 
+const normalizePath = path => path.split(sep).join('/');
+
 const getRelative = (from, to) => {
-  const rel = relative(from, to);
-  if (rel[0] !== '.') {
-    return '.' + sep + rel;
-  }
-  return rel;
+  // force one unit paths
+  const rel = normalizePath(relative(from, to));
+  return (rel[0] !== '.')
+    ? './' + rel
+    : rel;
 };
 
 const pReadFile = promisify(readFile);
@@ -98,7 +100,7 @@ function scanTop(root, start, target) {
 
     const files =
       (await scanDirectory(join(root, start), undefined, rejectSystem))
-        .filter(name => name.indexOf(target) === -1)
+        .filter(name => normalizePath(name).indexOf(target) === -1)
         .filter(name => ['.js', '.jsx', '.ts', '.tsx'].indexOf(extname(name)) >= 0)
 
     const data = await Promise.all(
@@ -118,18 +120,21 @@ function scanTop(root, start, target) {
 
     console.log(`${Object.keys(imports).length} imports found, saving to ${target}`);
 
-    pWriteFile(target, `/* eslint-disable */
+    pWriteFile(target, `
+    /* eslint-disable */
     /* tslint:disable */
      
     import {assignImportedComponents} from 'react-imported-component';
+    
     const applicationImports = {
-      ${
-      Object
-        .keys(imports)
-        .map((key, index) => `${index}: ${imports[key]},`)
-        .join('\n')
-      }
+${
+  Object
+    .keys(imports)
+    .map((key, index) => `${index}: ${imports[key]},`)
+    .join('\n')
+}
     };
+    
     assignImportedComponents(applicationImports);
     export default applicationImports;`)
   }
@@ -140,7 +145,7 @@ function scanTop(root, start, target) {
 
 if (!process.argv[3]) {
   console.log('usage: imported-components sourceRoot targetFile');
-  console.log('example: imported-components src src/importedComponents');
+  console.log('example: imported-components src src/importedComponents.js');
 } else {
   scanTop(process.cwd(), process.argv[2], process.argv[3]);
 }
