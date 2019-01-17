@@ -26,15 +26,15 @@ const templateOptions = {
 };
 
 export default function ({types: t, template}) {
-  var headerTemplate = template(`function importedWrapper(marker, name, realImport) { 
+  var headerTemplate = template(`function importedWrapper(marker, realImport) { 
       if (typeof __deoptimization_sideEffect__ !== 'undefined') {
-        __deoptimization_sideEffect__(marker, name, realImport);
+        __deoptimization_sideEffect__(marker, realImport);
       }
       return realImport;
   }`, templateOptions);
 
   const importRegistration = template(
-    'importedWrapper(MARK, FILE, IMPORT)',
+    'importedWrapper(MARK, IMPORT)',
     templateOptions,
   );
 
@@ -61,13 +61,12 @@ export default function ({types: t, template}) {
               if (!importName) {
                 return;
               }
-              const requiredFile = encipherImport(resolveImport(importName, localFile));
+              const requiredFileHash = encipherImport(resolveImport(importName, localFile));
 
               let replace = null;
 
               replace = importRegistration({
-                MARK: t.stringLiteral("imported-component"),
-                FILE: t.stringLiteral(requiredFile),
+                MARK: t.stringLiteral(`imported_${requiredFileHash}_component`),
                 IMPORT: newImport
               });
 

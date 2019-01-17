@@ -19,7 +19,7 @@ chai.use(chaiEnzyme());
 describe('SSR Component', () => {
   const TargetComponent = ({payload}) => <div>42 - payload</div>;
 
-  function importedWrapper(marker, name, realImport) {
+  function importedWrapper(marker, realImport) {
     return realImport;
   }
 
@@ -33,26 +33,26 @@ describe('SSR Component', () => {
     });
 
     it('standard', () => {
-      expect(importMatch(`() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true)`)).to.be.deep.equal(['mark1']);
+      expect(importMatch(`() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true)`)).to.be.deep.equal(['mark1']);
     });
 
     it('webpack', () => {
-      expect(importMatch(`() => importedWrapper('imported-component', 'mark1', __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)).to.be.deep.equal(['mark1']);
+      expect(importMatch(`() => importedWrapper('imported_mark1_component', __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)).to.be.deep.equal(['mark1']);
     });
 
     it('webpack-prod', () => {
-      expect(importMatch(`() => importedWrapper('imported-component','mark1',__webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)).to.be.deep.equal(['mark1']);
+      expect(importMatch(`() => importedWrapper('imported_mark1_component',__webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)).to.be.deep.equal(['mark1']);
     });
 
     it('functional', () => {
       expect(importMatch(`"function loadable() {
-        return importedWrapper('imported-component', '1ubbetg', __webpack_require__.e(/*! import() | namedChunk-1 */ "namedChunk-1").then(__webpack_require__.t.bind(null, /*! ./DeferredRender */ "./src/DeferredRender.js", 7)));
+        return importedWrapper('imported_1ubbetg_component', __webpack_require__.e(/*! import() | namedChunk-1 */ "namedChunk-1").then(__webpack_require__.t.bind(null, /*! ./DeferredRender */ "./src/DeferredRender.js", 7)));
       }"`)).to.be.deep.equal(['1ubbetg']);
     });
 
     it('parcel', () => {
       expect(importMatch(`function _() {
-        return importedWrapper('imported-component', 'mark1', require("_bundle_loader")(require.resolve('./HelloWorld3')));
+        return importedWrapper('imported_mark1_component', require("_bundle_loader")(require.resolve('./HelloWorld3')));
     }`)).to.be.deep.equal(['mark1']);
     });
   });
@@ -135,7 +135,7 @@ describe('SSR Component', () => {
   describe('marks', () => {
     it('SSR Marks without stream', (done) => {
       expect(drainHydrateMarks()).to.have.length(0);
-      const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true);
+      const loader1 = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true);
       // await loaders to load
       setTimeout(() => {
         expect(drainHydrateMarks()).to.have.length(0);
@@ -150,7 +150,7 @@ describe('SSR Component', () => {
 
     it('SSR Marks with stream', (done) => {
       expect(drainHydrateMarks()).to.have.length(0);
-      const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true);
+      const loader1 = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true);
       // await loaders to load
       setTimeout(() => {
         expect(drainHydrateMarks()).to.have.length(0);
@@ -171,10 +171,10 @@ describe('SSR Component', () => {
 
     it('should generate marks', (done) => {
       expect(drainHydrateMarks()).to.have.length(0);
-      const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), true);
+      const loader1 = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true);
       const loader2 = toLoadable(() => {
-        importedWrapper('imported-component', 'mark2-1', Promise.resolve(TargetComponent))
-        return importedWrapper('imported-component', 'mark2-2', Promise.resolve(TargetComponent));
+        importedWrapper('imported_mark2-1_component', Promise.resolve(TargetComponent))
+        return importedWrapper('imported_mark2-2_component', Promise.resolve(TargetComponent));
       }, true);
       const loader3 = toLoadable(() => Promise.resolve(TargetComponent), true);
 
@@ -195,7 +195,7 @@ describe('SSR Component', () => {
 
     it('should render async', (done) => {
       expect(drainHydrateMarks()).to.have.length(0);
-      const loader = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)), false);
+      const loader = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), false);
       setImmediate(() => {
         expect(drainHydrateMarks()).to.have.length(0);
         const wrapper1 = mount(<HotComponentLoader loadable={loader}/>);
@@ -211,7 +211,7 @@ describe('SSR Component', () => {
 
     it('should render sync', (done) => {
       expect(drainHydrateMarks()).to.have.length(0);
-      const loader = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)));
+      const loader = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)));
       rehydrateMarks(['mark1']);
       setImmediate(() => {
         expect(drainHydrateMarks()).to.have.length(0);
@@ -225,9 +225,9 @@ describe('SSR Component', () => {
     describe('stream marks', () => {
       it('multy stream render', () => {
         expect(drainHydrateMarks()).to.have.length(0);
-        const loader1 = toLoadable(() => importedWrapper('imported-component', 'mark1', Promise.resolve(TargetComponent)));
-        const loader2 = toLoadable(() => importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent)));
-        const loader3 = toLoadable(() => importedWrapper('imported-component', 'mark3', Promise.resolve(TargetComponent)));
+        const loader1 = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)));
+        const loader2 = toLoadable(() => importedWrapper('imported_mark2_component', Promise.resolve(TargetComponent)));
+        const loader3 = toLoadable(() => importedWrapper('imported_mark3_component', Promise.resolve(TargetComponent)));
 
         let uid2 = 0;
         let uid3 = 0;
@@ -266,7 +266,7 @@ describe('SSR Component', () => {
       const loader1 = toLoadable(() => new Promise(resolve => setImmediate(() => resolve(TargetComponent))), false);
       const loader2 = toLoadable(() => {
         loader1.load();
-        return importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent))
+        return importedWrapper('imported_mark2_component', Promise.resolve(TargetComponent))
       }, false);
       expect(loader1.done).to.be.equal(false);
       expect(loader2.done).to.be.equal(false);
@@ -288,7 +288,7 @@ describe('SSR Component', () => {
       const loader1 = toLoadable(() => new Promise(resolve => setImmediate(() => resolve(TargetComponent))), false);
       const loader2 = toLoadable(() => {
         loader1.load();
-        return importedWrapper('imported-component', 'mark2', Promise.resolve(TargetComponent))
+        return importedWrapper('imported_mark2_component', Promise.resolve(TargetComponent))
       }, false);
       expect(loader1.done).to.be.equal(false);
       expect(loader2.done).to.be.equal(false);
