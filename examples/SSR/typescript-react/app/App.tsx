@@ -9,7 +9,7 @@ const Other1 = importedComponent(() => import(/* webpackChunkName: "namedChunk-1
 const Other2 = importedComponent(() => import(/* webpackChunkName: "namedChunk-1" */"./components/OtherTween"));
 
 const AnotherWrapped = importedComponent(() => import(/* webpackChunkName: namedChunk-0 */"./components/Another"), {
-  render(Component, state, props: {prop: number}) {
+  render(Component, state, props: { prop: number }) {
     if (state === "loading") {
       return <span/>
     }
@@ -17,6 +17,9 @@ const AnotherWrapped = importedComponent(() => import(/* webpackChunkName: named
   }
 });
 //import Another from "./components/Another";
+
+// @ts-ignore
+const importCss = () => import("./App.css");
 
 export default function App() {
   return (

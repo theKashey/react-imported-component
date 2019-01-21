@@ -12,6 +12,11 @@ module.exports = function (node) {
           exclude: /node_modules/
         },
         {
+          test: /\.css$/,
+          use: ['css-loader'],
+          exclude: /node_modules/
+        },
+        {
           test: /\.tsx?$/,
           use: {
             loader: "awesome-typescript-loader",
@@ -38,7 +43,7 @@ module.exports = function (node) {
       ]
     },
     resolve: {
-      extensions: [".ts", ".tsx", ".js"],
+      extensions: [".ts", ".tsx", ".js", ".css"],
       alias: {
         react: path.resolve(path.join(__dirname, './node_modules/react')),
         'babel-core': path.resolve(
