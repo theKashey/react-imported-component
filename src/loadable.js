@@ -8,8 +8,8 @@ const removeFromPending = promise => pending = pending.filter(a => a !== promise
 const trimImport = str => str.replace(/['"]/g, '');
 
 export const importMatch = functionString => {
-  const markMatches = functionString.match(/\(['"]imported_(.*)_component['"]/g) || [];
-  return markMatches.map(match => trimImport(match.match(/\(['"]imported_(.*)_component['"]/i)[1]));
+  const markMatches = functionString.match(/['"]imported_(.*)_component['"]/g) || [];
+  return markMatches.map(match => trimImport(match.match(/['"]imported_(.*)_component['"]/i)[1]));
 }
 
 const toLoadable = (importFunction, autoImport = true) => {

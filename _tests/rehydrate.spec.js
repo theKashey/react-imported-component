@@ -55,6 +55,12 @@ describe('SSR Component', () => {
         return importedWrapper('imported_mark1_component', require("_bundle_loader")(require.resolve('./HelloWorld3')));
     }`)).to.be.deep.equal(['mark1']);
     });
+
+    it('ie11 uglify', () => {
+      expect(importMatch(`function _() {
+        var t = 'imported_mark1_component';
+    }`)).to.be.deep.equal(['mark1']);
+    });
   });
 
   describe('client-rehydrate', () => {
