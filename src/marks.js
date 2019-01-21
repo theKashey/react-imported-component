@@ -28,7 +28,7 @@ export const rehydrateMarks = (marks = false) => {
   return Promise.all(
     rehydrate
       .map(mark => LOADABLE_MARKS[mark])
-      .reduce((acc, loadable) => [...acc, ...loadable], [])
+      .reduce((acc, loadable) => loadable ? [...acc, ...loadable] : acc, [])
       .filter(it => !!it)
       .map(loadable => loadable.load())
   );
