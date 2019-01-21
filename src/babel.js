@@ -26,7 +26,7 @@ const templateOptions = {
 };
 
 export default function ({types: t, template}) {
-  var headerTemplate = template(`function importedWrapper(marker, realImport) { 
+  var headerTemplate = template(`var importedWrapper = function(marker, realImport) { 
       if (typeof __deoptimization_sideEffect__ !== 'undefined') {
         __deoptimization_sideEffect__(marker, realImport);
       }
@@ -58,6 +58,7 @@ export default function ({types: t, template}) {
               const localFile = file.opts.filename;
               const newImport = parentPath.node;
               const importName = parentPath.get('arguments')[0].node.value;
+
               if (!importName) {
                 return;
               }
@@ -81,9 +82,7 @@ export default function ({types: t, template}) {
         exit({node}, {file}) {
           if (!hasImports[file.opts.filename]) return;
 
-          // hasImports[file.opts.filename].forEach(cb => cb());
           node.body.unshift(headerTemplate());
-
         }
       },
     }

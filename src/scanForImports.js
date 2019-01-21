@@ -2,6 +2,8 @@ import scanDirectory from 'scan-directory';
 import {extname, resolve, relative, dirname, join, sep} from 'path';
 import {readFile, writeFile} from 'fs';
 
+const RESOLVE_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
+
 try {
   require('babel-polyfill');
 } catch (err) {
@@ -70,7 +72,7 @@ const getImportString = (pattern, selected) => str => (
     })
 );
 
-export const getDynamicImports = getImportString(`import\\((([^)])+['"]?)\\)`, 1);
+export const getDynamicImports = getImportString(`import[\\s]?\\((([^)])+['"]?)\\)`, 1);
 
 const mapImports = (file, imports) => imports.map(dep => {
   const {name, comment} = dep;
@@ -101,7 +103,7 @@ function scanTop(root, start, target) {
     const files =
       (await scanDirectory(join(root, start), undefined, rejectSystem))
         .filter(name => normalizePath(name).indexOf(target) === -1)
-        .filter(name => ['.js', '.jsx', '.ts', '.tsx'].indexOf(extname(name)) >= 0)
+        .filter(name => RESOLVE_EXTENSIONS.indexOf(extname(name)) >= 0)
 
     const data = await Promise.all(
       files
@@ -128,11 +130,11 @@ function scanTop(root, start, target) {
     
     const applicationImports = {
 ${
-  Object
-    .keys(imports)
-    .map((key, index) => `${index}: ${imports[key]},`)
-    .join('\n')
-}
+      Object
+        .keys(imports)
+        .map((key, index) => `${index}: ${imports[key]},`)
+        .join('\n')
+      }
     };
     
     assignImportedComponents(applicationImports);

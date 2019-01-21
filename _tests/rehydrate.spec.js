@@ -61,6 +61,12 @@ describe('SSR Component', () => {
         var t = 'imported_mark1_component';
     }`)).to.be.deep.equal(['mark1']);
     });
+
+    it('multiple imports in one line', () => {
+      expect(importMatch(`function _() {
+        "imported_1pn9k36_component", blablabla- importedWrapper("imported_-1556gns_component")
+    }`)).to.be.deep.equal(['1pn9k36', '-1556gns']);
+    })
   });
 
   describe('client-rehydrate', () => {
