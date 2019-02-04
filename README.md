@@ -67,7 +67,7 @@ or
 
 <LazyBoundary>
   <Component />
-</Suspense> 
+</LazyBoundary> 
 ```
 `LazyBoundary` is a `Suspense` on Client Side, and `React.Fragment` on Server Side. Don't forget - "dynamic" imports are sync on server.
 
@@ -192,6 +192,8 @@ loadableResource is just a sugar around `import`.
 ## Suspense (React Async)
 Just pass down an option for `importedComponent`, or prop for `ComponentLoader, and 
 catch the loading promise, imported component will throw if _loading state_ will took a place.
+
+Use `LazyBoundary` helper for SSR - friendly _Suspense_.
 
 ## SSR (Server side rendering)
 It was usually a headache - async components and SSR, which is currently sync.
