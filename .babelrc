@@ -1,4 +1,44 @@
 {
-  "presets": ["env","react"],
-  "plugins": ["transform-class-properties", "transform-object-rest-spread", "dynamic-import-node"]
+  "env": {
+    "cjs": {
+      "presets": [
+        "@babel/preset-env",
+        "@babel/preset-react"
+      ],
+      "plugins": [
+        "dynamic-import-node",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-runtime",
+        [
+          "transform-react-remove-prop-types",
+          {
+            "mode": "wrap"
+          }
+        ]
+      ]
+    },
+    "es2015": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": false,
+            "loose": true
+          }
+        ],
+        "@babel/preset-react"
+      ],
+      "plugins": [
+        "dynamic-import-node",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-runtime",
+        [
+          "transform-react-remove-prop-types",
+          {
+            "mode": "wrap"
+          }
+        ]
+      ]
+    }
+  }
 }

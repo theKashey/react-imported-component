@@ -14,7 +14,7 @@ try {
 }
 syntax = syntax.default || syntax
 
-const resolveImport = (importName, file) => {
+const resolveImport = (importName, file = '') => {
   if (importName.charAt(0) === '.') {
     return relative(process.cwd(), resolve(dirname(file), importName));
   }

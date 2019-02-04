@@ -1,4 +1,4 @@
-import { transform } from 'babel-core'
+import { transform } from '@babel/core'
 import { join } from 'path'
 import {expect} from 'chai';
 import { readdirSync, statSync, readFileSync } from 'fs'
@@ -12,7 +12,7 @@ const testFolders = readdirSync(FIXTURE_PATH).filter(file =>
 const testPlugin = {
   node: (code) => {
     const result = transform(code, {
-      presets: ['react'],
+      presets: ['@babel/preset-react'],
       plugins: [require.resolve('../src/babel.js'), 'dynamic-import-node'],
     })
 
@@ -20,7 +20,7 @@ const testPlugin = {
   },
   webpack: (code) => {
     const result = transform(code, {
-      presets: ['react'],
+      presets: ['@babel/preset-react'],
       plugins: [require.resolve('../src/babel.js')]
     })
 
