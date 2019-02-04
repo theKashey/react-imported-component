@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/theKashey/react-hot-component-loader#readme",
   "devDependencies": {
-    "@types/react": "^16.4.0",
+    "@types/react": "^16.8.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-eslint": "^8.2.3",

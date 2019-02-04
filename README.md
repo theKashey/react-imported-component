@@ -32,7 +32,7 @@ Key features:
  - 🔥 Hot-Module-Replacement friendly.
  - ⛓️ support forwardRef.
  - 💡 TS, Flow, Rect 16/Async ready.
- - 🌟 Async on client, sync on server. Supports Suspense.
+ - 🌟 Async on client, sync on server. Supports Suspense (even on server side)
  - 📦 could handle any bunder, and could load all the used async chunks in one "wave".
  - ✂️ could work with any import statement, passed from anywhere 
  - 🛠 HOC and Component API.
@@ -55,13 +55,21 @@ Component.preload(); // force preload
 <Component... />
 
 //
-import {lazy} from 'react-imported-component'
+import {lazy, LazyBoundary} from 'react-imported-component'
 const Component = lazy( () => import('./Component'));
 
 <Suspense>
  <Component />
 </Suspense> 
+
+or
+
+<LazyBoundary>
+  <Component />
+</Suspense> 
 ```
+`LazyBoundary` is a `Suspense` on Client Side, and `React.Fragment` on Server Side. Don't forget - "dynamic" imports are sync on server.
+
 Example: [React.lazy vs Imported-component](https://codesandbox.io/s/wkl95r0qw8)
 ## API
 

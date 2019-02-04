@@ -1,5 +1,5 @@
 declare module 'react-imported-component' {
-  import {StatelessComponent, ComponentType, ReactNode, Component, Ref} from "react";
+  import {StatelessComponent, ComponentType, ReactNode, Component, Ref, SuspenseProps} from "react";
 
   interface DefaultImportedComponent<P> {
     default: ComponentType<P>;
@@ -50,6 +50,8 @@ declare module 'react-imported-component' {
 
   export class ComponentLoader<T, K> extends Component<IComponentLoaderProps<T, K>> {
   }
+
+  export class LazyBoundary extends Component<SuspenseProps> {}
 
   export const ImportedStream: StatelessComponent<{ takeUID: (streamId: number) => any }>;
 

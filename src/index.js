@@ -3,6 +3,7 @@ import {drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks} from './marks
 import loadableResource, {done as whenComponentsReady, dryRender, assignImportedComponents} from './loadable';
 import ComponentLoader, {settings} from './Component';
 import {ImportedStream} from "./context";
+import {LazyBoundary} from './LazyBoundary'
 
 const setConfiguration = (config) => Object.assign(settings, config);
 
@@ -20,6 +21,7 @@ export {
   ImportedStream,
   setConfiguration,
 
-  lazy
+  lazy,
+  LazyBoundary
 }
 export default imported;
