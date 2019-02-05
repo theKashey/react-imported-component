@@ -28,7 +28,8 @@
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
     "react-imported-component": "^5.0.1",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "styled-components": "^4.1.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
