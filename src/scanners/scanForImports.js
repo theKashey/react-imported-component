@@ -1,57 +1,12 @@
+/*eslint no-console: "warn"*/
+
 import scanDirectory from 'scan-directory';
-import {extname, resolve, relative, dirname, join, sep} from 'path';
-import {readFile, writeFile} from 'fs';
+import {extname, resolve, dirname, join} from 'path';
+import {getFileContent, getMatchString, pWriteFile, normalizePath, getRelative} from "./shared";
 
 const RESOLVE_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
 
-try {
-  require('babel-polyfill');
-} catch (err) {
-  try {
-    require('@babel/polyfill');
-  } catch (e) {
-    throw Error('react-imported-component: scanImports is requiring babel-polyfill, or @babel/polyfill to work. Please add this dependency.')
-  }
-}
-
-/* eslint-disable no-console */
-
-export const promisify = (fn, context, noReject) => (...args) => new Promise((resolve, reject) => {
-  fn.call(context, ...args, (error, ok) => {
-    if (error) {
-      if (noReject) {
-        resolve(error);
-      } else {
-        reject(error);
-      }
-    }
-    resolve(ok);
-  });
-});
-
-const normalizePath = path => path.split(sep).join('/');
-
-const getRelative = (from, to) => {
-  // force one unit paths
-  const rel = normalizePath(relative(from, to));
-  return (rel[0] !== '.')
-    ? './' + rel
-    : rel;
-};
-
-const pReadFile = promisify(readFile);
-const pWriteFile = promisify(writeFile);
-
-
 const trimImport = str => str.replace(/['"]/g, '');
-export const getFileContent = file => pReadFile(file, 'utf8');
-
-const getMatchString = (pattern, selected) => str => (
-  (str.match(new RegExp(pattern, 'g')) || [])
-    .map(statement =>
-      statement.match(new RegExp(pattern, 'i'))[selected]
-    )
-);
 
 const getImports = getMatchString(`(['"]?[\\w-/.]+['"]?)\\)`, 1);
 const getComment = getMatchString(/\/\*.*\*\//, 0);
