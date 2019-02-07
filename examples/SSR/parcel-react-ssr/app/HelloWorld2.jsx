@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './codeSplitAssets/NyanCat.css';
 import Go from './codeSplitAssets/NyanCat.js';
-import importedComponent from "react-imported-component";
+import HelloWorld3 from './HelloWorld3';
+// import importedComponent from "react-imported-component";
 
-const HelloWorld3 = importedComponent(() => import('./HelloWorld3'));
+// const HelloWorld3 = importedComponent(() => import('./HelloWorld3'));
 
 export default class Nyan extends Component {
 
@@ -14,7 +15,7 @@ export default class Nyan extends Component {
 
     render() {
         return <div>
-            <h1 className="hello-world">Hello world 2!</h1>
+            <h1 className="hello-world">Code-splitted CAT!</h1>
             <p style={{ textAlign: 'center' }}>
                 This is a code-split component.
                 <br />
@@ -36,7 +37,7 @@ export default class Nyan extends Component {
                     
                 </div>
             </div>
-            and nested cat....
+            and it has a nested code-splitted cat....
             <HelloWorld3 />
         </div>
     }

@@ -7,7 +7,8 @@ import {rehydrateMarks} from 'react-imported-component';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
-import imp from './imp';
+// import chunk definition
+import './imported-chunk';
 
 import App from './App';
 

@@ -76,8 +76,4 @@ declare module 'react-imported-component' {
   export function loadableResource<P>(loader: () => Promise<DefaultComponent<P>>): LoadableResource<P>;
 
   export function setConfiguration(config: { SSR?: boolean, hot?: boolean }): void;
-
-  export function getUsedStyles(data: string, stylesLookup: Record<string, string[]>): Record<string, boolean>
-
-  export function createStyleStream(stylesLookup: Record<string, string[]>, callback: (file: string) => void): Transform;
 }
