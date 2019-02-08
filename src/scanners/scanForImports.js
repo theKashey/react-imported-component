@@ -83,14 +83,15 @@ function scanTop(root, start, target) {
      
     import {assignImportedComponents} from 'react-imported-component';
     
-    const applicationImports = {
+    const applicationImports = [
 ${
       Object
         .keys(imports)
-        .map((key, index) => `${index}: ${imports[key]},`)
+        .map(key => `      ${imports[key]},`)
+        .sort()
         .join('\n')
       }
-    };
+    ];
     
     assignImportedComponents(applicationImports);
     export default applicationImports;`)

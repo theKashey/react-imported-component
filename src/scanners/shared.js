@@ -28,6 +28,7 @@ export const promisify = (fn, context, noReject) => (...args) => new Promise((re
 
 export const normalizePath = path => path.split(sep).join('/');
 export const getRelative = (from, to) => {
+  if (/^[^./]/.test(to)) return to
   // force one unit paths
   const rel = normalizePath(relative(from, to));
   return (rel[0] !== '.')
