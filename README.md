@@ -291,36 +291,26 @@ function renderApplication(res) {
 Use `ImportedStream` to bound all imported component to one "streamId", and then - get used components.
 Without `ImportedStream` streamId will be just 0 for all renders. With `ImportedStream` - it is a counter.
 
-## SSR - Automagic (🤯, forget about it)
-In case you could not use babel plugin, you could use "dryRender" API
+# CSS Support
+## CSS-in-JS Support
+First class. Literally CSS-in-JS library, like `styled-component` will do it by themselves, and there is nothing
+to be managed by this library
+
+## Static CSS Support
+This library __does not__ support CSS as CSS, as long it's bundler independent. However, there is 
+a bundler independent way to support CSS:
+1. Configure you bundler, and server side rendering to emit the right `classNames` (just remove `style-loader` from webpack configuration)
+2. User `used-styles` to inject used __css files__ to the resulting HTML.
+
+Please refer to [used-styles](https://github.com/theKashey/used-styles) documentation, or our [parcel-bundler stream server example](https://github.com/theKashey/react-imported-component/tree/master/examples/SSR/parcel-react-ssr/stream-server).
+
+In short (streamed example is NOT short)
 ```js
- import {dryRender} from 'react-imported-component';
-
- // extract your rendering function
- const renderApplication = (targetElement) => {
-   ReactDOM.render(<App />, targetElement);
- }
- 
- // create invisible offscreen element
- const invisibleElement = document.createElement('div');
- 
- dryRender(
-   // render Application to offscreen
-   () => renderApplication(invisibleElement)
-   // await all components to be loaded
- )
-   // unmount useless Application
-    .then(() => unmountComponentAtNode(invisibleElement))
-   // render and rehydrate the real application 
-   // better rehydrate
-    .then(() => renderApplication(document.getElementById('realElement')))
+  const markup = ReactDOM.renderToString(<App />)
+  const usedStyles = getUsedStyles(markup, lookup);
 ```
-__dryRender__ will render application offscreen, await for all parts to be loaded, and then
-resolve the promise.
-It is super-not-fast, and you will literally re-render everything twice, but it works 
-(almost the same approach as react-async-component has).
 
-### Works better in pair
+### Works better in pair (boiled-place-less code splitting)
 You might not need to wait for all the chunks to be loaded before you can render you app - 
 just use [react-prerendered-component](https://github.com/theKashey/react-prerendered-component).
 ```js
@@ -341,28 +331,13 @@ const AsyncComponent = imported(() => import('./myComponent.js'));
 React-prerendered-component is another way to work with code splitting, which makes everything far better.
 
 ## Another loaders
-* React.Lazy
-  * no SSR support, no preload, no control
-  
+Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
+
+* React.Lazy  
 * With [react-loadable](https://github.com/thejameskyle/react-loadable)
-  * Non _standard_(lazy) API
-  * only webpack
-  * Better static CSS support
-
 * [react-async-component](https://github.com/ctrlplusb/react-async-component)   
-  * ☠️ Doesn't work with React 16
-
 * [loadable-components](https://github.com/smooth-code/loadable-components)
-  * Full dymanic imports (but no TS support)
-  * only webpack
-  * Better static CSS support
-  * Problems with React-Hot-Loader
-
 * [react-universal-component](https://github.com/faceyspacey/react-universal-component)
-  * The most "webpack" one. Comprehensive solution, able to solve any case.
-  * Better static CSS support
-  * Loader: hybrid (import/require)
-  * Very complex API
   
 #### Waves 
 Let's imagine complex case - index.js will async-load 2 chunks, and __they also__ will load 2 async chunks.
