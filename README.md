@@ -300,15 +300,18 @@ to be managed by this library
 This library __does not__ support CSS as CSS, as long it's bundler independent. However, there is 
 a bundler independent way to support CSS:
 1. Configure you bundler, and server side rendering to emit the right `classNames` (just remove `style-loader` from webpack configuration)
-2. User `used-styles` to inject used __css files__ to the resulting HTML.
-
-Please refer to [used-styles](https://github.com/theKashey/used-styles) documentation, or our [parcel-bundler stream server example](https://github.com/theKashey/react-imported-component/tree/master/examples/SSR/parcel-react-ssr/stream-server).
+2. Use `used-styles` to inject used __css files__ to the resulting HTML.
 
 In short (streamed example is NOT short)
 ```js
   const markup = ReactDOM.renderToString(<App />)
   const usedStyles = getUsedStyles(markup, lookup);
 ```
+
+If you need `streamed` example with __reduced TTFB__ - 
+please refer to [used-styles](https://github.com/theKashey/used-styles) documentation, or our [parcel-bundler stream server example](https://github.com/theKashey/react-imported-component/tree/master/examples/SSR/parcel-react-ssr/stream-server).
+
+
 
 ### Works better in pair (boiled-place-less code splitting)
 You might not need to wait for all the chunks to be loaded before you can render you app - 
