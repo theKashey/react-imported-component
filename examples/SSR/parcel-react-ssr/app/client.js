@@ -7,10 +7,14 @@ import {rehydrateMarks} from 'react-imported-component';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
+import {moveStyles} from 'used-styles/moveStyles';
 // import chunk definition
 import './imported-chunk';
 
 import App from './App';
+
+// move SSR-ed styles to the head
+moveStyles();
 
 const element = document.getElementById('app');
 const app = (

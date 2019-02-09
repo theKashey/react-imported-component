@@ -2,7 +2,11 @@
 
 import compression from 'compression';
 import express from 'express';
-import middleware from './middleware';
+
+// Pick one of these
+
+//import middleware from './middleware';
+import middleware from './interleaved-middleware';
 
 const app = express();
 

@@ -4,7 +4,6 @@ import loadableResource, {done as whenComponentsReady, dryRender, assignImported
 import ComponentLoader, {settings} from './Component';
 import {ImportedStream} from "./context";
 import LazyBoundary from './LazyBoundary'
-import {createStyleStream, getUsedStyles} from './streamers/cssStream';
 
 const setConfiguration = (config) => Object.assign(settings, config);
 
@@ -24,6 +23,5 @@ export {
 
   lazy,
   LazyBoundary,
-  createStyleStream, getUsedStyles,
 }
 export default imported;

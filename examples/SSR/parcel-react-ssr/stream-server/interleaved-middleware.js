@@ -2,7 +2,8 @@
 import {Readable} from 'stream';
 import fs from 'fs';
 import MultiStream from 'multistream';
-import {getProjectStyles, createStyleStream} from 'used-styles';
+import {getProjectStyles, createLink} from 'used-styles';
+import {createStyleStream} from 'used-styles/react';
 import {printDrainHydrateMarks, ImportedStream} from 'react-imported-component';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
@@ -50,24 +51,18 @@ export default function middleware(req, res) {
     return res.redirect(301, context.url);
   }
 
-  // create a "header" stream
-  const headerStream = readable();
-
   // create a style steam
-  const styledStream = createStyleStream(projectStyles, (style) => {
-    // emit a line to header Stream
-    headerStream.push(`<link href="dist/${style}" rel="stylesheet">\n`);
-  });
+  const styledStream = createStyleStream(projectStyles, (style) => (
+    // just return it
+    createLink(`dist/${style}`)
+  ));
 
   // allow client to start loading js bundle
-  res.write(`<!DOCTYPE html><html><head><script defer src="${manifect['client.js']}"></script>`);
+  res.write(`<!DOCTYPE html><html><head><script defer src="${manifect['client.js']}"></script></head><body><div id="app">`);
 
-  const middleStream = readableString('</head><body><div id="app">');
-  const endStream = readableString('</div></body></html>');
+  const endStream = readableString('');
 
   const streams = [
-    headerStream,
-    middleStream,
     styledStream,
     endStream,
   ];
@@ -75,12 +70,12 @@ export default function middleware(req, res) {
   MultiStream(streams).pipe(res);
 
   // start by piping react and styled transform stream
-  htmlStream.pipe(styledStream, {end: false});
-  htmlStream.on('end', () => {
+  htmlStream.pipe(styledStream);
+  styledStream.on('end', () => {
+    res.write('</div>');
     // push loaded chunks information
-    headerStream.push(printDrainHydrateMarks(streamUID));
-    // kill header stream on the main stream end
-    headerStream.push(null);
-    styledStream.end();
+    res.write(printDrainHydrateMarks(streamUID));
+    res.write('</body></html>');
+    res.end();
   });
 }
