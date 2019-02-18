@@ -76,7 +76,7 @@
     "react-dom": "^16.6.0",
     "react-hot-loader": "^4.1.2",
     "react-test-renderer": "^16.6.0",
-    "sinon": "^5.0.10",
+    "sinon": "^7.2.4",
     "size-limit": "^0.21.1"
   },
   "dependencies": {
