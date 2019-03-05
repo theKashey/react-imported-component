@@ -63,7 +63,7 @@
     "chai-enzyme": "^1.0.0-beta.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
-    "eslint": "^4.2.0",
+    "eslint": "^5.15.1",
     "eslint-plugin-mocha": "^5.0.0",
     "eslint-plugin-react": "^7.7.0",
     "flowgen": "^1.2.2",
