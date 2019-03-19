@@ -37,6 +37,7 @@ Key features:
  - ✂️ could work with any import statement, passed from anywhere 
  - 🛠 HOC and Component API.
  - 🧙️ thus, composable.
+ - 📖 library level code splitting
  - 📦 and yes - this is the only __Parcel-bundler compatible__ SSR-friendly React code splitting library.
 
 ## Usage
@@ -194,6 +195,21 @@ Just pass down an option for `importedComponent`, or prop for `ComponentLoader, 
 catch the loading promise, imported component will throw if _loading state_ will took a place.
 
 Use `LazyBoundary` helper for SSR - friendly _Suspense_.
+
+## Library level code splitting
+You may codesplit not only "Components", but also modules, like `momentjs`,
+which would be given/imported as a `renderProp`.
+This feature has been extract to a separate library - [react-imported-library](https://github.com/theKashey/react-imported-library)
+```js
+import {importedLibraryDefault} from 'react-imported-library';
+
+// this will import `default` export
+const Moment = importedLibraryDefault( () => import('momentjs'));
+
+<Moment>
+ { (momentjs) => <span> {momentjs(date).format(FORMAT)}</span> }
+</Moment>
+```
 
 ## SSR (Server side rendering)
 It was usually a headache - async components and SSR, which is currently sync.
