@@ -1,0 +1,28 @@
+{
+  "name": "react-snap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build-imported": "imported-components src src/imported-chunk.js",
+    "build": "rm -rf dist && npm run build-imported && npm run build-client",
+    "build-client": "parcel build src/index.html -d dist/ --public-url ./ --no-minify --no-cache",
+    "postbuild": "react-snap"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "react-imported-component": "^5.5.3",
+    "react-snap": "^1.23.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "parcel-bundler": "^1.12.2"
+  },
+  "reactSnap": {
+    "source": "dist"
+  }
+}
