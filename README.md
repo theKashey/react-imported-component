@@ -307,27 +307,10 @@ function renderApplication(res) {
 Use `ImportedStream` to bound all imported component to one "streamId", and then - get used components.
 Without `ImportedStream` streamId will be just 0 for all renders. With `ImportedStream` - it is a counter.
 
-# CSS Support
-## CSS-in-JS Support
-First class. Literally CSS-in-JS library, like `styled-component` will do it by themselves, and there is nothing
-to be managed by this library
-
-## Static CSS Support
-This library __does not__ support CSS as CSS, as long it's bundler independent. However, there is 
-a bundler independent way to support CSS:
-1. Configure you bundler, and server side rendering to emit the right `classNames` (just remove `style-loader` from webpack configuration)
-2. Use `used-styles` to inject used __css files__ to the resulting HTML.
-
-In short (streamed example is NOT short)
-```js
-  const markup = ReactDOM.renderToString(<App />)
-  const usedStyles = getUsedStyles(markup, lookup);
-```
-
-If you need `streamed` example with __reduced TTFB__ - 
-please refer to [used-styles](https://github.com/theKashey/used-styles) documentation, or our [parcel-bundler stream server example](https://github.com/theKashey/react-imported-component/tree/master/examples/SSR/parcel-react-ssr/stream-server).
-
-
+# Hydrid render (CSR with prerendering)
+This library could support hybrid rendering (aka pre-rendering) compatible in two cases:
+- pre-render supports `state hydration`, like `getState` in [react-snap](https://github.com/stereobooster/react-snap). See our [example](https://github.com/theKashey/react-imported-component/tree/master/examples/hybrid/react-snap).
+- you are using `react-prerendered-component` to maintain component state until async chunk is not loaded. See example below.
 
 ### Works better in pair (boiled-place-less code splitting)
 You might not need to wait for all the chunks to be loaded before you can render you app - 
@@ -348,6 +331,28 @@ const AsyncComponent = imported(() => import('./myComponent.js'));
 </PrerenderedComponent>
 ```
 React-prerendered-component is another way to work with code splitting, which makes everything far better.
+
+
+# CSS Support
+## CSS-in-JS Support
+First class. Literally CSS-in-JS library, like `styled-component` will do it by themselves, and there is nothing
+to be managed by this library
+
+## Static CSS Support
+This library __does not__ support CSS as CSS, as long it's bundler independent. However, there is 
+a bundler independent way to support CSS:
+1. Configure you bundler, and server side rendering to emit the right `classNames` (just remove `style-loader` from webpack configuration)
+2. Use `used-styles` to inject used __css files__ to the resulting HTML.
+
+In short (streamed example is NOT short)
+```js
+  const markup = ReactDOM.renderToString(<App />)
+  const usedStyles = getUsedStyles(markup, lookup);
+```
+
+If you need `streamed` example with __reduced TTFB__ - 
+please refer to [used-styles](https://github.com/theKashey/used-styles) documentation, or our [parcel-bundler stream server example](https://github.com/theKashey/react-imported-component/tree/master/examples/SSR/parcel-react-ssr/stream-server).
+
 
 ## Another loaders
 Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
