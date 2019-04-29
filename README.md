@@ -32,12 +32,12 @@ Key features:
  - 🔥 Hot-Module-Replacement friendly.
  - ⛓️ support forwardRef.
  - 💡 TS, Flow, Rect 16/Async ready.
- - 🌟 Async on client, sync on server. Supports Suspense (even on server side)
- - 📦 could handle any bunder, and could load all the used async chunks in one "wave".
+ - 🌟 Async on client, sync on server. Supports __Suspense__ (even on server side)
+ - 📦 could handle __any bunder__, and could load all the used async chunks in one "wave".
  - ✂️ could work with any import statement, passed from anywhere 
  - 🛠 HOC and Component API.
- - 🧙️ thus, composable.
- - 📖 library level code splitting
+  - 📖 library level code splitting
+ - 🧙️ Prerendering compatible.
  - 📦 and yes - this is the only __Parcel-bundler compatible__ SSR-friendly React code splitting library.
 
 ## Usage
@@ -163,9 +163,9 @@ importedComponent( () => import(/* webpackChunkName:'pages' */'./Component'));
 
 That is all. Component will be loaded in time and then displayed. And updated on module replacement of course.
 
-#### Component loader.
-As long `importedComponent` is a fabric function, which will produce React Component, which will perform the loading,
-you may use React Component without calling fabric function.
+#### Component loader
+As long as `importedComponent` is a fabric function, which produces React Component, which will perform the loading,
+you may use React Component without calling a fabric function.
 ```js
 import {ComponentLoader} from 'react-imported-component';
 
@@ -186,6 +186,7 @@ const MyPage = () => (
 Actually `loadable` awaits for `loadableResource`, but could do auto transformation. 
 ```js
 import {loadableResource} from 'react-imported-component';
+// ...
 loadable = {loadableResource(() => import('xxx'))}
 ```
 loadableResource is just a sugar around `import`.
@@ -310,7 +311,8 @@ Without `ImportedStream` streamId will be just 0 for all renders. With `Imported
 # Hydrid render (CSR with prerendering)
 This library could support hybrid rendering (aka pre-rendering) compatible in two cases:
 - pre-render supports `state hydration`, like `getState` in [react-snap](https://github.com/stereobooster/react-snap). See our [example](https://github.com/theKashey/react-imported-component/tree/master/examples/hybrid/react-snap).
-- you are using `react-prerendered-component` to maintain component state until async chunk is not loaded. See example below.
+- for [rendertron](https://github.com/GoogleChrome/rendertron) or [https://prerender.io](https://prerender.io) follow `react-snap` example, just dump `state` using `setTimeout`.
+- You may use `react-prerendered-component` to maintain a component state until async chunk is not loaded. See example below.
 
 ### Works better in pair (boiled-place-less code splitting)
 You might not need to wait for all the chunks to be loaded before you can render you app - 
