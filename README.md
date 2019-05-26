@@ -4,7 +4,9 @@
   <img src="./assets/imported-logo.png" alt="imported components" width="409" align="center">
   <br/>
   <br/>
-  Customs clearance for React Components shipped from overseas... 
+   SSR-friendly code splitting made esier for any platform.
+  <br/>
+   Deliver a better experience with a single import.
   <br/>
   <br/>
   
@@ -20,26 +22,25 @@
     
   <br/>
 </div>
-
-
-### react-imported-component - world first any-bundler SSR-friendly loader.
-Formerly - simple, but usable Async Component loader to be used with [React-Hot-Loader](https://github.com/gaearon/react-hot-loader).
-
-Easy, universal, and could provide top results without any extra configuration.
- > Deliver a better experience with a single import.
  
 Key features:
- - 🔥 Hot-Module-Replacement friendly.
- - ⛓️ support forwardRef.
- - 💡 TS, Flow, Rect 16/Async ready.
+ - 📖 library level code splitting
+ - 🧙️ Prerendering compatible
+ - 💡 TypeScript and Flow bindings
  - 🌟 Async on client, sync on server. Supports __Suspense__ (even on server side)
- - 📦 could handle __any bunder__, and could load all the used async chunks in one "wave".
- - ✂️ could work with any import statement, passed from anywhere 
- - 🛠 HOC and Component API.
-  - 📖 library level code splitting
- - 🧙️ Prerendering compatible.
- - 📦 and yes - this is the only __Parcel-bundler compatible__ SSR-friendly React code splitting library.
-
+ - 📦 could work with __any bunder__ - webpack or parcel - it does not matter
+ - ✂️ could work with any import statement, passed from anywhere
+ 
+ Other features:
+ - 🔥 Hot-Module-Replacement friendly
+ - ⛓️ support forwardRef
+ - Rect 16/Async ready
+ - 🛠 HOC and Component API
+ - 📦 and yes - this is the only __parcel-bundler compatible__ SSR-friendly React code splitting library
+ - 🐳 stream rendering support
+ 
+`imported-component` would help you to deliver a better SSR or Prerendering experience with `babel-plugin` only. It does not have a real server side logic. 
+ 
 ## Usage
 
 ```javascript
@@ -60,19 +61,21 @@ Component.preload(); // force preload
 import {lazy, LazyBoundary} from 'react-imported-component'
 const Component = lazy( () => import('./Component'));
 
+// CSR only
 <Suspense>
  <Component />
 </Suspense> 
 
 or
-
+// SSR friendly
 <LazyBoundary>
   <Component />
 </LazyBoundary> 
 ```
-`LazyBoundary` is a `Suspense` on Client Side, and `React.Fragment` on Server Side. Don't forget - "dynamic" imports are sync on server.
+`LazyBoundary` is a `Suspense` on Client Side, and `React.Fragment` on Server Side. Don't forget - "dynamic" imports are sync on a server.
 
 Example: [React.lazy vs Imported-component](https://codesandbox.io/s/wkl95r0qw8)
+
 ## API
 
 ### Code splitting components
@@ -101,12 +104,21 @@ Example: [React.lazy vs Imported-component](https://codesandbox.io/s/wkl95r0qw8)
 ### Client side API
 - `rehydrateMarks():Promise`, loads _marked_ async chunks.
 - `whenComponentsReady():Promise`, will be resolved, when all marks are loaded.
-- `dryRender(renderFunction):Promise`, perform sandboxed render, and resolves "whenComponentsReady".
+- (deprecated)`dryRender(renderFunction):Promise`, perform sandboxed render, and resolves "whenComponentsReady".
    
-    
-
+### Timeout to display "spinners"   
 There is no build in timeouts to display Error or Loading states. You could control everything by yourself
-- use react-delay, p-delay, p-timeout, or `suspence` :P.   
+- use react-delay, p-delay, p-timeout, or `Suspense` :P.   
+
+# Setup
+1. Add `babel` plugin
+2. Replace `React.lazy` with our `lazy`.
+3. Replace `React.Suspense` with our `LazyBoundary`.
+4. Add `rehydrateMarks` to the client code
+5. Add `printDrainHydrateMarks` to the server code code.
+6. Done. Just read the rest of readme for details.
+
+We have examples for webpack, parcel, and react-snap. Just follow them.
 
 ## Using dynamic import
 
@@ -220,7 +232,7 @@ It will detect server-side environment and precache all used components.
 
 #### Full-cream SSR-to-Client
  
-To enable full cream SSR follow these steps.
+To enable SSR follow these steps.
 1. Add babel plugin 
 **On the server**:
 ```json
