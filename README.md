@@ -17,7 +17,15 @@
   <a href="https://circleci.com/gh/theKashey/react-imported-component/tree/master">
    <img src="https://img.shields.io/circleci/project/github/theKashey/react-imported-component/master.svg?style=flat-square)" alt="Build status">
   </a> 
-    
+
+  <a href="https://www.npmjs.com/package/react-imported-component">
+   <img src="https://img.shields.io/npm/dm/react-imported-component.svg" alt="npm downloads">
+  </a> 
+
+  <a href="https://bundlephobia.com/result?p=react-imported-component">
+   <img src="https://img.shields.io/bundlephobia/minzip/react-imported-component.svg" alt="bundle size">
+  </a> 
+
   <img src="https://badges.greenkeeper.io/theKashey/react-imported-component.svg" />
     
   <br/>
