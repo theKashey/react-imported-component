@@ -47,6 +47,19 @@ Key features:
  - 📦 and yes - this is the only __parcel-bundler compatible__ SSR-friendly React code splitting library
  - 🐳 stream rendering support
  
+ 👍 Better than [React.Lazy](https://reactjs.org/docs/code-splitting.html#reactlazy):
+ - SSR, Prerendering and Preloading support.
+ - With or without SuspenSe with Error cases support.
+ 
+ 👍 Better than [Loadable-Component](https://github.com/smooth-code/loadable-components):
+ - No bundler-related issues.
+ - Strong typing.
+ - Prerendering support - `printDrainHydrateMarks` could be called from user space, so headless __browser could be your server__.
+ 
+ 👌 Not as good with
+ - Loads chunks only after the main one
+ - Not an issue with progressive hydration
+ 
 `imported-component` would help you to deliver a better SSR or Prerendering experience with `babel-plugin` only. It does not have a real server side logic. 
  
 ## Usage
@@ -124,6 +137,7 @@ There is no build in timeouts to display Error or Loading states. You could cont
 3. Replace `React.Suspense` with our `LazyBoundary`.
 4. Add `rehydrateMarks` to the client code
 5. Add `printDrainHydrateMarks` to the server code code.
+6. Run `yarn imported-components` to extract all your imports into a run time chunk (aka async-requires).
 6. Done. Just read the rest of readme for details.
 
 We have examples for webpack, parcel, and react-snap. Just follow them.
