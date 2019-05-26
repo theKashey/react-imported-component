@@ -49,7 +49,7 @@ Key features:
  
  👍 Better than [React.Lazy](https://reactjs.org/docs/code-splitting.html#reactlazy):
  - SSR, Prerendering and Preloading support.
- - With or without SuspenSe with Error cases support.
+ - With or without Suspense, and easier Error cases support.
  
  👍 Better than [Loadable-Component](https://github.com/smooth-code/loadable-components):
  - No bundler-related issues.
@@ -57,8 +57,8 @@ Key features:
  - Prerendering support - `printDrainHydrateMarks` could be called from user space, so headless __browser could be your server__.
  
  👌 Not as good with
- - Loads chunks only after the main one
- - Not an issue with progressive hydration
+ - Loads chunks only after the main one, as long as loader code is bundled inside the maion chunk.
+ - Not an issue with the `progressive hydration`, and might provide a better UX via feature detection.
  
 `imported-component` would help you to deliver a better SSR or Prerendering experience with `babel-plugin` only. It does not have a real server side logic. 
  
