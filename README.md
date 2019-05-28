@@ -32,20 +32,21 @@
 </div>
  
 Key features:
- - 📖 library level code splitting
- - 🧙️ Prerendering compatible
- - 💡 TypeScript and Flow bindings
+ - 1️⃣ Single source of truth - your __bundler drives__ everything.
+ - 📖 __library__ level code __splitting__
+ - 🧙️ __Prerendering__ compatible
+ - 💡 __TypeScript__ and Flow bindings
  - 🌟 Async on client, sync on server. Supports __Suspense__ (even on server side)
  - 📦 could work with __any bunder__ - webpack or parcel - it does not matter
- - ✂️ could work with any import statement, passed from anywhere
+ - ✂️ could work with any `import` statement, passed from anywhere*
  
  Other features:
- - 🔥 Hot-Module-Replacement friendly
+ - 🔥 Hot-Module-Replacement/React-Hot-Loader friendly
  - ⛓️ support forwardRef
- - Rect 16/Async ready
- - 🛠 HOC and Component API
- - 📦 and yes - this is the only __parcel-bundler compatible__ SSR-friendly React code splitting library
+ - ⚛️ Rect 16/Async ready
+ - 🛠 HOC and __Component__ API
  - 🐳 stream rendering support
+ - 📦 and yes - this is the only __parcel-bundler compatible__ SSR-friendly React code splitting library
  
  👍 Better than [React.Lazy](https://reactjs.org/docs/code-splitting.html#reactlazy):
  - SSR, Prerendering and Preloading support.
@@ -53,6 +54,7 @@ Key features:
  
  👍 Better than [Loadable-Component](https://github.com/smooth-code/loadable-components):
  - No bundler-related issues.
+ - Easy way to use per-browser(modern/legacy) bundles.
  - Strong typing.
  - Prerendering support - `printDrainHydrateMarks` could be called from user space, so headless __browser could be your server__.
  
