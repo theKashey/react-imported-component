@@ -37,8 +37,8 @@ Key features:
  - 🧙️ __Prerendering__ compatible
  - 💡 __TypeScript__ and Flow bindings
  - 🌟 Async on client, sync on server. Supports __Suspense__ (even on server side)
- - 📦 could work with __any bunder__ - webpack or parcel - it does not matter
- - ✂️ could work with any `import` statement, passed from anywhere*
+ - 📦 could work with __any bunder__ - webpack, rollup or parcel - it does not matter
+ - ✂️ could work with any `import` statement, passed from anywhere (while other bundlers require "direct" usage) *
  
  Other features:
  - 🔥 Hot-Module-Replacement/React-Hot-Loader friendly
