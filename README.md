@@ -344,7 +344,7 @@ function renderApplication(res) {
 Use `ImportedStream` to bound all imported component to one "streamId", and then - get used components.
 Without `ImportedStream` streamId will be just 0 for all renders. With `ImportedStream` - it is a counter.
 
-# Hydrid render (CSR with prerendering)
+# Hybrid render (CSR with prerendering)
 This library could support hybrid rendering (aka pre-rendering) compatible in two cases:
 - pre-render supports `state hydration`, like `getState` in [react-snap](https://github.com/stereobooster/react-snap). See our [example](https://github.com/theKashey/react-imported-component/tree/master/examples/hybrid/react-snap).
 - for [rendertron](https://github.com/GoogleChrome/rendertron) or [https://prerender.io](https://prerender.io) follow `react-snap` example, just dump `state` using `setTimeout`.
