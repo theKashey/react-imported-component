@@ -20,10 +20,12 @@
     "@shellscape/koa-send" "^4.1.0"
     debug "^2.6.8"
 
-"@types/cheerio@^0.22.7":
-  version "0.22.7"
-  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.7.tgz#4a92eafedfb2b9f4437d3a4410006d81114c66ce"
-  integrity sha512-+T9qBbqe/jXtTjzVddArZExahoPPmt8eq3O1ZuCKZXjBVxf/ciUYNXrIDZJEVgYvpELnv6VlPRCfLzufRxpAag==
+"@types/cheerio@^0.22.12":
+  version "0.22.12"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.12.tgz#93c050401d4935a5376e8b352965f7458bed5340"
+  integrity sha512-aczowyAJNfrkBV+HS8DyAA87OnvkqGrrOmm5s7V6Jbgimzv/1ZoAy91cLJX8GQrUS60KufD7EIzA2LbK8HV4hg==
+  dependencies:
+    "@types/node" "*"
 
 "@types/node@*":
   version "10.0.1"
