@@ -54,7 +54,7 @@
     "@babel/preset-env": "^7.5.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
-    "@babel/register": "^7.0.0",
+    "@babel/register": "^7.4.4",
     "@types/react": "^16.8.1",
     "babel-eslint": "^9.0.0",
     "babel-plugin-dynamic-import-node": "^1.2.0",
