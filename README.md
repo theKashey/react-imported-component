@@ -254,7 +254,12 @@ React-imported-component break this cycle, making ServerSide rendering sync, and
 comprehensive ways to rehydrate rendered tree on client. 
 It will detect server-side environment and precache all used components.
 
-#### Full-cream SSR-to-Client
+#### Bundler independent SSR
+It does not matter how do you bundle your application - it could be even browser. The secrect sause is a __cli__ command, to extract all your imports into imports map, and use it later to load chunks by request.
+- You might even dont have any separated chunk on the server side - it would still works.
+- You might even ship module/nomodule scripts, using, for example, [devolution](https://github.com/theKashey/devolution) - no additional configuration would be required.
+
+#### Setup SSR
  
 To enable SSR follow these steps.
 1. Add babel plugin 
