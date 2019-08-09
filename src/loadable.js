@@ -1,4 +1,4 @@
-import { loadMark } from './marks';
+import {loadMark} from './marks';
 const isBrowser = (typeof window !== 'undefined');
 
 let pending = [];
