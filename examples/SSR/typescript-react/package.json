@@ -5,7 +5,7 @@
     "start": "node dist/server/index.js"
   },
   "dependencies": {
-    "@types/cheerio": "^0.22.7",
+    "@types/cheerio": "^0.22.13",
     "@types/react": "^16.3.13",
     "@types/redux-devtools-extension": "^2.13.2",
     "@types/webpack-env": "^1.13.6",
