@@ -1,5 +1,5 @@
-import isNode from 'detect-node';
-import {loadMark} from './marks';
+import { loadMark } from './marks';
+const isBrowser = (typeof window !== 'undefined');
 
 let pending = [];
 
@@ -66,7 +66,7 @@ const toLoadable = (importFunction, autoImport = true) => {
     mark.forEach(subMark => loadMark(subMark, loadable))
   }
 
-  if (isNode && autoImport) {
+  if (!isBrowser && autoImport) {
     loadable.load();
   }
   return loadable;

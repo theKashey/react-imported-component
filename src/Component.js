@@ -1,22 +1,22 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import isNode from 'detect-node';
-import {useMark} from './marks';
+import { useMark } from './marks';
 import toLoadable from "./loadable";
-import {UIDConsumer} from "./context";
+import { UIDConsumer } from "./context";
 
+const isBrowser = (typeof window !== 'undefined');
 const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
 const STATE_DONE = 'done';
 
-const FragmentNode = ({children}) => <div>{children}</div>;
+const FragmentNode = ({ children }) => <div>{children}</div>;
 FragmentNode.propTypes = {
   children: PropTypes.any
 };
 
 export const settings = {
   hot: !!module.hot,
-  SSR: isNode
+  SSR: !isBrowser
 };
 
 const getLoadable = importFunction => {
@@ -38,7 +38,7 @@ export class UnconnectedReactImportedComponent extends Component {
     loadable.load().catch(() => ({}));
     this.state.mark = loadable.mark;
 
-    if (isNode && settings.SSR && typeof this.props.streamId !== 'undefined') {
+    if (!isBrowser && settings.SSR && typeof this.props.streamId !== 'undefined') {
       useMark(this.props.streamId, loadable.mark);
       if (this.state.state !== STATE_DONE) {
         this.state.state = STATE_LOADING;
@@ -127,8 +127,8 @@ export class UnconnectedReactImportedComponent extends Component {
   };
 
   render() {
-    const {AsyncComponent, state} = this.state;
-    const {LoadingComponent, ErrorComponent} = this.props;
+    const { AsyncComponent, state } = this.state;
+    const { LoadingComponent, ErrorComponent } = this.props;
 
     if (state === STATE_LOADING && this.props.async) {
       throw this.loadingPromise;
@@ -139,7 +139,7 @@ export class UnconnectedReactImportedComponent extends Component {
     }
 
     if (AsyncComponent) {
-      return <AsyncComponent {...this.props.forwardProps} ref={this.props.forwardRef}/>
+      return <AsyncComponent {...this.props.forwardProps} ref={this.props.forwardRef} />
     }
 
     switch (state) {
@@ -194,8 +194,8 @@ UnconnectedReactImportedComponent.defaultProps = {
 
 const ReactImportedComponent = (props) => (
   settings.SSR
-    ? <UIDConsumer>{UID => <UnconnectedReactImportedComponent {...props} streamId={UID | 0}/>}</UIDConsumer>
-    : <UnconnectedReactImportedComponent {...props} streamId={0}/>
+    ? <UIDConsumer>{UID => <UnconnectedReactImportedComponent {...props} streamId={UID | 0} />}</UIDConsumer>
+    : <UnconnectedReactImportedComponent {...props} streamId={0} />
 );
 
 ReactImportedComponent.propTypes = BaseProps;
