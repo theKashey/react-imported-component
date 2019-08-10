@@ -66,7 +66,8 @@ const toLoadable = (importFunction, autoImport = true) => {
     mark.forEach(subMark => loadMark(subMark, loadable))
   }
 
-  if (!isBackend && autoImport) {
+  if (
+    isBackend && autoImport) {
     loadable.load();
   }
   return loadable;

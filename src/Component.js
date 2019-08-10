@@ -16,7 +16,7 @@ FragmentNode.propTypes = {
 
 export const settings = {
   hot: !!module.hot,
-  SSR: !isBackend
+  SSR: isBackend
 };
 
 const getLoadable = importFunction => {
@@ -38,7 +38,7 @@ export class UnconnectedReactImportedComponent extends Component {
     loadable.load().catch(() => ({}));
     this.state.mark = loadable.mark;
 
-    if (!isBackend && settings.SSR && typeof this.props.streamId !== 'undefined') {
+    if (isBackend && settings.SSR && typeof this.props.streamId !== 'undefined') {
       useMark(this.props.streamId, loadable.mark);
       if (this.state.state !== STATE_DONE) {
         this.state.state = STATE_LOADING;
