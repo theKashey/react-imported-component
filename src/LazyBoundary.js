@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-const isBrowser = (typeof window !== 'undefined');
+import isBackend from './detectBackend';
 
 const LazyBoundary = ({children}) => <React.Fragment>{children}</React.Fragment>;
 LazyBoundary.propTypes = {
   children: PropTypes.node,
 };
 
-export default !isBrowser ? LazyBoundary : React.Suspense;
+export default isBackend ? LazyBoundary : React.Suspense;

@@ -1,5 +1,5 @@
 import {loadMark} from './marks';
-const isBrowser = (typeof window !== 'undefined');
+import isBackend from './detectBackend';
 
 let pending = [];
 
@@ -66,7 +66,7 @@ const toLoadable = (importFunction, autoImport = true) => {
     mark.forEach(subMark => loadMark(subMark, loadable))
   }
 
-  if (!isBrowser && autoImport) {
+  if (!isBackend && autoImport) {
     loadable.load();
   }
   return loadable;
