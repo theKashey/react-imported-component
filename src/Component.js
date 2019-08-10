@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import isNode from 'detect-node';
 import {useMark} from './marks';
 import toLoadable from "./loadable";
 import {UIDConsumer} from "./context";
+import isBackend from './detectBackend';
 
 const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
@@ -16,7 +16,7 @@ FragmentNode.propTypes = {
 
 export const settings = {
   hot: !!module.hot,
-  SSR: isNode
+  SSR: isBackend
 };
 
 const getLoadable = importFunction => {
@@ -38,7 +38,7 @@ export class UnconnectedReactImportedComponent extends Component {
     loadable.load().catch(() => ({}));
     this.state.mark = loadable.mark;
 
-    if (isNode && settings.SSR && typeof this.props.streamId !== 'undefined') {
+    if (isBackend && settings.SSR && typeof this.props.streamId !== 'undefined') {
       useMark(this.props.streamId, loadable.mark);
       if (this.state.state !== STATE_DONE) {
         this.state.state = STATE_LOADING;

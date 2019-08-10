@@ -1,5 +1,5 @@
-import isNode from 'detect-node';
 import {loadMark} from './marks';
+import isBackend from './detectBackend';
 
 let pending = [];
 
@@ -66,7 +66,8 @@ const toLoadable = (importFunction, autoImport = true) => {
     mark.forEach(subMark => loadMark(subMark, loadable))
   }
 
-  if (isNode && autoImport) {
+  if (
+    isBackend && autoImport) {
     loadable.load();
   }
   return loadable;
