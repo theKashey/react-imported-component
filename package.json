@@ -77,7 +77,7 @@
     "react-hot-loader": "^4.1.2",
     "react-test-renderer": "^16.6.0",
     "sinon": "^5.0.10",
-    "size-limit": "^0.21.1"
+    "size-limit": "^2.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.3.1",
