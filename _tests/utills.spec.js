@@ -2,8 +2,12 @@ import React from 'react';
 import {expect} from 'chai';
 
 import {remapImports} from "../src/scanners/scanForImports";
+import {dirname} from "path";
+import {getRelative} from "../src/scanners/shared";
 
 describe('scanForImports', () => {
+  const rel = '.'+dirname(__dirname);
+
   it('should map simple import', () => {
     const imports = {};
     remapImports(
@@ -12,8 +16,10 @@ describe('scanForImports', () => {
       (a, b) => a + b,
       imports
     );
-    console.log(imports);
-  })
+    expect(Object.values(imports)).to.be.deep.equal([
+      `() => import('${rel}/a.js')`
+    ]);
+  });
 
   it('should map simple import with a comment', () => {
     const imports = {};
@@ -23,8 +29,10 @@ describe('scanForImports', () => {
       (a, b) => a + b,
       imports
     );
-    console.log(imports);
-  })
+    expect(Object.values(imports)).to.be.deep.equal([
+      `() => import(/* comment:42 */'${rel}/a.js')`
+    ]);
+  });
 
   it('should map complex import', () => {
     const imports = {};
@@ -37,7 +45,10 @@ describe('scanForImports', () => {
       (a, b) => a + b,
       imports
     );
-    console.log(imports);
+    expect(Object.values(imports)).to.be.deep.equal([
+      `() => import(/* webpack: \"123\" */'${rel}/a.js')`,
+      `() => import(/* webpack: 123 */'${rel}/b.js')`,
+    ]);
   })
 
   it('should remove webpackPrefetch and webpackPreload', () => {
@@ -51,8 +62,9 @@ describe('scanForImports', () => {
       (a, b) => a + b,
       imports
     );
-    console.log(imports);
-  })
-
-
-})
+    expect(Object.values(imports)).to.be.deep.equal([
+      `() => import(/*  *//* webpack: \"123\" */'${rel}/a.js')`,
+      `() => import(/*  */'${rel}/b.js')`,
+    ]);
+  });
+});

@@ -17,9 +17,13 @@ export const loadMark = (markId, loadable) => {
   LOADABLE_MARKS[markId].push(loadable)
 };
 
+export const getUsedMarks = (stream) => USED_MARKS[stream] || {};
+
 export const drainHydrateMarks = (stream = 0) => {
-  const used = Object.keys(USED_MARKS[stream] || {});
+  const used = Object.keys(getUsedMarks(stream));
+  // free mem
   delete USED_MARKS[stream];
+
   return used;
 };
 

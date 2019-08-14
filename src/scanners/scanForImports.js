@@ -81,7 +81,7 @@ function scanTop(root, start, target) {
     /* eslint-disable */
     /* tslint:disable */
      
-    import {assignImportedComponents} from 'react-imported-component';
+    import {assignImportedComponents} from 'react-imported-component/boot';
     
     const applicationImports = [
 ${

@@ -266,7 +266,7 @@ describe('Async Component', () => {
       }
     }
 
-    it('suspence loader, not to be called without flag', () => {
+    it('suspense loader, not to be called without flag', () => {
       const loader = toLoadable(() => Promise.resolve(() => <div>42</div>));
       const wrapper = mount(
         <ErrorBoundary>

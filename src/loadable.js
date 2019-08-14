@@ -3,6 +3,8 @@ import isBackend from './detectBackend';
 
 let pending = [];
 
+const LOADABLE_SIGNATURE = new Map();
+
 const addPending = promise => pending.push(promise);
 const removeFromPending = promise => pending = pending.filter(a => a !== promise);
 const trimImport = str => str.replace(/['"]/g, '');
@@ -10,11 +12,14 @@ const trimImport = str => str.replace(/['"]/g, '');
 export const importMatch = functionString => {
   const markMatches = functionString.match(/['"]imported_(.*?)_component['"]/g) || [];
   return markMatches.map(match => trimImport(match.match(/['"]imported_(.*?)_component['"]/i)[1]));
-}
+};
+
+const getFunctionSignature = (fn) => String(fn);
 
 const toLoadable = (importFunction, autoImport = true) => {
   const _load = () => Promise.resolve().then(importFunction);
-  const mark = importMatch(importFunction.toString());
+  const functionSignature = getFunctionSignature(importFunction);
+  const mark = importMatch(functionSignature);
 
   let resolveResolution;
   const resolution = new Promise(r => {
@@ -36,6 +41,16 @@ const toLoadable = (importFunction, autoImport = true) => {
       this.ok = true;
       this.payload = undefined;
       this.promise = undefined;
+    },
+
+    loadIfNeeded() {
+      if (this.error) {
+        this.reset();
+      }
+      if (!this.promise) {
+        this.load();
+      }
+      return this.promise;
     },
 
     load() {
@@ -62,7 +77,8 @@ const toLoadable = (importFunction, autoImport = true) => {
     }
   };
 
-  if (mark) {
+  if (mark && mark.length) {
+    LOADABLE_SIGNATURE.set(functionSignature, loadable);
     mark.forEach(subMark => loadMark(subMark, loadable))
   }
 
@@ -96,5 +112,25 @@ export const assignImportedComponents = (set) => {
     .keys(set)
     .forEach(key => toLoadable(set[key]))
 };
+
+export const getLoadable = importFunction => {
+  if ('promise' in importFunction) {
+    return importFunction;
+  }
+
+  // read cache signature
+  const functionSignature = getFunctionSignature(importFunction);
+
+  return (
+    LOADABLE_SIGNATURE.get(functionSignature) ||
+    toLoadable(importFunction, false)
+  )
+};
+
+export const es6import = (module) => (
+  module.default
+    ? module.default
+    : module
+);
 
 export default toLoadable;

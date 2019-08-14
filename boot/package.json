@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "main": "../dist/cjs/boot.js",
+  "jsnext:main": "../dist/es2015/boot.js",
+  "module": "../dist/es2015/boot.js",
+  "types": "boot.d.ts"
+}

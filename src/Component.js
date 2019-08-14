@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {useMark} from './marks';
-import toLoadable from "./loadable";
 import {UIDConsumer} from "./context";
 import isBackend from './detectBackend';
+import {settings} from "./config";
+import {es6import, getLoadable} from "./loadable";
 
 const STATE_LOADING = 'loading';
 const STATE_ERROR = 'error';
@@ -12,18 +13,6 @@ const STATE_DONE = 'done';
 const FragmentNode = ({children}) => <div>{children}</div>;
 FragmentNode.propTypes = {
   children: PropTypes.any
-};
-
-export const settings = {
-  hot: !!module.hot,
-  SSR: isBackend
-};
-
-const getLoadable = importFunction => {
-  if ('promise' in importFunction) {
-    return importFunction;
-  }
-  return toLoadable(importFunction, false);
 };
 
 export class UnconnectedReactImportedComponent extends Component {
@@ -85,7 +74,7 @@ export class UnconnectedReactImportedComponent extends Component {
       this.setState(this.pickPrecached());
       return loadable.promise;
     } else {
-      this.loadingPromise = loadable.load();
+      this.loadingPromise = loadable.loadIfNeeded();
       return this.loadingPromise.then((payload) => {
         if (this.mounted) {
           this.setState({
@@ -162,11 +151,6 @@ export class UnconnectedReactImportedComponent extends Component {
   }
 }
 
-const es6import = (module) => (
-  module.default
-    ? module.default
-    : module
-);
 
 const BaseProps = {
   loadable: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
