@@ -3,5 +3,5 @@
   "main": "../dist/cjs/server.js",
   "jsnext:main": "../dist/es2015/server.js",
   "module": "../dist/es2015/server.js",
-  "types": "server.d.ts"
+  "types": "../dist/es2015/server.d.ts"
 }
