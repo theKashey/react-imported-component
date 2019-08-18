@@ -14,7 +14,7 @@ function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
 }
 
 interface ImportedShape<T> {
-  Component?: T;
+  imported?: T;
   error?: any;
   loading?: boolean;
 
@@ -55,7 +55,7 @@ export function useLoadable<T>(loadable: Loadable<T>) {
   };
 }
 
-export function useImported<T, K = T>(importer: DefaultImport<T>, exportPicker: (x: T) => K = es6import): ImportedShape<K> {
+export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, exportPicker: (x: T) => K = es6import): ImportedShape<K> {
   const [topLoadable, setLoadable] = useState(getLoadable(importer));
   const postEffectRef = useRef(false);
   const {
@@ -82,7 +82,7 @@ export function useImported<T, K = T>(importer: DefaultImport<T>, exportPicker: 
 
   if (loadable.done) {
     return {
-      Component: exportPicker(loadable.payload as T),
+      imported: exportPicker(loadable.payload as T),
       loadable,
       retry,
     }

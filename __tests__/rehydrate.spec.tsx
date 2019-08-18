@@ -9,14 +9,15 @@ import imported from '../src/HOC';
 
 import {importMatch} from "../src/loadable";
 import {ImportedStream} from "../src/context";
+import {act} from "react-dom/test-utils";
 
 describe('SSR Component', () => {
-  const TargetComponent = ({payload}:any) => <div>42 - {payload}</div>;
+  const TargetComponent = ({payload}: any) => <div>42 - {payload}</div>;
 
   function importedWrapper(_: any, realImport: any) {
     return realImport;
   }
-  
+
   describe('client-rehydrate', () => {
     beforeEach(() => {
       settings.SSR = false
@@ -24,39 +25,57 @@ describe('SSR Component', () => {
     afterEach(() => {
       settings.SSR = true
     });
-    it.only('green case', () => {
-      const renderSpy1 = jest.fn().mockImplementation(A => <div>{A && <A/>}</div>);
-      const renderSpy2 = jest.fn().mockImplementation(A => <div>{A && <A/>}</div>);
+
+    it('SSR green case', async () => {
       const Component = () => <div>loaded!</div>;
 
       const loader = toLoadable(() => Promise.resolve(Component));
+      let wrapper1: any;
 
-      const wrapper1 = mount(<div><ImportedComponent loadable={loader} render={renderSpy1}/></div>);
-      expect(wrapper1).not.toContain('loaded!');
+      await loader.load();
 
-      expect(renderSpy1).toHaveBeenCalledWith(undefined);
-      return loader.load().then(() => {
-        const wrapper2 = mount(<div><ImportedComponent loadable={loader} render={renderSpy2}/></div>);
-        expect(wrapper2).toContain('loaded!');
-        expect(renderSpy1).toHaveBeenCalledWith(Component);
-        expect(renderSpy2).toHaveBeenCalledWith(Component);
-        expect(renderSpy1).toHaveBeenCalledTimes(3);
-        expect(renderSpy1).toHaveBeenCalledTimes(1);
-      })
+      act(() => {
+        wrapper1 = mount(<ImportedComponent loadable={loader}/>);
+      });
+      expect(wrapper1.html()).toContain('loaded!');
     });
 
-    it('with precache', () => {
+    it('green case', async () => {
+      const renderSpy1 = jest.fn().mockImplementation(A => <div>1 {A && <A/>}</div>);
+      const renderSpy2 = jest.fn().mockImplementation(A => <div>2 {A && <A/>}</div>);
+      const Component = () => <div>loaded!</div>;
+
+      const loader = toLoadable(() => Promise.resolve(Component));
+      let wrapper1: any;
+
+      act(() => {
+        wrapper1 = mount(<div><ImportedComponent loadable={loader} render={renderSpy1}/></div>);
+      });
+      expect(wrapper1.html()).not.toContain('loaded!');
+
+      expect(renderSpy1).toHaveBeenCalledWith(undefined, {error: undefined, loading: true}, undefined);
+
+      await loader.load();
+      const wrapper2 = mount(<div><ImportedComponent loadable={loader} render={renderSpy2}/></div>);
+      expect(wrapper2.html()).toContain('loaded!');
+      expect(renderSpy1).toHaveBeenCalledWith(Component, {"error": undefined, "loading": undefined}, undefined);
+      expect(renderSpy2).toHaveBeenCalledWith(Component, {"error": undefined, "loading": undefined}, undefined);
+      expect(renderSpy1).toHaveBeenCalledTimes(2);
+      expect(renderSpy2).toHaveBeenCalledTimes(1);
+    });
+
+    it('with precache', async () => {
       const renderSpy1 = jest.fn().mockImplementation(A => <div>{A && <A/>}</div>);
       const Component = () => <div>loaded!</div>;
 
       const HotComponent = imported(() => Promise.resolve(Component), {noAutoImport: true})
-      return HotComponent.preload().then(() => {
-        const wrapper2 = mount(<div><HotComponent importedProps={{render: renderSpy1}}/></div>);
-        expect(wrapper2).toContain('loaded!');
-        expect(renderSpy1).toHaveBeenCalledWith(Component);
-        expect(renderSpy1).toHaveBeenCalledTimes(1);
-      })
-    })
+      await HotComponent.preload();
+
+      const wrapper2 = mount(<div><HotComponent importedProps={{render: renderSpy1}}/></div>);
+      expect(wrapper2.html()).toContain('loaded!');
+      expect(renderSpy1).toHaveBeenCalledWith(Component, {"error": undefined, "loading": undefined}, {});
+      expect(renderSpy1).toHaveBeenCalledTimes(1);
+    });
 
     it('without precache', () => {
       const renderSpy2 = jest.fn().mockImplementation(A => <div>{A && <A/>}</div>);

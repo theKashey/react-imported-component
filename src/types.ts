@@ -1,4 +1,5 @@
 import {ComponentType, ReactNode, Ref} from "react";
+import {bool} from "prop-types";
 
 export interface DefaultImportedComponent<P> {
   default: ComponentType<P>;
@@ -43,7 +44,7 @@ export interface Loadable<T> {
 }
 
 export type BaseComponentOptions<P> = {
-  importer: DefaultImport<P>,
+  loadable: DefaultImport<P> | Loadable<P>,
 
   LoadingComponent?: ComponentType<any>,
   ErrorComponent?: ComponentType<any>,
@@ -66,10 +67,16 @@ export type WithRender<P, K> = {
 
 export type ComponentOptions<P, K> = BaseComponentOptions<P> & (WithoutRender<P> | WithRender<P, K>);
 
-export type HOCType<P, K> = ComponentType<K> & AdditionalHOC<DefaultComponent<P>>;
+export type HOCType<P, K> =
+  ComponentType<K & { importedProps: ComponentOptions<P, K> }>
+  & AdditionalHOC<DefaultComponent<P>>;
+
+export type HOCOptions = {
+  noAutoImport?: boolean;
+}
 
 export interface HOC {
-  <P, K = P>(loader: DefaultImport<P>, options?: ComponentOptions<P, K>): HOCType<P, K>;
+  <P, K = P>(loader: DefaultImport<P>, options?: Partial<ComponentOptions<P, K>> & HOCOptions): HOCType<P, K>;
 }
 
 export interface ImportedComponents {

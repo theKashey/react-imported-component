@@ -16,32 +16,30 @@ import {asDefault} from "./utils";
  * @param {Function} [options.onError] - error handler. Will consume the real error.
  * @param {Function} [options.async] - enable React 16+ suspense.
  */
-const loader: HOC = (loaderFunction: any, options: any = {}) => {
-  const loadable = toLoadable(loaderFunction, !options.noAutoImport);
-
-  const ImportedComponent = ({importedProps = {}, ...props}: any):React.ReactElement => (
-    <ImportedComponent
-      loadable={loadable}
-      LoadingComponent={options.LoadingComponent}
-      ErrorComponent={options.ErrorComponent}
-      exportPicker={options.exportPicker}
-      onError={options.onError}
-      render={options.render}
-      async={options.async}
-      forwardProps={props || {}}
-      {...importedProps}
-    />
-  );
+const loader: HOC = (loaderFunction: any, baseOptions: any = {}) => {
+  const loadable = toLoadable(loaderFunction, !baseOptions.noAutoImport);
 
   const Imported = React.forwardRef<any, any>(
-    ({importedProps = {}, ...props}, ref) => (
-      <ImportedComponent
-        {...props}
-        importedProps={{...importedProps, forwardRef: ref}}
-      />
-    )) as any;
+    ({importedProps = {}, ...props}, ref) => {
+      const options = {...baseOptions, ...importedProps};
 
-  /* eslint-enable */
+      return (
+        <ImportedComponent
+          loadable={loadable}
+          exportPicker={options.exportPicker}
+
+          LoadingComponent={options.LoadingComponent}
+          ErrorComponent={options.ErrorComponent}
+
+          onError={options.onError}
+
+          render={options.render}
+
+          forwardProps={props || {}}
+          forwardRef={ref}
+        />
+      )
+    }) as any;
 
   Imported.preload = () => {
     loadable.load().catch(() => ({}));
@@ -60,12 +58,12 @@ export function lazy<T>(importer: DefaultImport<T>): React.FC<T> {
     const trackedLoadable = useRef(loadable);
 
     useEffect(() => {
-      if(trackedLoadable.current!==loadable) {
+      if (trackedLoadable.current !== loadable) {
         trackedLoadable.current = loadable;
       }
     }, ['hot']);
 
-    const [Lazy] = useState( () => React.lazy( () => trackedLoadable.current.loadIfNeeded().then(asDefault)))
+    const [Lazy] = useState(() => React.lazy(() => trackedLoadable.current.loadIfNeeded().then(asDefault)))
 
 
     return (<Lazy {...props as any} />)

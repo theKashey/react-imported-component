@@ -23,7 +23,7 @@ describe('useLoadable', () => {
 describe('useImported', () => {
 
   const getSourceComponent = (importer: () => Promise<any>) => () => {
-    const {Component, error, loading} = useImported(importer);
+    const {imported: Component, error, loading} = useImported(importer);
 
     if (error) {
       return <span>error</span>
@@ -76,13 +76,13 @@ describe('useImported', () => {
   });
 
   it('error case', async () => {
-    const importer = () => importedWrapper('imported_mark2_component', Promise.reject("404"));
+    const importer = () => importedWrapper('imported_mark1_component', Promise.reject("404"));
 
     const SourceComponent = getSourceComponent(importer);
 
     const wrapper = mount(<SourceComponent/>);
     expect(wrapper.html()).toContain("loading");
-    expect(drainHydrateMarks()).toEqual(["mark2"]);
+    expect(drainHydrateMarks()).toEqual(["mark1"]);
 
     await act(async () => {
       await Promise.resolve();

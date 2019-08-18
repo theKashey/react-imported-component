@@ -145,10 +145,11 @@ export const getLoadable = (importFunction: any) => {
   // read cache signature
   const functionSignature = getFunctionSignature(importFunction);
 
-  return (
-    LOADABLE_SIGNATURE.get(functionSignature) ||
-    toLoadable(importFunction, false)
-  )
+  if(LOADABLE_SIGNATURE.has(functionSignature)){
+    return LOADABLE_SIGNATURE.get(functionSignature);
+  }
+
+  return toLoadable(importFunction);
 };
 
 export default toLoadable;
