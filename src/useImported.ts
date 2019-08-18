@@ -1,16 +1,20 @@
 import {useCallback, useContext, useEffect, useState, lazy, useRef, LazyExoticComponent, ComponentType} from 'react';
 import {streamContext} from "./context";
-import {es6import, getLoadable} from "./loadable";
+import {getLoadable} from "./loadable";
 import {useMark} from "./marks";
 import {DefaultImport, DefaultImportedComponent, Loadable} from './types';
+import {es6import} from "./utils";
 
-function loadLoadable(loadable: Loadable<any>, callback: (l: Loadable<any>) => void) {
-  const upd = () => callback(loadable);
-  loadable.then(upd, upd);
+function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
+  const upd = () => callback({});
+
+  loadable
+    .loadIfNeeded()
+    .then(upd, upd);
 }
 
 interface ImportedShape<T> {
-  component?: T;
+  Component?: T;
   error?: any;
   loading?: boolean;
 
@@ -24,9 +28,14 @@ export function useLoadable<T>(loadable: Loadable<T>) {
   const [, forceUpdate] = useState(() => {
     // use mark
     useMark(UID, loadable.mark);
+    loadable.loadIfNeeded();
 
     return {};
   });
+
+  useEffect(() => {
+    loadLoadable(loadable, forceUpdate);
+  }, [loadable]);
 
   // use mark
   // retry
@@ -61,15 +70,8 @@ export function useImported<T, K = T>(importer: DefaultImport<T>, exportPicker: 
     }
 
     postEffectRef.current = true;
-  }, [/*hot*/]);
+  }, ['hot']);
 
-  if (loadable.done) {
-    return {
-      component: exportPicker(loadable.payload as T),
-      loadable,
-      retry,
-    }
-  }
   if (loadable.error) {
     return {
       error: loadable.error,
@@ -78,8 +80,16 @@ export function useImported<T, K = T>(importer: DefaultImport<T>, exportPicker: 
     }
   }
 
+  if (loadable.done) {
+    return {
+      Component: exportPicker(loadable.payload as T),
+      loadable,
+      retry,
+    }
+  }
+
   return {
-    loading: true,
+    loading: loadable.isLoading(),
     loadable,
     retry,
   };

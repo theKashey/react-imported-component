@@ -1,4 +1,4 @@
-import {loadMark} from './marks';
+import {assingLoadableMark} from './marks';
 import isBackend from './detectBackend';
 import {Loadable, Promised} from './types';
 
@@ -44,6 +44,10 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
     error: null,
     payload: undefined,
     promise: undefined,
+
+    isLoading() {
+      return !!this.promise && !this.done;
+    },
 
     reset() {
       this.done = false;
@@ -98,11 +102,11 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
 
   if (mark && mark.length) {
     LOADABLE_SIGNATURE.set(functionSignature, loadable);
-    mark.forEach(subMark => loadMark(subMark, loadable))
+    assingLoadableMark(mark, loadable);
   }
 
-  if (
-    isBackend && autoImport) {
+  // trigger preload on server side
+  if (isBackend && autoImport) {
     loadable.load();
   }
   return loadable;
@@ -113,7 +117,7 @@ export const done = (): Promise<void> => {
     return Promise
       .all(pending)
       .then(a => a[1])
-      .then(done)
+      .then(done);
   }
 
   return Promise.resolve();
@@ -121,6 +125,7 @@ export const done = (): Promise<void> => {
 
 export const dryRender = (renderFunction: () => void) => {
   renderFunction();
+
   return Promise
     .resolve()
     .then(done);
@@ -133,7 +138,7 @@ export const assignImportedComponents = (set: Record<string, Promised<any>>) => 
 };
 
 export const getLoadable = (importFunction: any) => {
-  if ('promise' in importFunction) {
+  if ('resolution' in importFunction) {
     return importFunction;
   }
 
@@ -145,11 +150,5 @@ export const getLoadable = (importFunction: any) => {
     toLoadable(importFunction, false)
   )
 };
-
-export const es6import = (module: any) => (
-  module.default
-    ? module.default
-    : module
-);
 
 export default toLoadable;

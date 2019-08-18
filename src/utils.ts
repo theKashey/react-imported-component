@@ -17,4 +17,10 @@ export function asDefault<T extends ObjectOrFunction>(obj: T | Default<T>): Defa
   }
 }
 
+export const es6import = (module: any) => (
+  module.default
+    ? module.default
+    : module
+);
+
 export const encipherImport = (string: string) => crc32.str(string).toString(32);

@@ -31,6 +31,8 @@ export interface Loadable<T> {
 
   resolution: Promise<T> | undefined;
 
+  isLoading(): boolean;
+
   reset(): void;
 
   loadIfNeeded(): Promise<T>;

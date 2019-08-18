@@ -1,6 +1,11 @@
-import {Loadable} from "./types";
+import {Loadable, Mark} from "./types";
 
-let LOADABLE_MARKS: Record<string, any> = {};
+interface MarkPair {
+  mark: Mark;
+  loadable: Loadable<any>;
+}
+
+let LOADABLE_MARKS = new Map<string, MarkPair>();
 let USED_MARKS: Record<number, Record<string, boolean>> = {};
 
 export const useMark = (stream: number, marks: string[]) => {
@@ -12,11 +17,8 @@ export const useMark = (stream: number, marks: string[]) => {
   }
 };
 
-export const loadMark = (markId: string, loadable: Loadable<any>) => {
-  if (!LOADABLE_MARKS[markId]) {
-    LOADABLE_MARKS[markId] = []
-  }
-  LOADABLE_MARKS[markId].push(loadable)
+export const assingLoadableMark = (mark: Mark, loadable: Loadable<any>) => {
+  LOADABLE_MARKS.set(JSON.stringify(mark), {mark, loadable});
 };
 
 export const getUsedMarks = (stream: number) => USED_MARKS[stream] || {};
@@ -29,16 +31,20 @@ export const drainHydrateMarks = (stream = 0) => {
   return used;
 };
 
-export const rehydrateMarks = (marks?: string[]) => {
-  const rehydrate: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
+const allIn = (a1: string[], a2: string[]) => a1.filter(mark => a2.indexOf(mark) >= 0).length == a1.length;
 
-  return Promise.all(
-    rehydrate
-      .map(mark => LOADABLE_MARKS[mark])
-      .reduce((acc, loadable) => [...acc, ...loadable], [])
-      .filter((it: any) => !!it)
-      .map((loadable: Loadable<any>) => loadable.load())
-  );
+export const rehydrateMarks = (marks?: string[]) => {
+  const rehydrateMarks: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
+  const tasks: Promise<any>[] = [];
+
+  LOADABLE_MARKS
+    .forEach(({mark, loadable}) => {
+      if (allIn(mark, rehydrateMarks)) {
+        tasks.push(loadable.load())
+      }
+    });
+
+  return Promise.all(tasks);
 };
 
 export const printDrainHydrateMarks = (stream = 0) => {
