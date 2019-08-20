@@ -1,5 +1,5 @@
 import {assingLoadableMark} from './marks';
-import isBackend from './detectBackend';
+import {isBackend} from './detectBackend';
 import {Loadable, Promised} from './types';
 
 type AnyFunction = (x: any) => any;
@@ -109,6 +109,7 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
   if (isBackend && autoImport) {
     loadable.load();
   }
+
   return loadable;
 };
 
@@ -145,11 +146,13 @@ export const getLoadable = (importFunction: any) => {
   // read cache signature
   const functionSignature = getFunctionSignature(importFunction);
 
-  if(LOADABLE_SIGNATURE.has(functionSignature)){
+  if (LOADABLE_SIGNATURE.has(functionSignature)) {
     return LOADABLE_SIGNATURE.get(functionSignature);
   }
 
   return toLoadable(importFunction);
 };
+
+export const clearImportedCache = () => LOADABLE_SIGNATURE.clear();
 
 export default toLoadable;

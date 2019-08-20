@@ -1,5 +1,5 @@
 import * as React from 'react';
-import isBackend from './detectBackend';
+import {isBackend} from './detectBackend';
 
 const LazyBoundary: React.FC = ({children}) => <React.Fragment>{children}</React.Fragment>;
 

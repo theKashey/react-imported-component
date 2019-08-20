@@ -4,7 +4,7 @@ import loader from '../src/HOC';
 import {ImportedComponent} from '../src/Component';
 import toLoadable from '../src/loadable';
 
-describe.skip('Async Component', () => {
+describe('Async Component', () => {
 
   describe('loader', () => {
     it('should load component', (done) => {
@@ -13,10 +13,10 @@ describe.skip('Async Component', () => {
 
       const wrapper = mount(<Component payload={42}/>);
 
-      expect(wrapper.find(TargetComponent)).toBe(undefined);
+      expect(wrapper.find(TargetComponent)).toHaveLength(0)
       setImmediate(() => {
         wrapper.update();
-        expect(wrapper.find(TargetComponent)).toContain("42");
+        expect(wrapper.find(TargetComponent).html()).toContain("42");
         wrapper.unmount();
         done();
       });
@@ -37,24 +37,21 @@ describe.skip('Async Component', () => {
 
   describe("SSR", () => {
 
-    it('should precache Components', (done) => {
+    it('should precache Components', async () => {
       const TargetComponent = ({payload}) => <div>{payload}</div>;
       const LoadingComponent = () => <div>loading</div>;
       const loader = toLoadable(() => Promise.resolve(TargetComponent));
+      await loader.load();
 
-      setImmediate(() => {
-
-        const wrapper = mount(
-          <ImportedComponent
-            loadable={loader}
-            LoadingComponent={LoadingComponent}
-            forwardProps={{payload: 42}}
-          />
-        );
-        expect(wrapper.find(LoadingComponent)).toEqual(null);
-        expect(wrapper.find(TargetComponent)).toContain('42');
-        done();
-      });
+      const wrapper = mount(
+        <ImportedComponent
+          loadable={loader}
+          LoadingComponent={LoadingComponent}
+          forwardProps={{payload: 42}}
+        />
+      );
+      expect(wrapper.find(LoadingComponent)).toHaveLength(0);
+      expect(wrapper.find(TargetComponent).html()).toContain('42');
     });
   });
 });

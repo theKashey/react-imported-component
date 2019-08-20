@@ -1,15 +1,16 @@
 import * as React from 'react';
+import {act} from "react-dom/test-utils";
 import * as ReactDOM from "react-dom/server";
 import {mount} from 'enzyme';
+
 import {ImportedComponent} from '../src/Component';
 import {settings} from '../src/config';
 import toLoadable, {done as whenDone} from '../src/loadable';
 import {drainHydrateMarks, rehydrateMarks} from '../src/marks';
 import imported from '../src/HOC';
+import {ImportedStream} from '../src/context';
 
-import {importMatch} from "../src/loadable";
-import {ImportedStream} from "../src/context";
-import {act} from "react-dom/test-utils";
+jest.mock('../src/detectBackend', () => ({isBackend: false}))
 
 describe('SSR Component', () => {
   const TargetComponent = ({payload}: any) => <div>42 - {payload}</div>;
@@ -97,21 +98,22 @@ describe('SSR Component', () => {
     afterEach(() => {
       settings.SSR = true
     });
-    it('green case', () => {
+    it('green case', async () => {
       const renderSpy2 = jest.fn().mockImplementation(A => <div>{A && <A/>}</div>);
       const Component = () => <div>loaded!</div>;
 
       const loader = toLoadable(() => Promise.resolve(Component));
-      return loader.load().then(() => {
-        const wrapper2 = ReactDOM.renderToString(<div>so it<ImportedComponent loadable={loader} render={renderSpy2}/>
-        </div>);
-        expect(wrapper2).toBe('<div data-reactroot="">so it<div><div>loaded!</div></div></div>');
-        expect(renderSpy2).toHaveBeenCalledWith(Component);
-      })
+      await loader.load();
+      const wrapper2 = ReactDOM.renderToString(<div>so it is <ImportedComponent loadable={loader} render={renderSpy2}/>
+      </div>);
+      expect(wrapper2).toBe('<div data-reactroot="">so it is <div><div>loaded!</div></div></div>');
+      expect(renderSpy2).toHaveBeenCalledWith(Component, {error: undefined, loading: undefined}, undefined);
     })
   });
 
   describe('marks', () => {
+    afterEach(() => drainHydrateMarks());
+
     it('SSR Marks without stream', (done) => {
       expect(drainHydrateMarks()).toHaveLength(0);
       const loader1 = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true);
@@ -140,7 +142,7 @@ describe('SSR Component', () => {
           </ImportedStream>
         );
 
-        expect(stream).not.to.equal(0);
+        expect(stream).not.toBe(0);
         expect(drainHydrateMarks(stream)).toEqual(['mark1']);
         expect(drainHydrateMarks(stream)).toHaveLength(0);
 
@@ -148,41 +150,41 @@ describe('SSR Component', () => {
       }, 32);
     });
 
-    it('should generate marks', (done) => {
+    it('should generate marks', async () => {
       expect(drainHydrateMarks()).toHaveLength(0);
       const loader1 = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true);
       const loader2 = toLoadable(() => {
-        importedWrapper('imported_mark2-1_component', Promise.resolve(TargetComponent))
+        importedWrapper('imported_mark2-1_component', Promise.resolve(TargetComponent));
         return importedWrapper('imported_mark2-2_component', Promise.resolve(TargetComponent));
       }, true);
       const loader3 = toLoadable(() => Promise.resolve(TargetComponent), true);
 
+      console.log(loader1, loader1.isLoading());
+      await loader1.resolution;
       // await loaders to load
-      setTimeout(() => {
-        expect(drainHydrateMarks()).toHaveLength(0);
-        const w1 = mount(<ImportedComponent loadable={loader1}/>);
-        expect(w1.find(TargetComponent)).toContain(42);
-        expect(mount(<ImportedComponent loadable={loader2}/>)).toContain(42);
-        expect(mount(<ImportedComponent loadable={loader3}/>)).toContain(42);
 
-        expect(drainHydrateMarks()).toEqual(['mark1', 'mark2-1', 'mark2-2']);
-        expect(drainHydrateMarks()).toHaveLength(0);
+      expect(drainHydrateMarks()).toHaveLength(0);
+      const w1 = mount(<ImportedComponent loadable={loader1}/>);
+      expect(w1.find(TargetComponent).length).toBe(1);
+      expect(w1.find(TargetComponent).html()).toContain(42);
+      expect(mount(<ImportedComponent loadable={loader2}/>).html()).toContain(42);
+      expect(mount(<ImportedComponent loadable={loader3}/>).html()).toContain(42);
 
-        done();
-      }, 32);
+      expect(drainHydrateMarks()).toEqual(['mark1', 'mark2-1', 'mark2-2']);
+      expect(drainHydrateMarks()).toHaveLength(0);
     });
 
     it('should render async', (done) => {
       expect(drainHydrateMarks()).toHaveLength(0);
-      const loader = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), false);
+      const loader = toLoadable(() => importedWrapper('imported_mark1-async_component', Promise.resolve(TargetComponent)), false);
       setImmediate(() => {
         expect(drainHydrateMarks()).toHaveLength(0);
         const wrapper1 = mount(<ImportedComponent loadable={loader}/>);
-        expect(drainHydrateMarks()).toEqual(['mark1']);
-        expect(wrapper1.find(TargetComponent)).not.to.be.present();
+        expect(drainHydrateMarks()).toEqual(['mark1-async']);
+        expect(wrapper1.find(TargetComponent)).toHaveLength(0);
         setImmediate(() => {
           wrapper1.update();
-          expect(wrapper1.find(TargetComponent)).toContain('42');
+          expect(wrapper1.find(TargetComponent).html()).toContain('42');
           done();
         })
       });
@@ -191,12 +193,14 @@ describe('SSR Component', () => {
     it('should render sync', (done) => {
       expect(drainHydrateMarks()).toHaveLength(0);
       const loader = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)));
+
       rehydrateMarks(['mark1']);
+
       setImmediate(() => {
         expect(drainHydrateMarks()).toHaveLength(0);
-        const wrapper1 = mount(<ImportedComponent loadable={loader}/>);
+        const wrapper = mount(<ImportedComponent loadable={loader}/>);
         expect(drainHydrateMarks()).toEqual(['mark1']);
-        expect(wrapper1.find(TargetComponent)).to.be.present();
+        expect(wrapper.find(TargetComponent)).not.toBe(undefined)
         done();
       });
     });
@@ -257,6 +261,63 @@ describe('SSR Component', () => {
           expect(loader1.done).toBe(false);
           expect(loader2.done).toBe(true)
         })
+    });
+
+    it('should load the right marks', async () => {
+      const loader1 = toLoadable(() => importedWrapper('imported_i-mark1_component', Promise.resolve(() => "mark1")), false);
+      const loader2 = toLoadable(() => importedWrapper('imported_i-mark2_component', Promise.resolve(() => "mark2")), false);
+      const loader3 = toLoadable(() => importedWrapper('imported_i-mark3_component', Promise.resolve(() => "mark3")), false);
+
+      const mixedMark = toLoadable(() => Promise.all([
+        importedWrapper('imported_i-mark1_component', Promise.resolve(() => "mark1")),
+        importedWrapper('imported_i-mark2_component', Promise.resolve(() => "mark2")),
+      ]), false);
+
+      rehydrateMarks(['i-mark1']);
+
+      await loader1.resolution;
+
+      expect(loader1.done).toBe(true);
+      expect(loader2.done).toBe(false);
+      expect(loader3.done).toBe(false);
+      expect(mixedMark.done).toBe(false);
+
+      rehydrateMarks(['i-mark2']);
+
+      await loader2.resolution;
+
+      expect(loader1.done).toBe(true);
+      expect(loader2.done).toBe(true);
+      expect(loader3.done).toBe(false);
+      expect(mixedMark.done).toBe(false);
+
+      rehydrateMarks(['i-mark2', 'i-mark1']);
+
+      await mixedMark.resolution;
+
+      expect(loader1.done).toBe(true);
+      expect(loader2.done).toBe(true);
+      expect(loader3.done).toBe(false);
+      expect(mixedMark.done).toBe(true);
+    });
+
+    it('should load the right marks', async () => {
+      const loader1 = toLoadable(() => importedWrapper('imported_i-mark1_component', Promise.resolve(() => "mark1")), false);
+      const loader2 = toLoadable(() => importedWrapper('imported_i-mark2_component', Promise.resolve(() => "mark2")), false);
+      const loader3 = toLoadable(() => importedWrapper('imported_i-mark3_component', Promise.resolve(() => "mark3")), false);
+
+      const mixedMark = toLoadable(() => Promise.all([
+        importedWrapper('imported_i-mark1_component', Promise.resolve(() => "mark1")),
+        importedWrapper('imported_i-mark2_component', Promise.resolve(() => "mark2")),
+      ]), false);
+      rehydrateMarks(['i-mark2', 'i-mark1']);
+
+      await mixedMark.resolution;
+
+      expect(loader1.done).toBe(true);
+      expect(loader2.done).toBe(true);
+      expect(loader3.done).toBe(false);
+      expect(mixedMark.done).toBe(true);
     });
 
     it('should report loading complete', () => {

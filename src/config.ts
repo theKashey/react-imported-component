@@ -1,4 +1,4 @@
-import isBackend from "./detectBackend";
+import {isBackend} from "./detectBackend";
 
 export const settings = {
   hot: (!!module as any).hot,
