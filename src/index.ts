@@ -1,6 +1,6 @@
 import imported, {lazy} from './HOC';
 import {drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks} from './marks';
-import loadableResource, {done as whenComponentsReady, dryRender, assignImportedComponents} from './loadable';
+import {getLoadable as loadableResource, done as whenComponentsReady, dryRender, assignImportedComponents} from './loadable';
 import {ImportedComponent as ComponentLoader} from './Component';
 import {ImportedStream} from "./context";
 import LazyBoundary from './LazyBoundary'

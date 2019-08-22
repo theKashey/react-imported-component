@@ -46,8 +46,9 @@
   "homepage": "https://github.com/theKashey/react-hot-component-loader#readme",
   "devDependencies": {
     "@babel/core": "^7.5.5",
-    "@babel/runtime": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.3.1",
+    "@size-limit/preset-small-lib": "^2.1.1",
     "@types/node": "^12.7.2",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "react-test-renderer": "^16.6.0",
@@ -65,7 +66,11 @@
   "size-limit": [
     {
       "path": "dist/es2015/index.js",
-      "limit": "3.5 KB"
+      "limit": "2.7 KB"
+    },
+    {
+      "path": "dist/es2015/boot.js",
+      "limit": "1.1 KB"
     }
   ],
   "engines": {

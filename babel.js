@@ -1,1 +1,1 @@
-module.exports = require('./dist/cjs/babel').default
+module.exports = require('./dist/es5/babel').default

@@ -2,14 +2,13 @@
     /* eslint-disable */
     /* tslint:disable */
      
-    import {assignImportedComponents} from 'react-imported-component';
+    import {assignImportedComponents} from 'react-imported-component/boot';
     
-    const applicationImports = {
-0: () => import('./components/Another'),
-1: () => import(/* webpackChunkName: "namedChunk-1" */'./components/Other'),
-2: () => import(/* webpackChunkName: "namedChunk-1" */'./components/OtherTween'),
-3: () => import('./App.css'),
-    };
+    const applicationImports = [
+      () => import('./components/Another'),
+      () => import(/* webpackChunkName: "namedChunk-1" */'./components/Other'),
+      () => import(/* webpackChunkName: "namedChunk-1" */'./components/OtherTween'),
+    ];
     
     assignImportedComponents(applicationImports);
     export default applicationImports;

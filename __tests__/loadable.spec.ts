@@ -1,4 +1,4 @@
-import {getLoadable, importMatch} from "../src/loadable";
+import {getFunctionSignature, getLoadable, importMatch} from "../src/loadable";
 
 describe('getLoadable', () => {
   const importedWrapper = (_: any, b: any) => b;
@@ -21,43 +21,43 @@ describe('getLoadable', () => {
 describe('importMatch', () => {
   it('standard', () => {
     expect(
-      importMatch(`() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true)`)
+      importMatch(getFunctionSignature(`() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true)`))
     ).toEqual(['mark1']);
   });
 
   it('webpack', () => {
     expect(
-      importMatch(`() => importedWrapper('imported_mark1_component', __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)
+      importMatch(getFunctionSignature(`() => importedWrapper("imported_mark1_component", __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`))
     ).toEqual(['mark1']);
   });
 
   it('webpack-prod', () => {
     expect(
-      importMatch(`() => importedWrapper('imported_mark1_component',__webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`)
+      importMatch(getFunctionSignature(`() => importedWrapper('imported_mark1_component',__webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/Another */ "./app/components/Another.tsx")))`))
     ).toEqual(['mark1']);
   });
 
   it('functional', () => {
-    expect(importMatch(`"function loadable() {
+    expect(importMatch(getFunctionSignature(`"function loadable() {
         return importedWrapper('imported_1ubbetg_component', __webpack_require__.e(/*! import() | namedChunk-1 */ "namedChunk-1").then(__webpack_require__.t.bind(null, /*! ./DeferredRender */ "./src/DeferredRender.js", 7)));
-      }"`)).toEqual(['1ubbetg']);
+      }"`))).toEqual(['1ubbetg']);
   });
 
   it('parcel', () => {
-    expect(importMatch(`function _() {
+    expect(importMatch(getFunctionSignature(`function _() {
         return importedWrapper('imported_mark1_component', require("_bundle_loader")(require.resolve('./HelloWorld3')));
-    }`)).toEqual(['mark1']);
+    }`))).toEqual(['mark1']);
   });
 
   it('ie11 uglify', () => {
-    expect(importMatch(`function _() {
+    expect(importMatch(getFunctionSignature(`function _() {
         var t = 'imported_mark1_component';
-    }`)).toEqual(['mark1']);
+    }`))).toEqual(['mark1']);
   });
 
   it('multiple imports in one line', () => {
-    expect(importMatch(`function _() {
+    expect(importMatch(getFunctionSignature(`function _() {
         "imported_1pn9k36_component", blablabla- importedWrapper("imported_-1556gns_component")
-    }`)).toEqual(['1pn9k36', '-1556gns']);
+    }`))).toEqual(['1pn9k36', '-1556gns']);
   })
 });

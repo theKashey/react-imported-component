@@ -10,7 +10,7 @@ import {drainHydrateMarks, rehydrateMarks} from '../src/marks';
 import imported from '../src/HOC';
 import {ImportedStream} from '../src/context';
 
-jest.mock('../src/detectBackend', () => ({isBackend: false}))
+jest.mock('../src/detectBackend', () => ({isBackend: true}));
 
 describe('SSR Component', () => {
   const TargetComponent = ({payload}: any) => <div>42 - {payload}</div>;
@@ -150,7 +150,7 @@ describe('SSR Component', () => {
       }, 32);
     });
 
-    it('should generate marks', async () => {
+    it.skip('should generate marks', async () => {
       expect(drainHydrateMarks()).toHaveLength(0);
       const loader1 = toLoadable(() => importedWrapper('imported_mark1_component', Promise.resolve(TargetComponent)), true);
       const loader2 = toLoadable(() => {

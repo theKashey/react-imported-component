@@ -14,7 +14,7 @@ const testPlugin = {
   node: (code: string) => {
     const result = transform(code, {
       presets: ['@babel/preset-react'],
-      plugins: [require.resolve('../dist/cjs/babel'), 'dynamic-import-node'],
+      plugins: [require.resolve('../dist/es5/babel'), 'dynamic-import-node'],
     });
 
     return result.code;
@@ -22,7 +22,7 @@ const testPlugin = {
   webpack: (code: string) => {
     const result = transform(code, {
       presets: ['@babel/preset-react'],
-      plugins: [require.resolve('../dist/cjs/babel')]
+      plugins: [require.resolve('../dist/es5/babel')]
     });
 
     return result.code;

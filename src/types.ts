@@ -1,4 +1,4 @@
-import {ComponentType, ReactNode, Ref} from "react";
+import {ComponentType, ForwardRefExoticComponent, Ref, ReactElement} from "react";
 
 export interface DefaultImportedComponent<P> {
   default: ComponentType<P>;
@@ -16,12 +16,6 @@ export type LoadableComponentState = {
   error?: any;
 }
 
-
-export type AdditionalHOC<T> = {
-  preload(): Promise<T>;
-  done: Promise<T>;
-}
-
 export interface Loadable<T> {
   done: boolean;
   error: any;
@@ -29,7 +23,7 @@ export interface Loadable<T> {
 
   mark: Mark;
 
-  resolution: Promise<T> | undefined;
+  resolution: Promise<void>;
 
   isLoading(): boolean;
 
@@ -60,19 +54,24 @@ export type WithoutRender<P> = {
 }
 
 export type WithRender<P, K> = {
-  render: (Component: P, State: LoadableComponentState, props?: K) => ReactNode;
+  render: (Component: P, State: LoadableComponentState, props?: K) => ReactElement | null;
   forwardProps?: K;
 }
 
 export type ComponentOptions<P, K> = BaseComponentOptions<P> & (WithoutRender<P> | WithRender<P, K>);
 
-export type HOCType<P, K> =
-  ComponentType<K & { importedProps: ComponentOptions<P, K> }>
-  & AdditionalHOC<DefaultComponent<P>>;
-
 export type HOCOptions = {
   noAutoImport?: boolean;
 }
+
+export type AdditionalHOC = {
+  preload(): Promise<void>;
+  done: Promise<void>;
+}
+
+export type HOCType<P, K> =
+  ForwardRefExoticComponent<K> &
+  AdditionalHOC;
 
 export interface HOC {
   <P, K = P>(loader: DefaultImport<P>, options?: Partial<ComponentOptions<P, K>> & HOCOptions): HOCType<P, K>;

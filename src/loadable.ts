@@ -1,6 +1,6 @@
 import {assingLoadableMark} from './marks';
 import {isBackend} from './detectBackend';
-import {Loadable, Promised} from './types';
+import {DefaultImport, Loadable, Promised} from './types';
 
 type AnyFunction = (x: any) => any;
 
@@ -18,12 +18,12 @@ const removeFromPending = (promise: Promise<any>) => pending = pending.filter(a 
 const trimImport = (str: string) => str.replace(/['"]/g, '');
 
 export const importMatch = (functionString: string) => {
-  const markMatches = functionString.match(/['"]imported_(.*?)_component['"]/g) || [];
+  const markMatches = functionString.match(/`imported_(.*?)_component`/g) || [];
   return markMatches
-    .map(match => match && trimImport((match.match(/['"]imported_(.*?)_component['"]/i) || [])[1]));
+    .map(match => match && trimImport((match.match(/`imported_(.*?)_component`/i) || [])[1]));
 };
 
-const getFunctionSignature = (fn: AnyFunction) => String(fn);
+export const getFunctionSignature = (fn: AnyFunction | string) => String(fn).replace(/(["'])/g, '`');
 
 function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable<T> {
   const _load = () => Promise.resolve().then(importFunction);
@@ -31,7 +31,7 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
   const mark = importMatch(functionSignature);
 
   let resolveResolution: AnyFunction;
-  const resolution = new Promise<T>(r => {
+  const resolution = new Promise<void>(r => {
     resolveResolution = r;
   });
 
@@ -111,7 +111,7 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
   }
 
   return loadable;
-};
+}
 
 export const done = (): Promise<void> => {
   if (pending.length) {
@@ -132,13 +132,11 @@ export const dryRender = (renderFunction: () => void) => {
     .then(done);
 };
 
-export const assignImportedComponents = (set: Record<string, Promised<any>>) => {
-  Object
-    .keys(set)
-    .forEach(key => toLoadable(set[key]))
+export const assignImportedComponents = (set: Array<Promised<any>>) => {
+  set.forEach(imported => toLoadable(imported))
 };
 
-export const getLoadable = (importFunction: any) => {
+export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>):Loadable<T> {
   if ('resolution' in importFunction) {
     return importFunction;
   }
@@ -147,11 +145,11 @@ export const getLoadable = (importFunction: any) => {
   const functionSignature = getFunctionSignature(importFunction);
 
   if (LOADABLE_SIGNATURE.has(functionSignature)) {
-    return LOADABLE_SIGNATURE.get(functionSignature);
+    return LOADABLE_SIGNATURE.get(functionSignature) as any;
   }
 
-  return toLoadable(importFunction);
-};
+  return toLoadable(importFunction as any);
+}
 
 export const clearImportedCache = () => LOADABLE_SIGNATURE.clear();
 

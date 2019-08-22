@@ -119,6 +119,9 @@ ${
 }
 
 
+// --------
+
+
 if (!process.argv[3]) {
   console.log('usage: imported-components sourceRoot targetFile');
   console.log('example: imported-components src src/importedComponents.js');

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {ImportedComponent} from './Component';
-import toLoadable from './loadable';
-import {DefaultImport, HOC} from "./types";
+import {getLoadable} from './loadable';
+import {DefaultImport, HOC, HOCType} from "./types";
 import {useLoadable} from "./useImported";
 import {useEffect, useRef, useState} from "react";
 import {asDefault} from "./utils";
@@ -17,16 +17,14 @@ import {asDefault} from "./utils";
  * @param {Function} [options.async] - enable React 16+ suspense.
  */
 const loader: HOC = (loaderFunction: any, baseOptions: any = {}) => {
-  const loadable = toLoadable(loaderFunction, !baseOptions.noAutoImport);
+  const loadable = getLoadable(loaderFunction);
 
   const Imported = React.forwardRef<any, any>(
     ({importedProps = {}, ...props}, ref) => {
       const options = {...baseOptions, ...importedProps};
 
-      const IC = ImportedComponent as any;
-
       return (
-        <IC
+        <ImportedComponent
           loadable={loadable}
 
           LoadingComponent={options.LoadingComponent}
@@ -40,10 +38,11 @@ const loader: HOC = (loaderFunction: any, baseOptions: any = {}) => {
           forwardRef={ref}
         />
       )
-    }) as any;
+    }) as HOCType<any,any>;
 
   Imported.preload = () => {
     loadable.load().catch(() => ({}));
+
     return loadable.resolution;
   };
   Imported.done = loadable.resolution;
@@ -52,7 +51,7 @@ const loader: HOC = (loaderFunction: any, baseOptions: any = {}) => {
 };
 
 export function lazy<T>(importer: DefaultImport<T>): React.FC<T> {
-  const topLoadable = toLoadable(importer);
+  const topLoadable = getLoadable(importer);
 
   return (props: T) => {
     const {loadable} = useLoadable(topLoadable);
@@ -64,7 +63,7 @@ export function lazy<T>(importer: DefaultImport<T>): React.FC<T> {
       }
     }, ['hot']);
 
-    const [Lazy] = useState(() => React.lazy(() => trackedLoadable.current.loadIfNeeded().then(asDefault)))
+    const [Lazy] = useState(() => React.lazy(() => trackedLoadable.current.loadIfNeeded().then(asDefault as any) as any))
 
 
     return (<Lazy {...props as any} />)

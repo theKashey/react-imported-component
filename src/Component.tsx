@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {ComponentOptions} from "./types";
 import {useImported} from "./useImported";
+import {ReactElement} from "react";
 
-export function ImportedComponent<P, K>(props: ComponentOptions<P, K>): React.ReactNode {
+const ImportedComponent = function <P, K>(props: ComponentOptions<P, K>): ReactElement | null {
   const {loading, error, loadable, imported: Component, retry} = useImported(props.loadable);
 
   if (loading && props.async) {
@@ -37,4 +38,8 @@ export function ImportedComponent<P, K>(props: ComponentOptions<P, K>): React.Re
   }
 
   return null;
+};
+
+export {
+  ImportedComponent
 }
