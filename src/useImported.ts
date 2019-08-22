@@ -111,16 +111,16 @@ export function useLazy<T>(importer: DefaultImport<T>): LazyExoticComponent<Comp
     }
   });
 
-  const {error, component} = useImported(importer);
+  const {error, imported} = useImported(importer);
 
   useEffect(() => {
     if (error) {
       reject!(error)
     }
-    if (component) {
-      resolve!(error);
+    if (imported) {
+      resolve!(imported);
     }
-  }, [error, component]);
+  }, [error, imported]);
 
   return lazyComponent;
 }

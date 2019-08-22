@@ -23,10 +23,11 @@ const loader: HOC = (loaderFunction: any, baseOptions: any = {}) => {
     ({importedProps = {}, ...props}, ref) => {
       const options = {...baseOptions, ...importedProps};
 
+      const IC = ImportedComponent as any;
+
       return (
-        <ImportedComponent
+        <IC
           loadable={loadable}
-          exportPicker={options.exportPicker}
 
           LoadingComponent={options.LoadingComponent}
           ErrorComponent={options.ErrorComponent}

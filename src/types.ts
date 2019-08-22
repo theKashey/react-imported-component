@@ -1,5 +1,4 @@
 import {ComponentType, ReactNode, Ref} from "react";
-import {bool} from "prop-types";
 
 export interface DefaultImportedComponent<P> {
   default: ComponentType<P>;

@@ -2,8 +2,7 @@ import * as React from 'react';
 import {ComponentOptions} from "./types";
 import {useImported} from "./useImported";
 
-export function ImportedComponent<P, K>(props: ComponentOptions<P, K>) {
-
+export function ImportedComponent<P, K>(props: ComponentOptions<P, K>): React.ReactNode {
   const {loading, error, loadable, imported: Component, retry} = useImported(props.loadable);
 
   if (loading && props.async) {

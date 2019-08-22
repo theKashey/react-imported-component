@@ -46,6 +46,7 @@
   "homepage": "https://github.com/theKashey/react-hot-component-loader#readme",
   "devDependencies": {
     "@babel/core": "^7.5.5",
+    "@babel/runtime": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
     "@types/node": "^12.7.2",
     "babel-plugin-dynamic-import-node": "^2.3.0",
@@ -55,10 +56,9 @@
     "ts-react-toolbox": "^0.2.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.3.1",
     "crc-32": "^1.2.0",
     "detect-node": "^2.0.4",
-    "prop-types": "15.6.2",
+    "prop-types": "^15.6.2",
     "scan-directory": "^1.0.0",
     "tslib": "^1.10.0"
   },
