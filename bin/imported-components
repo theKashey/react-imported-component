@@ -1,3 +1,5 @@
 #!/usr/bin/env node
+process.argv[2]='app';
+process.argv[3]='app/imported.ts';
 
 require('../dist/es5/scanners/scanForImports');

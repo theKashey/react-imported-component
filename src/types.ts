@@ -50,7 +50,7 @@ export interface Loadable<T> {
 }
 
 export type ComponentOptions<P, K> = {
-  loadable: DefaultComponentImport<P> | Loadable<P>,
+  loadable: DefaultComponentImport<P> | Loadable<ComponentType<P>>,
 
   LoadingComponent?: ComponentType<any>,
   ErrorComponent?: ComponentType<any>,

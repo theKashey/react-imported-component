@@ -2,7 +2,7 @@ import {useCallback, useContext, useEffect, useState, lazy, useRef, LazyExoticCo
 import {streamContext} from "./context";
 import {getLoadable} from "./loadable";
 import {useMark} from "./marks";
-import {DefaultComponentImport, DefaultImportedComponent, Loadable} from './types';
+import {DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable} from './types';
 import {es6import} from "./utils";
 
 function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
@@ -55,7 +55,7 @@ export function useLoadable<T>(loadable: Loadable<T>) {
   };
 }
 
-export function useImported<T, K = T>(importer: DefaultComponentImport<T> | Loadable<T>, exportPicker: (x: T) => K = es6import): ImportedShape<K> {
+export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, exportPicker: (x: T) => K = es6import): ImportedShape<K> {
   const [topLoadable, setLoadable] = useState(getLoadable(importer));
   const postEffectRef = useRef(false);
   const {

@@ -17,7 +17,7 @@ import {isBackend} from "./detectBackend";
  * @param {Function} [options.onError] - error handler. Will consume the real error.
  * @param {Function} [options.async] - enable React 16+ suspense.
  */
-const loader: HOC = (loaderFunction: any, baseOptions: any = {}) => {
+const loader: HOC = (loaderFunction, baseOptions = {}) => {
   const loadable = getLoadable(loaderFunction);
 
   const Imported = React.forwardRef<any, any>(

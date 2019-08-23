@@ -1,6 +1,6 @@
 import {assingLoadableMark} from './marks';
 import {isBackend} from './detectBackend';
-import {DefaultComponentImport, Loadable, Promised} from './types';
+import {DefaultImport, Loadable, Promised} from './types';
 
 type AnyFunction = (x: any) => any;
 
@@ -23,7 +23,11 @@ export const importMatch = (functionString: string) => {
     .map(match => match && trimImport((match.match(/`imported_(.*?)_component`/i) || [])[1]));
 };
 
-export const getFunctionSignature = (fn: AnyFunction | string) => String(fn).replace(/(["'])/g, '`');
+export const getFunctionSignature = (fn: AnyFunction | string) => (
+  String(fn)
+    .replace(/(["'])/g, '`')
+    .replace(/\/\*([^\*]*)\*\//ig, 'DEL')
+);
 
 function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable<T> {
   const _load = () => Promise.resolve().then(importFunction);
@@ -150,7 +154,7 @@ export const assignImportedComponents = (set: Array<Promised<any>>) => {
   set.forEach(imported => toLoadable(imported))
 };
 
-export function getLoadable<T>(importFunction: DefaultComponentImport<T> | Loadable<T>): Loadable<T> {
+export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): Loadable<T> {
   if ('resolution' in importFunction) {
     return importFunction;
   }
