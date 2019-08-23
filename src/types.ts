@@ -4,12 +4,23 @@ export interface DefaultImportedComponent<P> {
   default: ComponentType<P>;
 }
 
+export interface Default<T> {
+  default: T;
+}
+
 export type Mark = string[];
 
 export type Promised<T> = () => Promise<T>;
 
 export type DefaultComponent<P> = ComponentType<P> | DefaultImportedComponent<P>;
-export type DefaultImport<T> = () => Promise<DefaultComponent<T>>
+export type DefaultComponentImport<T> = () => Promise<DefaultComponent<T>>
+
+
+export type Defaultable<P> = P | Default<P>;
+export type DefaultImport<T> = () => Promise<Defaultable<T>>
+
+
+export type LazyImport<T> = () => Promise<DefaultImportedComponent<T>>
 
 export type LoadableComponentState = {
   loading?: boolean;
@@ -31,13 +42,15 @@ export interface Loadable<T> {
 
   loadIfNeeded(): Promise<T>;
 
+  tryResolveSync<Y = T>(then: (x: T) => Y): Promise<Y>;
+
   load(): Promise<T>;
 
   then(callback: (x: T) => void, err: () => void): Promise<any>;
 }
 
-export type BaseComponentOptions<P> = {
-  loadable: DefaultImport<P> | Loadable<P>,
+export type ComponentOptions<P, K> = {
+  loadable: DefaultComponentImport<P> | Loadable<P>,
 
   LoadingComponent?: ComponentType<any>,
   ErrorComponent?: ComponentType<any>,
@@ -46,19 +59,11 @@ export type BaseComponentOptions<P> = {
 
   async?: boolean;
 
+  render?: (Component: ComponentType<P>, State: LoadableComponentState, props?: K) => ReactElement | null;
+
   forwardRef?: Ref<any>;
-}
-
-export type WithoutRender<P> = {
-  forwardProps?: P;
-}
-
-export type WithRender<P, K> = {
-  render: (Component: P, State: LoadableComponentState, props?: K) => ReactElement | null;
   forwardProps?: K;
 }
-
-export type ComponentOptions<P, K> = BaseComponentOptions<P> & (WithoutRender<P> | WithRender<P, K>);
 
 export type HOCOptions = {
   noAutoImport?: boolean;
@@ -70,11 +75,11 @@ export type AdditionalHOC = {
 }
 
 export type HOCType<P, K> =
-  ForwardRefExoticComponent<K> &
+  ForwardRefExoticComponent<K & { importedProps?: Partial<ComponentOptions<P, K>> }> &
   AdditionalHOC;
 
 export interface HOC {
-  <P, K = P>(loader: DefaultImport<P>, options?: Partial<ComponentOptions<P, K>> & HOCOptions): HOCType<P, K>;
+  <P, K = P>(loader: DefaultComponentImport<P>, options?: Partial<ComponentOptions<P, K>> & HOCOptions): HOCType<P, K>;
 }
 
 export interface ImportedComponents {

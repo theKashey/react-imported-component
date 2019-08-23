@@ -1,6 +1,6 @@
 import {assingLoadableMark} from './marks';
 import {isBackend} from './detectBackend';
-import {DefaultImport, Loadable, Promised} from './types';
+import {DefaultComponentImport, Loadable, Promised} from './types';
 
 type AnyFunction = (x: any) => any;
 
@@ -76,6 +76,20 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
       return this.promise!;
     },
 
+    tryResolveSync(then) {
+      if (this.done) {
+        const result = then(this.payload as any);
+        return {
+          then(cb: any) {
+            // synchronous thenable - https://github.com/facebook/react/pull/14626
+            cb(result);
+          }
+        } as any
+      }
+
+      return this.loadIfNeeded().then(then);
+    },
+
     load() {
       if (!this.promise) {
         const promise = this.promise = _load()
@@ -136,7 +150,7 @@ export const assignImportedComponents = (set: Array<Promised<any>>) => {
   set.forEach(imported => toLoadable(imported))
 };
 
-export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>):Loadable<T> {
+export function getLoadable<T>(importFunction: DefaultComponentImport<T> | Loadable<T>): Loadable<T> {
   if ('resolution' in importFunction) {
     return importFunction;
   }

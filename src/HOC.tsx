@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {ImportedComponent} from './Component';
 import {getLoadable} from './loadable';
-import {DefaultImport, HOC, HOCType} from "./types";
+import {HOC, HOCType, LazyImport} from "./types";
 import {useLoadable} from "./useImported";
 import {useEffect, useRef, useState} from "react";
 import {asDefault} from "./utils";
+import {isBackend} from "./detectBackend";
 
 /**
  *
@@ -38,7 +39,7 @@ const loader: HOC = (loaderFunction: any, baseOptions: any = {}) => {
           forwardRef={ref}
         />
       )
-    }) as HOCType<any,any>;
+    }) as HOCType<any, any>;
 
   Imported.preload = () => {
     loadable.load().catch(() => ({}));
@@ -50,7 +51,11 @@ const loader: HOC = (loaderFunction: any, baseOptions: any = {}) => {
   return Imported;
 };
 
-export function lazy<T>(importer: DefaultImport<T>): React.FC<T> {
+export function lazy<T>(importer: LazyImport<T>): React.FC<T> {
+  if (isBackend) {
+    return loader(importer);
+  }
+
   const topLoadable = getLoadable(importer);
 
   return (props: T) => {
@@ -63,8 +68,13 @@ export function lazy<T>(importer: DefaultImport<T>): React.FC<T> {
       }
     }, ['hot']);
 
-    const [Lazy] = useState(() => React.lazy(() => trackedLoadable.current.loadIfNeeded().then(asDefault as any) as any))
-
+    const [Lazy] = useState(
+      () => React.lazy(
+        () => (
+          trackedLoadable.current.tryResolveSync(asDefault as any) as any
+        ),
+      )
+    );
 
     return (<Lazy {...props as any} />)
   }

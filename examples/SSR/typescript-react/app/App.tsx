@@ -8,14 +8,15 @@ const Another = importedComponent(() => import(/* webpackChunkName: namedChunk-0
 const Other1 = importedComponent(() => import(/* webpackChunkName: "namedChunk-1" */"./components/Other"));
 const Other2 = importedComponent(() => import(/* webpackChunkName: "namedChunk-1" */"./components/OtherTween"));
 
-// const AnotherWrapped = importedComponent(() => import(/* webpackChunkName: namedChunk-0 */"./components/Another"), {
-//   render(Component, state, props: { prop: number }) {
-//     if (state === "loading") {
-//       return <span/>
-//     }
-//     return <div className="wrapped"><Component test={props.prop} p2={props.prop}/></div>
-//   }
-// });
+const AnotherWrapped = importedComponent(
+  () => import(/* webpackChunkName: namedChunk-0 */"./components/Another"), {
+    render(Component, state, props: { prop: number }) {
+      if (state === "loading") {
+        return <span/>
+      }
+      return <div className="wrapped"><Component test={props.prop} p2={props.prop}/></div>
+    }
+  });
 //import Another from "./components/Another";
 
 // @ts-ignore
@@ -35,10 +36,10 @@ export default function App() {
       [home]<Home/>[/home]
       <Another test={42} p2={42}/>
 
-      {/*<AnotherWrapped prop={24}/>*/}
+      <AnotherWrapped prop={24}/>
 
       <Other1 test={42}/>
-      { 0 && <Other2/> }
+      {0 && <Other2/>}
       <Home/>
     </div>
   );

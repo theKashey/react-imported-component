@@ -1,0 +1,1 @@
+export const magicFunction = (x: number) => `** ${x} **`;
