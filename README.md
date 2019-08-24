@@ -4,9 +4,9 @@
   <img src="./assets/imported-logo.png" alt="imported components" width="409" align="center">
   <br/>
   <br/>
-   SSR-friendly code splitting made esier for any platform.
+   SSR-friendly code splitting compatible with any platform.
   <br/>
-   Deliver a better experience with a single import.
+   Deliver a better experience within a single import.
   <br/>
   <br/>
   
@@ -30,248 +30,184 @@
     
   <br/>
 </div>
+
+👉 [Usage](#usage)  |  [API](#api)  | [Server side](#ssr)  
+
  
 Key features:
  - 1️⃣ Single source of truth - your __bundler drives__ everything.
  - 📖 __library__ level code __splitting__
- - 🧙️ __Prerendering__ compatible
- - 💡 __TypeScript__ and Flow bindings
+ - 🧙️ Hybrid and __Prerendering__ compatible
+ - 💡 __TypeScript__ bindings
+ - ⚛️ __React.Lazy__ underneath
  - 🌟 Async on client, sync on server. Supports __Suspense__ (even on server side)
- - 📦 could work with __any bunder__ - webpack, rollup or parcel - it does not matter
- - ✂️ could work with any `import` statement, passed from anywhere (while other bundlers require "direct" usage) *
+ - 📦 could work with __any bundler__ - webpack, rollup, parcel or puppeteer - it does not matter 
  
  Other features:
  - 🔥 Hot-Module-Replacement/React-Hot-Loader friendly
  - ⛓️ support forwardRef
- - ⚛️ Rect 16/Async ready
- - 🛠 HOC and __Component__ API
+ - ⚛️ Rect 16/Async/Hooks ready
+ - 🛠 HOC, Component, Hooks API
  - 🐳 stream rendering support
+ - 👥 partial hydration out of the box
  - 📦 and yes - this is the only __parcel-bundler compatible__ SSR-friendly React code splitting library
  
  👍 Better than [React.Lazy](https://reactjs.org/docs/code-splitting.html#reactlazy):
+ - It __IS__ Lazy, just with some stuff around
  - SSR, Prerendering and Preloading support.
  - With or without Suspense, and easier Error cases support.
  
  👍 Better than [Loadable-Component](https://github.com/smooth-code/loadable-components):
- - No bundler-related issues.
+ - Not bound to webpack.
  - Easy way to use per-browser(modern/legacy) bundles.
  - Strong typing.
- - Prerendering support - `printDrainHydrateMarks` could be called from user space, so headless __browser could be your server__.
+ - Prerendering support
  
  👌 Not as good with
- - Loads chunks only after the main one, as long as loader code is bundled inside the maion chunk.
+ - Loads chunks only after the `main one`, as long as loader code is bundled inside the main chunk, so it should be loaded first.
  - Not an issue with the `progressive hydration`, and might provide a better UX via feature detection.
- 
-`imported-component` would help you to deliver a better SSR or Prerendering experience with `babel-plugin` only. It does not have a real server side logic. 
- 
-## Usage
+ - Provides 👨‍🔬 technological workaround
+    
+<a name="usage"/>
 
+# Usage
+
+## Server side
+Just a proper setup and a bit of magic
+
+## Client side
+
+### Component
+`imported` provides 2 common ways to define a component, which are more different inside than outside 
+
+- using `pre-lazy` API.
 ```javascript
 import importedComponent from 'react-imported-component';
 const Component = importedComponent( () => import('./Component'));
 
 const Component = importedComponent( () => import('./Component'), {
-  LoadingComponent: Spinner,
-  ErrorComponent: FatalError
+  LoadingComponent: Spinner, // what to display during the loading
+  ErrorComponent: FatalError // what to display in case of error
 });
 
 Component.preload(); // force preload
 
 // render it
 <Component... />
+```
 
-//
+- using `lazy` API. It's almost the same `React.lazy` outside, and exactly the same inside.
+```js
 import {lazy, LazyBoundary} from 'react-imported-component'
-const Component = lazy( () => import('./Component'));
+const Component = lazy(() => import('./Component'));
 
-// CSR only
-<Suspense>
- <Component />
-</Suspense> 
+const ClientSideOnly = () => (
+    <Suspense>
+     <Component />
+    </Suspense> 
+);
 
-or
-// SSR friendly
-<LazyBoundary>
-  <Component />
-</LazyBoundary> 
+// or let's make it SSR friendly
+const ServerSideFriendly = () => (
+    <LazyBoundary> // LazyBoundary is Suspense on the client, and "nothing" on the server
+      <Component />
+    </LazyBoundary> 
+)
 ```
 `LazyBoundary` is a `Suspense` on Client Side, and `React.Fragment` on Server Side. Don't forget - "dynamic" imports are sync on a server.
 
 Example: [React.lazy vs Imported-component](https://codesandbox.io/s/wkl95r0qw8)
 
-## API
+### Hook
+However, you may not load only components - you may load anything
+```js
+import {useImported} from 'react-imported-component'
+
+const MyCalendarComponent = () => {
+  const {
+      moment,
+      loading
+    } = useImported(() => import("moment"));
+  
+  return loading ? "..." : <span>today is {moment(Date.now).format()}</span>
+}
+
+// or we could make it a bit more interesting...
+
+const MyCalendarComponent = () => {
+  const {
+      imported: format  = x => "---", // default value is used while importing library
+    } = useImported(
+      () => import("moment"), 
+      moment => x => moment(x).format // masking everything behind
+    );
+  
+  return <span>today is {format(Date.now())</span>
+}
+```
+What you could load using `useImported`? Everything - `imported` itself is using it to import components.
+
+<a name="api"/>
+
+# API
 
 ### Code splitting components
+> import {*} from 'react-imported-component';
 - `importedComponent(importFunction, [options]): ComponentLoader` - main API, default export, HOC to create imported component.
-  - importFunction - function which resolves with Component to be imported.
-  - options - optional settings
-  - options.LoadingComponent - component to be shown in Loading state
-  - options.async - activates react suspense support. Will throw a Promise in a Loading State - use it with Suspense in a same way you use __React.lazy__.
-  - options.ErrorComponent - component to be shown in Error state. Will re-throw error if ErrorComponent is not set. 
-  Use ErrorBoundary to catch it.  
-  - options.onError - function to consume the error, if one will thrown. Will rethrow a real error if not set.
-  - options.exportPicker - function to pick `not default` export from a `importFunction`
-  - options.render(Component, state, props) - function to render the result. Could be used to tune the rendering.  
+  - `importFunction - function which resolves with Component to be imported.
+  - `options` - optional settings
+  - `options.async` - activates react suspense support. Will throw a Promise in a Loading State - use it with Suspense in a same way you use __React.lazy__.
+  - `options.LoadingComponent` - component to be shown in Loading state
+  - `options.ErrorComponent` - component to be shown in Error state. Will re-throw error if ErrorComponent is not set. Use ErrorBoundary to catch it.  
+  - `options.onError` - function to consume the error, if one will thrown. Will rethrow a real error if not set.
+  - `options.exportPicker` - function to pick `not default` export from a `importFunction`
+  - `options.render(Component, state, props) `- function to render the result. Could be used to tune the rendering.  
   
-- importedComponent`.preload` - static method to preload components.
+  - [static] `.preload` - static method to preload components.
 
-- `lazy` - helper to mimic __React.lazy__ behavior (it is just `_importedComponent_(fn, { async: true })`).
+- `lazy(importFunction)` - helper to mimic __React.lazy__ behavior
 
-- `ComponentLoader`, the React Component variant of importedComponent. accepts `importFunction` as a `loadable` prop.
+- `useImported(importFunction, exportPicker?)` - code splitting hook
+  - `importFunction` - a function which resolves to `default` or `wildcard` import(T | {default:T})
+  - `exportPicker` - function to pick "T" from the import
 
 ### Server side API
-- `printDrainHydrateMarks()`, print our the `drainHydrateMarks`.
-- `drainHydrateMarks()`, returns the currently used marks, and clears the list.
-- `whenComponentsReady():Promise`, will be resolved, when all components are loaded. Usually on the next "Promise" tick.
+> import {*} from 'react-imported-component/server';
+- `whenComponentsReady():Promise` - will be resolved, when all components are loaded. Usually on the next "Promise" tick.
+- `drainHydrateMarks([stream])` - returns the currently used marks, and clears the list. 
+- `printDrainHydrateMarks([stream])` - print our the `drainHydrateMarks`.
+#### Stream API
+- `createLoadableStream` - creates a steam
+- `ImportedStream` - wraps another component with import usage tracker.
+- `createLoadableTransformer` - creates nodejs StreamTransformer
+- `getLoadableTrackerCallback` - helper factory for the stream transformer
 
 ### Client side API
-- `rehydrateMarks():Promise`, loads _marked_ async chunks.
-- `whenComponentsReady():Promise`, will be resolved, when all marks are loaded.
-- (deprecated)`dryRender(renderFunction):Promise`, perform sandboxed render, and resolves "whenComponentsReady".
+> import {*} from 'react-imported-component/boot';
+- `whenComponentsReady():Promise`, will be resolved, when all (loading right now) marks are loaded.
+- `rehydrateMarks([marks]):Promise`, loads _marked_ async chunks.
+- `injectLoadableTracker` - helper factory for the stream transformer
    
-### Timeout to display "spinners"   
-There is no build in timeouts to display Error or Loading states. You could control everything by yourself
-- use react-delay, p-delay, p-timeout, or `Suspense` :P.   
-
 # Setup
+
+## In short
 1. Add `babel` plugin
-2. Replace `React.lazy` with our `lazy`.
-3. Replace `React.Suspense` with our `LazyBoundary`.
-4. Add `rehydrateMarks` to the client code
-5. Add `printDrainHydrateMarks` to the server code code.
-6. Run `yarn imported-components` to extract all your imports into a run time chunk (aka async-requires).
+2. Run `yarn imported-components src src/imported.js` to extract all your imports into a `run time chunk` (aka async-requires).
+3. Replace `React.lazy` with our `lazy`, and `React.Suspense` with our `LazyBoundary`.
+4. Add `printDrainHydrateMarks` to the server code code.
+5. Add `rehydrateMarks` to the client code
 6. Done. Just read the rest of readme for details.
 
-We have examples for webpack, parcel, and react-snap. Just follow them.
+There are examples for webpack, parcel, and react-snap. Just follow them.
 
-## Using dynamic import
-
-One of the key features - "could work with any import statement, passed from anywhere". 
-All others `full-cream` SSR bundlers relay on `import` statement inside their HOC,
-like in the example just above, disallowing any composition.
-
-React-imported-component is different. But still "full-cream".
-
-```javascript
-import importedComponent from 'react-imported-component';
-const myImportFunction = () => import('./Component')
-const Component = importedComponent(myImportFunction);
-```
-
-```javascript
-import importedComponent from 'react-imported-component';
-const mySuperImportedFactory = importFunction => importedComponent(importFunction); 
-export default mySuperImportedFactory
-//... in another file
-mySuperImportedFactory(() => import('./Component'));
-mySuperImportedFactory(async () => {
-  const Component = await import('./Component');
-  return () => <Component props />
-});
-```
-
-If you need something complex, load more that one source for example.
-```js
-importedComponent(async () => {
-  const [Component1, Component2, i18n] = await Promise.all([ 
-    import('./Component1'),
-    import('./Component2'),
-    import('./i18n')
-  ]);
-  return (props) => <Component1><Component2 i18n={i18n} {...props} /></Component1>;
-});
-```
-
-!!__BUT NOT__!!
-```javascript
-import importedComponent from 'react-imported-component';
-const myImportFunction = () => import('./Component')
-const myAnotherFunction = () => myImportFunction; 
-const Component = importedComponent(myAnotherFunction);
-```
-Function with `import inside` should be __passed directly__ to importedComponent,
-as long importedComponent will __analyze content of passed function__.
-
-To use webpack chunks - just add comments inside an import function
-```js
-importedComponent( () => import(/* webpackChunkName:'pages' */'./Component'));
-```
-
-That is all. Component will be loaded in time and then displayed. And updated on module replacement of course.
-
-#### Component loader
-As long as `importedComponent` is a fabric function, which produces React Component, which will perform the loading,
-you may use React Component without calling a fabric function.
-```js
-import {ComponentLoader} from 'react-imported-component';
-
-const MyPage = () => (
-   <ComponentLoader
-       loadable={() => import('./Page.js')}
-       // all fields are optional, and matches the same field of importedComponent.
-       LoadingComponent={Loading}
-       ErrorComponent={Error}
-       onError
-       
-       exportPicker
-       render
-       async                 
-   />
-);
-```
-Actually `loadable` awaits for `loadableResource`, but could do auto transformation. 
-```js
-import {loadableResource} from 'react-imported-component';
-// ...
-loadable = {loadableResource(() => import('xxx'))}
-```
-loadableResource is just a sugar around `import`.
-
-## Suspense (React Async)
-Just pass down an option for `importedComponent`, or prop for `ComponentLoader, and 
-catch the loading promise, imported component will throw if _loading state_ will took a place.
-
-Use `LazyBoundary` helper for SSR - friendly _Suspense_.
-
-## Library level code splitting
-You may codesplit not only "Components", but also modules, like `momentjs`,
-which would be given/imported as a `renderProp`.
-This feature has been extract to a separate library - [react-imported-library](https://github.com/theKashey/react-imported-library)
-```js
-import {importedLibraryDefault} from 'react-imported-library';
-
-// this will import `default` export
-const Moment = importedLibraryDefault( () => import('momentjs'));
-
-<Moment>
- { (momentjs) => <span> {momentjs(date).format(FORMAT)}</span> }
-</Moment>
-```
-
-## SSR (Server side rendering)
-It was usually a headache - async components and SSR, which is currently sync.
-React-imported-component break this cycle, making ServerSide rendering sync, and providing
-comprehensive ways to rehydrate rendered tree on client. 
-It will detect server-side environment and precache all used components.
-
-#### Bundler independent SSR
-It does not matter how do you bundle your application - it could be even browser. The secrect sause is a __cli__ command, to extract all your imports into imports map, and use it later to load chunks by request.
-- You might even dont have any separated chunk on the server side - it would still works.
-- You might even ship module/nomodule scripts, using, for example, [devolution](https://github.com/theKashey/devolution) - no additional configuration would be required.
-
-#### Setup SSR
- 
-To enable SSR follow these steps.
-1. Add babel plugin 
+## 1. Configure babel plugin
 **On the server**:
 ```json
 {
-  "plugins": ["react-imported-component/babel", "babel-plugin-dynamic-import-node"]
+  "plugins": ["react-imported-component/babel", "babel-plugin-dynamic-import-node"/* might be optional for babel 7*/]
 }
 ```
-
 **On the client**:
-
 ```json
 {
   "plugins": ["react-imported-component/babel"]
@@ -279,77 +215,108 @@ To enable SSR follow these steps.
 ```
 Imported-Component will hook into dynamic imports, providing extra information about files you want to load.
 
-2. Add one more command into package.json
-CLI command `imported-components [sources ROOT] [targetFile]` (use .ts for TypeScript)
+## 2. Add one more command into package.json
+CLI command `imported-components [sources ROOT] [targetFile.js]` (use .ts for TypeScript)
 ```js
  "generate-imported-component": "imported-components src src/imported.js"
 ```
-3. Execute this command, and react-imported-component __will generate__ a file with all dynamic imports you have used.
-> That's how the magic, bundle independent bundling works.
+When you will execute this command - all `imports` among your codebase would be found and extracted to a file provided.
+This will gave ability to orchestrate code-splitting later.
 
-4. Include this file on client-side, not important for server-side.
-```js
-import importedComponents from 'src/imported';
-```
-5. Export "used" components information from server side
+> The current implementation will discover and use all `imports`, even // commented ones
+
+## 3. Start using `imported`, `lazy` or `useImported`
+Without you using API provided nothing would work.
+
+## 4. Add server side tracking
+There are two ways to do it - in a single threaded way, and async
+#### Single threaded
 ```js
   import { printDrainHydrateMarks, drainHydrateMarks } from 'react-imported-component';
-  // this action will drain all currently used(by any reason) marks
+  // this action will "drain" all currently used(by any reason) marks
   // AND print a script tag
   const html = renderToString(<YourApp />) + printDrainHydrateMarks();
   
   // OR return list of usedmarks, and yet again CLEAR the marks list.
   const html = renderToString(<YourApp />) + "<script>const marks="+JSON.stringify(drainHydrateMarks())+"</script>";
 ```
->! The current version expects you to __synchronously render__ the application, and "drain" used `marks`.
-"Drain" will return used marks, and empty the state, making the application ready for the next render.
+#### renderToStream or async render
+```js
+import {createLoadableStream} 'react-imported-component';
 
-6. Client side - rehydrate
+let importedStream = createLoadableStream();
+// ImportedStream is a async rendering "provider"
+const stream = renderToStream(
+  <ImportedStream stream={importedStream}>
+    <YourApp />
+  </ImportedStream>
+);
+
+// you'd then pipe the stream into the response object until it's done
+stream.pipe(res, { end: false });
+
+// and finalize the response with closing HTML
+stream.on('end', () =>
+    // print marks used in the file
+    res.end(`${printDrainHydrateMarks(importedStream)}</body></html>`),
+)
+```
+However, the idea is just to use `streams` to separate renders
+```js
+const html = renderToString(<ImportedStream stream={importedStream}><YourApp /></ImportedStream>) + printDrainHydrateMarks(importedStream);
+```
+
+## 5. Add `rehydrateMarks` to the client code
+Before rendering your application you have to ensure - all parts are loaded.
+`rehydrateMarks` will load everything you need, and provide a promise to await.
 ```js
   import { rehydrateMarks } from 'react-imported-component';
 
   // this will trigger all marked imports, and await for competition.
   rehydrateMarks().then(() => {
     // better
-    ReactDOM.hydrate(<App />,document.getElementById('main'));
+    ReactDOM.hydrate(<App />, document.getElementById('main'));
     // or
-    ReactDOM.render(<App />,document.getElementById('main'));
+    ReactDOM.render(<App />, document.getElementById('main'));
   });
 ```
+`rehydrateMarks` accepts a list of `marks` from a server side(`drainHydrateMarks`), loads all 
+necessary chunks and then resolves.
 
-#### Async SSR (renderToStream)
-In case you have more than one rendering thread, for example in case of react-bootstrapper,
-ReactDOM.renderToStream or _suspense_, default approach will not work.
-You need one more component, to separate components my "rendering streams".
+## A VERY IMPORTANT MOMENT
+All other code splitting libraries are working a bit differently - they amend `webpack` building process,
+gathering information about how the final chunks are assembled, and __injects the real scripts and styles__ to the server response,
+thus all scripts, used to render something on the Server would be loaded in a parallel in on Client.
+Literally - they are defined in the HTML.
+`React-imported-component` is different, it starts "working" when the bundle is loaded, thus
+__loading of chunks is deferred__. 
+> In the normals conditions `react-imported-component` would be "slower" than a "webpack" library.
+
+However, it is not a problem, as long as (for now), script execution is single trhreaded, and even you if can load multiple scripts
+simultaneously - you can't __run__ them in parallel*.
+
+Just change your entry point, to utilize this limitation.
+
+### Scheduler optimization
 ```js
-import {ImportedStream, drainHydrateMarks} from 'react-imported-component';
+ // index.js
+ import './src/imported'; // the file generated by "generate-imported-component" (.2)
+ 
+ Promise.resolve().then(() => {
+   require('./app'); // the rest of your app
+ });
+```
+This "hack", will first introduce all possible `imports` to the `imported-component`, then gave it a "tick"
+to start loading required once, and only then execute the rest of the bundle.
+While the rest(99%) of the bundle would make CPU busy - chunks would be loaded over the network.
+> This is utilizing the differences between `parse`(unenviable) phase of script, and execute one.  
 
-// assuming res === express response
-function renderApplication(res) {
-    let streamUID = 0;
-    // ImportedStream is a async rendering "provider"
-    const stream = renderToStream(
-      <ImportedStream takeUID={uid => streamUID=uid}>
-        <YourApp />
-      </ImportedStream>);
-    
-    // you'd then pipe the stream into the response object until it's done
-    stream.pipe(
-      res,
-      { end: false },
-    )
-    
-    // and finalize the response with closing HTML
-    stream.on('end', () =>
-      // print marks used in the file
-      res.end(`${printDrainHydrateMarks(streamUID)}</body></html>`),
-    )
-}
-``` 
-Use `ImportedStream` to bound all imported component to one "streamId", and then - get used components.
-Without `ImportedStream` streamId will be just 0 for all renders. With `ImportedStream` - it is a counter.
+# Cooking receipts
 
-# Hybrid render (CSR with prerendering)
+## Partial hydration
+Just wrap "partial hydrated" component with _another_ `ImportedStream` so everything needed for it would be not automatically loaded with the main stream.
+
+## Hybrid render (CSR with prerendering)
 This library could support hybrid rendering (aka pre-rendering) compatible in two cases:
 - pre-render supports `state hydration`, like `getState` in [react-snap](https://github.com/stereobooster/react-snap). See our [example](https://github.com/theKashey/react-imported-component/tree/master/examples/hybrid/react-snap).
 - for [rendertron](https://github.com/GoogleChrome/rendertron) or [https://prerender.io](https://prerender.io) follow `react-snap` example, just dump `state` using `setTimeout`.
@@ -376,12 +343,12 @@ const AsyncComponent = imported(() => import('./myComponent.js'));
 React-prerendered-component is another way to work with code splitting, which makes everything far better.
 
 
-# CSS Support
-## CSS-in-JS Support
+## CSS Support
+### CSS-in-JS Support
 First class. Literally CSS-in-JS library, like `styled-component` will do it by themselves, and there is nothing
 to be managed by this library
 
-## Static CSS Support
+### Static CSS Support
 This library __does not__ support CSS as CSS, as long it's bundler independent. However, there is 
 a bundler independent way to support CSS:
 1. Configure you bundler, and server side rendering to emit the right `classNames` (just remove `style-loader` from webpack configuration)
@@ -396,37 +363,49 @@ In short (streamed example is NOT short)
 If you need `streamed` example with __reduced TTFB__ - 
 please refer to [used-styles](https://github.com/theKashey/used-styles) documentation, or our [parcel-bundler stream server example](https://github.com/theKashey/react-imported-component/tree/master/examples/SSR/parcel-react-ssr/stream-server).
 
+## Timeout to display "spinners"   
+There is no build in timeouts to display Error or Loading states. You could control everything by yourself
+- use react-delay, p-delay, p-timeout, or `Suspense` :P.   
 
-## Another loaders
+## Component loader
+You may use component api if you need it by any reason. 
+```js
+import {ComponentLoader} from 'react-imported-component';
+
+const MyPage = () => (
+   <ComponentLoader
+       loadable={() => import('./Page.js')}
+       // all fields are optional, and matches the same field of importedComponent.
+       LoadingComponent={Loading}
+       ErrorComponent={Error}
+       onError
+       
+       exportPicker
+       render
+       async                 
+   />
+);
+```
+
+## SSR (Server side rendering)
+It was usually a headache - async components and SSR, which is currently sync.
+React-imported-component break this cycle, making ServerSide rendering sync, and providing
+comprehensive ways to rehydrate rendered tree on client. 
+It will detect server-side environment and precache all used components.
+
+###Bundler independent SSR
+It does not matter how do you bundle your application - it could be even browser. The secrect sause is a __cli__ command, to extract all your imports into imports map, and use it later to load chunks by request.
+- You might even dont have any separated chunk on the server side - it would still works.
+- You might even ship module/nomodule scripts, using, for example, [devolution](https://github.com/theKashey/devolution) - no additional configuration would be required.
+
+## Other loaders
 Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
 
-* React.Lazy  
-* With [react-loadable](https://github.com/thejameskyle/react-loadable)
-* [react-async-component](https://github.com/ctrlplusb/react-async-component)   
-* [loadable-components](https://github.com/smooth-code/loadable-components)
-* [react-universal-component](https://github.com/faceyspacey/react-universal-component)
-  
-#### Waves 
-Let's imagine complex case - index.js will async-load 2 chunks, and __they also__ will load 2 async chunks.
-SSR will result 6 marks, but only 2 of them will be resolved and executed on startup, as long the nested async calls
-are described in the async chunks, __which are not loaded yet__.
-Thus will result a two(or more) "waves" of loading. 
-
-First you load files you can load(have imports to load them), next, a new code will start next "wave".
-
-In 99.9% cases you will have only one "wave", and could loader reduce "waves" or not - does not matter.
-But in complex cases, you can have a lot of nested async chunks - then better to use loader which could handle it. 
- 
-#### React-Hot-Loader
-Very opinionated library. No loader __have__ to support it, as long this is altering the whole dev process and could not be repeated in production.
-Read [this article](https://codeburst.io/react-hot-loader-considered-harmful-321fe3b6ca74) about pros and cons using react-hot-loader among your project.
-
-#### Small Conclusion
-There is no "best" or "worst" loader. They all almost similar on front-end and could solve most SSR specific tasks.
-They are all litteraly is a ONE command(import), plus some sugar around.
-
-The problem comes from Server Side....
-
+* (no SSR) React.Lazy 
+* (webpack only) With [react-loadable](https://github.com/thejameskyle/react-loadable)
+* (not compatible with hooks) [react-async-component](https://github.com/ctrlplusb/react-async-component)   
+* (webpack only) [loadable-components](https://github.com/smooth-code/loadable-components)
+* (webpack only) [react-universal-component](https://github.com/faceyspacey/react-universal-component)  
 
 ## Licence
 MIT

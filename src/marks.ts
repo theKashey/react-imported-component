@@ -68,6 +68,19 @@ export const rehydrateMarks = (marks?: string[]) => {
   return Promise.all(tasks);
 };
 
+export const waitForMarks = (marks: string[]) => {
+  const tasks: Promise<any>[] = [];
+
+  LOADABLE_MARKS
+    .forEach(({mark, loadable}) => {
+      if (allIn(mark, marks)) {
+        tasks.push(loadable.resolution)
+      }
+    });
+
+  return Promise.all(tasks);
+};
+
 export const printDrainHydrateMarks = (stream?: Stream) => {
   checkStream(stream);
   return `<script>window.___REACT_DEFERRED_COMPONENT_MARKS=${JSON.stringify(drainHydrateMarks(stream))};</script>`;

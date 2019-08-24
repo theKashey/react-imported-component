@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/server";
 import {StaticRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 
-// import "../app/imported";
+import "../app/imported";
 import App from "../app/App";
 import {configureStore} from "../app/store";
 

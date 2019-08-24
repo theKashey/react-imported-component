@@ -11,6 +11,7 @@ interface InnerLoadable<T> extends Loadable<T> {
 
 let pending: Array<Promise<any>> = [];
 
+const LOADABLE_WEAK_SIGNATURE = new WeakMap<any, Loadable<any>>();
 const LOADABLE_SIGNATURE = new Map<string, Loadable<any>>();
 
 const addPending = (promise: Promise<any>) => pending.push(promise);
@@ -96,7 +97,6 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
 
     load() {
       if (!this.promise) {
-        console.log('loading', importFunction);
         const promise = this.promise = _load()
           .then((payload) => {
             this.done = true;
@@ -126,7 +126,7 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
     console.warn('react-imported-component: no mark found at', importFunction);
   }
 
-  // trigger preload on server side
+  // trigger preload on the server side
   if (isBackend && autoImport) {
     loadable.load();
   }
@@ -162,6 +162,10 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
     return importFunction;
   }
 
+  if (LOADABLE_WEAK_SIGNATURE.has(importFunction)) {
+    return LOADABLE_WEAK_SIGNATURE.get(importFunction) as any;
+  }
+
   // read cache signature
   const functionSignature = getFunctionSignature(importFunction);
 
@@ -169,7 +173,10 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
     return LOADABLE_SIGNATURE.get(functionSignature) as any;
   }
 
-  return toLoadable(importFunction as any);
+  const loadable = toLoadable(importFunction as any);
+  LOADABLE_WEAK_SIGNATURE.set(importFunction, loadable);
+
+  return loadable as any;
 }
 
 export const clearImportedCache = () => LOADABLE_SIGNATURE.clear();

@@ -1,5 +1,5 @@
 import imported, {lazy} from './HOC';
-import {drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks} from './marks';
+import {drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks, waitForMarks} from './marks';
 import {
   getLoadable as loadableResource,
   done as whenComponentsReady,
@@ -18,6 +18,7 @@ export {
   printDrainHydrateMarks,
   drainHydrateMarks,
   rehydrateMarks,
+  waitForMarks,
   whenComponentsReady,
   dryRender,
   assignImportedComponents,

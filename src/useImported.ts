@@ -4,6 +4,7 @@ import {getLoadable} from "./loadable";
 import {useMark} from "./marks";
 import {DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable} from './types';
 import {es6import} from "./utils";
+import {isBackend} from "./detectBackend";
 
 function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
   const upd = () => callback({});
@@ -47,6 +48,14 @@ export function useLoadable<T>(loadable: Loadable<T>) {
     forceUpdate({});
     loadLoadable(loadable, forceUpdate);
   }, [loadable]);
+
+  if (process.env.NODE_ENV !== 'production') {
+    if(isBackend) {
+      if(!loadable.done) {
+        console.error('react-imported-component: using not resolved loadable. You should `await whenComponentsReady()`.')
+      }
+    }
+  }
 
   return {
     loadable,
