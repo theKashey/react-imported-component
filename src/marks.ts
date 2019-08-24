@@ -27,8 +27,8 @@ const checkStream = (stream: Stream | number | string | undefined) => {
 
 export const defaultStream = createLoadableStream();
 
-export const useMark = (stream: Stream, marks: string[]) => {
-  checkStream(stream || "DEFAULT");
+export const useMark = (stream: Stream = defaultStream, marks: string[]) => {
+  checkStream(stream);
   if (marks && marks.length) {
     marks.forEach(a => stream.marks[a] = true);
   }
@@ -38,13 +38,13 @@ export const assingLoadableMark = (mark: Mark, loadable: Loadable<any>) => {
   LOADABLE_MARKS.set(JSON.stringify(mark), {mark, loadable});
 };
 
-export const getUsedMarks = (stream?: Stream): string[] => (
+export const getUsedMarks = (stream: Stream = defaultStream): string[] => (
   stream
     ? Object.keys(stream.marks)
     : []
 );
 
-export const drainHydrateMarks = (stream?: Stream) => {
+export const drainHydrateMarks = (stream: Stream = defaultStream) => {
   checkStream(stream);
   const marks = getUsedMarks(stream);
   clearStream(stream);

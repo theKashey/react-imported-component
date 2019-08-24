@@ -6,7 +6,7 @@ import {mount} from 'enzyme';
 import {ImportedComponent} from '../src/Component';
 import {settings} from '../src/config';
 import toLoadable, {done as whenDone} from '../src/loadable';
-import {drainHydrateMarks, rehydrateMarks} from '../src/marks';
+import {createLoadableStream, drainHydrateMarks, rehydrateMarks} from '../src/marks';
 import imported from '../src/HOC';
 import {ImportedStream} from '../src/context';
 
@@ -135,9 +135,9 @@ describe('SSR Component', () => {
       // await loaders to load
       setTimeout(() => {
         expect(drainHydrateMarks()).toHaveLength(0);
-        let stream = 0;
+        let stream = createLoadableStream();
         ReactDOM.renderToString(
-          <ImportedStream takeUID={st => stream = st}>
+          <ImportedStream stream={stream}>
             <ImportedComponent loadable={loader1}/>
           </ImportedStream>
         );
@@ -212,21 +212,17 @@ describe('SSR Component', () => {
         const loader2 = toLoadable(() => importedWrapper('imported_mark2_component', Promise.resolve(TargetComponent)));
         const loader3 = toLoadable(() => importedWrapper('imported_mark3_component', Promise.resolve(TargetComponent)));
 
-        let uid2 = 0;
-        let uid3 = 0;
+        let uid2 = createLoadableStream();
+        let uid3 = createLoadableStream();
 
         const w1 = mount(<ImportedComponent loadable={loader1}/>);
         const w2 = mount(
-          <ImportedStream takeUID={uid => {
-            uid2 = uid
-          }}>
+          <ImportedStream stream={uid2}>
             <ImportedComponent loadable={loader2}/>
           </ImportedStream>
         );
         const w3 = mount(
-          <ImportedStream takeUID={uid => {
-            uid3 = uid
-          }}>
+          <ImportedStream stream={uid3}>
             <ImportedComponent loadable={loader3}/>
             <ImportedComponent loadable={loader2}/>
           </ImportedStream>
