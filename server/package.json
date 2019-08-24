@@ -1,6 +1,6 @@
 {
   "private": true,
-  "main": "../dist/cjs/server.js",
+  "main": "../dist/es5/server.js",
   "jsnext:main": "../dist/es2015/server.js",
   "module": "../dist/es2015/server.js",
   "types": "../dist/es2015/server.d.ts"

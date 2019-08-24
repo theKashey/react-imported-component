@@ -21,6 +21,10 @@
     "start": "node dist/server",
     "start:stream": "node dist/server-stream"
   },
+  "alias": {
+    "react": "./node_modules/react",
+    "react-dom": "./node_modules/react-dom"
+  },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "compression": "^1.7.2",
@@ -30,7 +34,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-helmet": "^5.2.0",
-    "react-imported-component": "^5.0.1",
+    "react-imported-component": "../../../react-imported-component-6.0.0-1.tgz",
     "react-router-dom": "^4.2.2",
     "used-styles": "^1.1.0"
   },

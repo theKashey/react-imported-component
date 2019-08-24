@@ -11,9 +11,7 @@ export const createLoadableTransformer = (stream: Stream, callback: LoadableStre
     transform(chunk, _, _callback) {
       const marks = getUsedMarks(stream);
       const newMarks: string[] = [];
-      Object
-        .keys(marks)
-        .forEach(mark => {
+      marks.forEach(mark => {
           if (!usedMarks.has(mark)) {
             newMarks.push(mark);
             usedMarks.add(mark);
