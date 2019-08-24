@@ -5,6 +5,7 @@ import MultiStream from 'multistream';
 import {getProjectStyles, createLink} from 'used-styles';
 import {createStyleStream} from 'used-styles/react';
 import {printDrainHydrateMarks, ImportedStream} from 'react-imported-component';
+import {createLoadableStream} from 'react-imported-component/server';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import {StaticRouter} from 'react-router-dom';
@@ -37,9 +38,9 @@ export default function middleware(req, res) {
   // Generate the server-rendered HTML using the appropriate router
   const context = {};
 
-  let streamUID = 0;
+  let streamUID = createLoadableStream();
   const htmlStream = ReactDOM.renderToNodeStream(
-    <ImportedStream takeUID={uid => streamUID = uid}>
+    <ImportedStream stream={streamUID}>
       <StaticRouter location={req.originalUrl} context={context}>
         <App/>
       </StaticRouter>
@@ -76,7 +77,7 @@ export default function middleware(req, res) {
   styledStream.on('end', () => {
     res.write('</div>');
     // push loaded chunks information
-    //res.write(printDrainHydrateMarks(streamUID));
+    res.write(printDrainHydrateMarks(streamUID));
     res.write('</body></html>');
     res.end();
   });
