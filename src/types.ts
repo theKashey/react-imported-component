@@ -8,6 +8,10 @@ export interface Default<T> {
   default: T;
 }
 
+export type Stream = {
+  marks: Record<any,any>
+};
+
 export type Mark = string[];
 
 export type Promised<T> = () => Promise<T>;

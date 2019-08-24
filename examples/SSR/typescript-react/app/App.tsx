@@ -11,7 +11,7 @@ const Other2 = importedComponent(() => import(/* webpackChunkName: "namedChunk-1
 const AnotherWrapped = importedComponent(
   () => import(/* webpackChunkName: namedChunk-0 */"./components/Another"), {
     render(Component, state, props: { prop: number }) {
-      if (state === "loading") {
+      if (state.loading) {
         return <span/>
       }
       return <div className="wrapped"><Component test={props.prop} p2={props.prop}/></div>

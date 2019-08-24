@@ -1,25 +1,22 @@
 import * as React from 'react';
-
-export const streamContext = React.createContext(0);
-
-let UID = 1;
+import {Stream} from "./types";
+import {defaultStream} from "./marks";
 
 interface TakeProps {
-  takeUID(stream: number): void;
+  stream: Stream;
 }
 
-export const ImportedStream: React.FC<TakeProps> = ({takeUID, children}) => {
-  const [uid] = React.useState(() => {
-    const id = UID++;
-    if (!takeUID) {
-      throw new Error('You have to provide takeUID prop to ImportedStream');
-    }
-    takeUID(id);
-    return id;
-  });
+export const streamContext = React.createContext(defaultStream);
 
+export const ImportedStream: React.FC<TakeProps> = ({stream, children, ...props}) => {
+  if (process.env.NODE_ENV !== 'development') {
+    if ('takeUID' in props) {
+      throw new Error('react-imported-component: `takeUID` was replaced by `stream`.')
+    }
+  }
+  
   return (
-    <streamContext.Provider value={uid}>
+    <streamContext.Provider value={stream}>
       {children}
     </streamContext.Provider>
   )

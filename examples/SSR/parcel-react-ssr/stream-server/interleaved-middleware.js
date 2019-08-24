@@ -69,12 +69,14 @@ export default function middleware(req, res) {
 
   MultiStream(streams).pipe(res);
 
+  const importedStream  =
+
   // start by piping react and styled transform stream
   htmlStream.pipe(styledStream);
   styledStream.on('end', () => {
     res.write('</div>');
     // push loaded chunks information
-    res.write(printDrainHydrateMarks(streamUID));
+    //res.write(printDrainHydrateMarks(streamUID));
     res.write('</body></html>');
     res.end();
   });

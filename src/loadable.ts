@@ -96,6 +96,7 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
 
     load() {
       if (!this.promise) {
+        console.log('loading', importFunction);
         const promise = this.promise = _load()
           .then((payload) => {
             this.done = true;
@@ -121,6 +122,8 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
   if (mark && mark.length) {
     LOADABLE_SIGNATURE.set(functionSignature, loadable);
     assingLoadableMark(mark, loadable);
+  } else {
+    console.warn('react-imported-component: no mark found at', importFunction);
   }
 
   // trigger preload on server side

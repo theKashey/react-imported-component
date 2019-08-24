@@ -1,4 +1,4 @@
-import {Loadable, Mark} from "./types";
+import {Loadable, Mark, Stream} from "./types";
 
 interface MarkPair {
   mark: Mark;
@@ -6,14 +6,31 @@ interface MarkPair {
 }
 
 let LOADABLE_MARKS = new Map<string, MarkPair>();
-let USED_MARKS: Record<number, Record<string, boolean>> = {};
 
-export const useMark = (stream: number, marks: string[]) => {
-  if (marks && marks.length) {
-    if (!USED_MARKS[stream]) {
-      USED_MARKS[stream] = {};
+export const createLoadableStream = () => ({marks: {}});
+const clearStream = (stream?: Stream) => {
+  if (stream) {
+    stream.marks = {};
+  }
+};
+const checkStream = (stream: Stream | number | string | undefined) => {
+  if (process.env.NODE_ENV !== 'production') {
+    if (!stream) {
+      return;
     }
-    marks.forEach(a => USED_MARKS[stream][a] = true);
+
+    if (typeof stream !== 'object' || !stream.marks) {
+      throw new Error('react-imported-component: version 6 requires `stream` to be an object. Refer to the migration guide')
+    }
+  }
+};
+
+export const defaultStream = createLoadableStream();
+
+export const useMark = (stream: Stream, marks: string[]) => {
+  checkStream(stream || "DEFAULT");
+  if (marks && marks.length) {
+    marks.forEach(a => stream.marks[a] = true);
   }
 };
 
@@ -21,15 +38,19 @@ export const assingLoadableMark = (mark: Mark, loadable: Loadable<any>) => {
   LOADABLE_MARKS.set(JSON.stringify(mark), {mark, loadable});
 };
 
-export const getUsedMarks = (stream: number) => USED_MARKS[stream] || {};
+export const getUsedMarks = (stream?: Stream): string[] => (
+  stream
+    ? Object.keys(stream.marks)
+    : []
+);
 
-export const drainHydrateMarks = (stream = 0) => {
-  const used = Object.keys(getUsedMarks(stream));
-  // free mem
-  delete USED_MARKS[stream];
-
-  return used;
+export const drainHydrateMarks = (stream?: Stream) => {
+  checkStream(stream);
+  const marks = getUsedMarks(stream);
+  clearStream(stream);
+  return marks;
 };
+
 
 const allIn = (a1: string[], a2: string[]) => a1.filter(mark => a2.indexOf(mark) >= 0).length == a1.length;
 
@@ -47,6 +68,7 @@ export const rehydrateMarks = (marks?: string[]) => {
   return Promise.all(tasks);
 };
 
-export const printDrainHydrateMarks = (stream = 0) => {
-  return `<script>window.___REACT_DEFERRED_COMPONENT_MARKS=${JSON.stringify(drainHydrateMarks(stream))};/*stream ${stream}*/</script>`;
+export const printDrainHydrateMarks = (stream?: Stream) => {
+  checkStream(stream);
+  return `<script>window.___REACT_DEFERRED_COMPONENT_MARKS=${JSON.stringify(drainHydrateMarks(stream))};</script>`;
 };

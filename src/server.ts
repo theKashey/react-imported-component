@@ -1,7 +1,8 @@
-import {drainHydrateMarks, printDrainHydrateMarks} from './marks';
+import {drainHydrateMarks, printDrainHydrateMarks, createLoadableStream} from './marks';
 import {ImportedStream} from './context';
 import {setConfiguration} from './config';
-import {createLoadableStream} from './transformers/loadableTransformer';
+import {createLoadableTransformer} from './transformers/loadableTransformer';
+import {getLoadableTrackerCallback} from './trackers/globalTracker';
 
 export {
   printDrainHydrateMarks,
@@ -9,5 +10,8 @@ export {
 
   ImportedStream,
   setConfiguration,
+
   createLoadableStream,
+  createLoadableTransformer,
+  getLoadableTrackerCallback,
 }

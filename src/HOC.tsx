@@ -13,7 +13,6 @@ import {isBackend} from "./detectBackend";
  * @param {Object} [options]
  * @param {React.Component} [options.LoadingComponent]
  * @param {React.Component} [options.ErrorComponent]
- * @param {Function} [options.exportPicker] - default behaviour - picks default export
  * @param {Function} [options.onError] - error handler. Will consume the real error.
  * @param {Function} [options.async] - enable React 16+ suspense.
  */
