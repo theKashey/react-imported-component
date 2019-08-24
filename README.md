@@ -4,7 +4,7 @@
   <img src="./assets/imported-logo.png" alt="imported components" width="409" align="center">
   <br/>
   <br/>
-   SSR-friendly code splitting made esier for any platform.
+   SSR-friendly code splitting made easier for any platform.
   <br/>
    Deliver a better experience with a single import.
   <br/>
