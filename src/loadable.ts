@@ -134,13 +134,19 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
   return loadable;
 }
 
+let readyFlag = false;
+export const isItReady = () => readyFlag;
+
 export const done = (): Promise<void> => {
   if (pending.length) {
+    readyFlag = false;
     return Promise
       .all(pending)
       .then(a => a[1])
       .then(done);
   }
+
+  readyFlag = true;
 
   return Promise.resolve();
 };

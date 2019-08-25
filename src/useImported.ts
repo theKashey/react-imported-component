@@ -1,6 +1,6 @@
 import {useCallback, useContext, useEffect, useState, lazy, useRef, LazyExoticComponent, ComponentType} from 'react';
 import {streamContext} from "./context";
-import {getLoadable} from "./loadable";
+import {getLoadable, isItReady} from "./loadable";
 import {useMark} from "./marks";
 import {DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable} from './types';
 import {es6import} from "./utils";
@@ -25,6 +25,10 @@ interface ImportedShape<T> {
 }
 
 export function useLoadable<T>(loadable: Loadable<T>) {
+  if(isBackend && !isItReady()) {
+    console.error('react-imported-component: trying to render not ready component. Have you `await whenComponentsReady()`?')
+  }
+
   const UID = useContext(streamContext);
   const [, forceUpdate] = useState(() => {
     // use mark
