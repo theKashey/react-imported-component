@@ -31,7 +31,7 @@
   <br/>
 </div>
 
-👉 [Usage](#usage)  |  [API](#api)  | [Server side](#ssr)  
+👉 [Usage](#usage)  |  [API](#api)  | [SSR](#ssr)  |  [Concurrent loading](#concurrent-loading) 
 
  
 Key features:
@@ -39,7 +39,7 @@ Key features:
  - 📖 __library__ level code __splitting__
  - 🧙️ Hybrid and __Prerendering__ compatible
  - 💡 __TypeScript__ bindings
- - ⚛️ __React.Lazy__ underneath
+ - ⚛️ __React.Lazy__ underneath (if hot module updates are disabled)
  - 🌟 Async on client, sync on server. Supports __Suspense__ (even on server side)
  - 📦 could work with __any bundler__ - webpack, rollup, parcel or puppeteer - it does not matter 
  
@@ -53,7 +53,7 @@ Key features:
  - 📦 and yes - this is the only __parcel-bundler compatible__ SSR-friendly React code splitting library
  
  👍 Better than [React.Lazy](https://reactjs.org/docs/code-splitting.html#reactlazy):
- - It __IS__ Lazy, just with some stuff around
+ - It __IS__ Lazy, just with some stuff around*
  - SSR, Prerendering and Preloading support.
  - With or without Suspense, and easier Error cases support.
  
@@ -66,7 +66,7 @@ Key features:
  👌 Not as good with
  - Loads chunks only after the `main one`, as long as loader code is bundled inside the main chunk, so it should be loaded first.
  - Not an issue with the `progressive hydration`, and might provide a better UX via feature detection.
- - Provides 👨‍🔬 technological workaround
+ - Provides 👨‍🔬 technological workaround - [see here](#concurrent-loading)
     
 <a name="usage"/>
 
@@ -283,7 +283,9 @@ Before rendering your application you have to ensure - all parts are loaded.
 `rehydrateMarks` accepts a list of `marks` from a server side(`drainHydrateMarks`), loads all 
 necessary chunks and then resolves.
 
-## A VERY IMPORTANT MOMENT
+<a name="concurrent-loading"/>
+
+## A VERY IMPORTANT MOMENT - Concurrent Loading
 All other code splitting libraries are working a bit differently - they amend `webpack` building process,
 gathering information about how the final chunks are assembled, and __injects the real scripts and styles__ to the server response,
 thus all scripts, used to render something on the Server would be loaded in a parallel in on Client.
@@ -438,10 +440,16 @@ React-imported-component break this cycle, making ServerSide rendering sync, and
 comprehensive ways to rehydrate rendered tree on client. 
 It will detect server-side environment and precache all used components.
 
-###Bundler independent SSR
+### Bundler independent SSR
 It does not matter how do you bundle your application - it could be even browser. The secrect sause is a __cli__ command, to extract all your imports into imports map, and use it later to load chunks by request.
 - You might even dont have any separated chunk on the server side - it would still works.
 - You might even ship module/nomodule scripts, using, for example, [devolution](https://github.com/theKashey/devolution) - no additional configuration would be required.
+
+### Not using React.Lazy with React-Hot-Loader
+There is design limitation with React.lazy support from RHL size, so they could not be reloaded without
+state loss if `lazy` is created not in the user space. At it would be created inside imported.
+
+If React-Hot-Loader is detected `lazy` switches to `imported async` mode, this behaves absolutely the same. 
 
 ## Other loaders
 Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
