@@ -112,7 +112,15 @@ ${
     ];
     
     assignImportedComponents(applicationImports);
-    export default applicationImports;`)
+    export default applicationImports;
+    
+    // @ts-ignore
+    if (module.hot) {
+       // these imports would make this module a parent for the imported modules.
+       // but this is just a helper - so ignore(and accept!) all updates
+       module.hot.accept(() => null);
+    }    
+    `)
   }
 
   return scan();
