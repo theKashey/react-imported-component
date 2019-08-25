@@ -43,12 +43,14 @@ export interface Loadable<T> {
   isLoading(): boolean;
 
   reset(): void;
+  replaceImportFunction(newImportFunction: Promised<T>): void;
 
   loadIfNeeded(): Promise<T>;
 
   tryResolveSync<Y = T>(then: (x: T) => Y): Promise<Y>;
 
   load(): Promise<T>;
+  reload(): Promise<T>;
 
   then(callback: (x: T) => void, err: () => void): Promise<any>;
 }

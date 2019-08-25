@@ -1,11 +1,13 @@
 import * as React from 'react';
 import {ImportedComponent} from './Component';
-import {getLoadable} from './loadable';
-import {HOC, HOCType, LazyImport} from "./types";
+import {executeLoadable, getLoadable} from './loadable';
+import {HOC, HOCType, LazyImport, Loadable} from "./types";
 import {useLoadable} from "./useImported";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState, useMemo} from "react";
 import {asDefault} from "./utils";
 import {isBackend} from "./detectBackend";
+import {Simulate} from "react-dom/test-utils";
+import load = Simulate.load;
 
 /**
  *
@@ -20,7 +22,7 @@ const loader: HOC = (loaderFunction, baseOptions = {}) => {
   const loadable = getLoadable(loaderFunction);
 
   const Imported = React.forwardRef<any, any>(
-    ({importedProps = {}, ...props}, ref) => {
+    function ImportedComponentHOC({importedProps = {}, ...props}, ref) {
       const options = {...baseOptions, ...importedProps};
 
       return (
@@ -55,25 +57,23 @@ export function lazy<T>(importer: LazyImport<T>): React.FC<T> {
     return loader(importer);
   }
 
+  if (process.env.NODE_ENV !== 'production') {
+    // lazy is not hot-reloadable
+    if ((module as any).hot) {
+      return loader(importer, {async: true})
+    }
+  }
+
   const topLoadable = getLoadable(importer);
 
-  return (props: T) => {
+  return function ImportedLazy(props: T) {
     const {loadable} = useLoadable(topLoadable);
-    const trackedLoadable = useRef(loadable);
 
-    useEffect(() => {
-      if (trackedLoadable.current !== loadable) {
-        trackedLoadable.current = loadable;
-      }
-    }, ['hot']);
-
-    const [Lazy] = useState(
-      () => React.lazy(
-        () => (
-          trackedLoadable.current.tryResolveSync(asDefault as any) as any
-        ),
+    const Lazy = useMemo(() => (
+      React.lazy(
+        () => loadable.tryResolveSync(asDefault as any) as any,
       )
-    );
+    ), []);
 
     return (<Lazy {...props as any} />)
   }

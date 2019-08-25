@@ -1,7 +1,7 @@
 import {rehydrateMarks} from "../marks";
 
 export const injectLoadableTracker = (name: string = "importedComponents") => {
-  const value = (global as any)[name] as Array<string>;
+  const value = (global as any)[name] as Array<string[]>;
   if (value) {
     if (!value.push || (value.push && !value.forEach)) {
       console.error('given: ', value);

@@ -30,7 +30,8 @@ export const getFunctionSignature = (fn: AnyFunction | string) => (
     .replace(/\/\*([^\*]*)\*\//ig, 'DEL')
 );
 
-function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable<T> {
+function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
+  let importFunction = firstImportFunction;
   const _load = () => Promise.resolve().then(importFunction);
   const functionSignature = getFunctionSignature(importFunction);
   const mark = importMatch(functionSignature);
@@ -61,6 +62,10 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
       this.promise = undefined;
     },
 
+    replaceImportFunction(newImportFunction) {
+      importFunction=newImportFunction;
+    },
+
     then(cb, err) {
       if (this.promise) {
         return this.promise.then(cb, err);
@@ -88,11 +93,17 @@ function toLoadable<T>(importFunction: Promised<T>, autoImport = true): Loadable
           then(cb: any) {
             // synchronous thenable - https://github.com/facebook/react/pull/14626
             cb(result);
+            return Promise.resolve(result);
           }
         } as any
       }
 
       return this.loadIfNeeded().then(then);
+    },
+
+    reload() {
+      this.promise = undefined;
+      return this.load();
     },
 
     load() {
@@ -163,6 +174,14 @@ export const assignImportedComponents = (set: Array<Promised<any>>) => {
   set.forEach(imported => toLoadable(imported))
 };
 
+export function executeLoadable(importFunction: DefaultImport<any> | Loadable<any>) {
+  if ('resolution' in importFunction) {
+    return importFunction.reload();
+  } else {
+    return importFunction();
+  }
+}
+
 export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): Loadable<T> {
   if ('resolution' in importFunction) {
     return importFunction;
@@ -176,7 +195,9 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
   const functionSignature = getFunctionSignature(importFunction);
 
   if (LOADABLE_SIGNATURE.has(functionSignature)) {
-    return LOADABLE_SIGNATURE.get(functionSignature) as any;
+    const loadable = LOADABLE_SIGNATURE.get(functionSignature);
+    loadable.replaceImportFunction(importFunction);
+    return loadable;
   }
 
   const loadable = toLoadable(importFunction as any);

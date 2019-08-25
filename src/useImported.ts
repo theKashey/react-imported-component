@@ -1,6 +1,6 @@
 import {useCallback, useContext, useEffect, useState, lazy, useRef, LazyExoticComponent, ComponentType} from 'react';
 import {streamContext} from "./context";
-import {getLoadable, isItReady} from "./loadable";
+import {executeLoadable, getLoadable, isItReady} from "./loadable";
 import {useMark} from "./marks";
 import {DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable} from './types';
 import {es6import} from "./utils";
@@ -69,17 +69,18 @@ export function useLoadable<T>(loadable: Loadable<T>) {
 }
 
 export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, exportPicker: (x: T) => K = es6import): ImportedShape<K> {
-  const [topLoadable, setLoadable] = useState(getLoadable(importer));
+  const [topLoadable] = useState(getLoadable(importer));
   const postEffectRef = useRef(false);
   const {
     loadable,
     retry,
+    update,
   } = useLoadable<T>(topLoadable);
 
   // kick loading effect
   useEffect(() => {
     if (postEffectRef.current) {
-      setLoadable(getLoadable(importer))
+      executeLoadable(importer).then(update);
     }
 
     postEffectRef.current = true;
