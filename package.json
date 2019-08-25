@@ -1,6 +1,6 @@
 {
   "name": "react-imported-component",
-  "version": "6.0.0-beta.2",
+  "version": "6.0.0-beta.3",
   "description": "I will import your component, and help to handle it",
   "main": "dist/es5/index.js",
   "jsnext:main": "dist/es2015/index.js",
