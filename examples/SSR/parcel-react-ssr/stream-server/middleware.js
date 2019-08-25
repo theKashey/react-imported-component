@@ -61,10 +61,13 @@ export default function middleware(req, res) {
   });
 
   // allow client to start loading js bundle
-  res.write(`<!DOCTYPE html><html><head>
-        <script async src="${manifect['client.js']}"></script>\n
-`);
-  //<script async src="${manifect['HelloWorld2.jsx']}"></script>
+  res.write([
+    '<!DOCTYPE html><html><head>'
+    `<script async src="${manifect['client.js']}"></script>`,
+    // HINT!
+    // uncomment this line to convert this example in a "classical one", when all scripts are present in the HTML code
+    // `<script async src="${manifect['HelloWorld2.jsx']}"></script>`,
+  ].join('\n'));
 
   /*
 
