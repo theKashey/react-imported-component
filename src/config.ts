@@ -5,4 +5,6 @@ export const settings = {
   SSR: isBackend
 };
 
-export const setConfiguration = (config: Partial<typeof settings>) => Object.assign(settings, config);
+export const setConfiguration = (config: Partial<typeof settings>) => {
+  Object.assign(settings, config);
+};

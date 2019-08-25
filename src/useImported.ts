@@ -112,7 +112,7 @@ export function useLazy<T>(importer: DefaultComponentImport<T>): LazyExoticCompo
   const [{resolve, reject, lazyComponent}] = useState(() => {
     let resolve: any;
     let reject: any;
-    let promise = new Promise<DefaultImportedComponent<T>>((rs, rej) => {
+    const promise = new Promise<DefaultImportedComponent<T>>((rs, rej) => {
       resolve = rs;
       reject = rej;
     });

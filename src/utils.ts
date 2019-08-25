@@ -20,4 +20,4 @@ export const es6import = (module: any) => (
     : module
 );
 
-export const encipherImport = (string: string) => crc32.str(string).toString(32);
+export const encipherImport = (str: string) => crc32.str(str).toString(32);

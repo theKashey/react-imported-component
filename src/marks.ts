@@ -5,7 +5,7 @@ interface MarkPair {
   loadable: Loadable<any>;
 }
 
-let LOADABLE_MARKS = new Map<string, MarkPair>();
+const LOADABLE_MARKS = new Map<string, MarkPair>();
 
 export const createLoadableStream = () => ({marks: {}});
 const clearStream = (stream?: Stream) => {
@@ -52,15 +52,15 @@ export const drainHydrateMarks = (stream: Stream = defaultStream) => {
 };
 
 
-const allIn = (a1: string[], a2: string[]) => a1.filter(mark => a2.indexOf(mark) >= 0).length == a1.length;
+const allIn = (a1: string[], a2: string[]) => a1.filter(mark => a2.indexOf(mark) >= 0).length === a1.length;
 
 export const rehydrateMarks = (marks?: string[]) => {
-  const rehydrateMarks: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
+  const rehydratedMarks: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
   const tasks: Promise<any>[] = [];
 
   LOADABLE_MARKS
     .forEach(({mark, loadable}) => {
-      if (allIn(mark, rehydrateMarks)) {
+      if (allIn(mark, rehydratedMarks)) {
         tasks.push(loadable.load())
       }
     });
