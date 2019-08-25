@@ -45,14 +45,18 @@ export const getDynamicImports = getImportString(`import[\\s]?\\((([^)])+['"]?)\
 const mapImports = (file: string, imports: MappedImport[]) => (
   imports
     .map(dep => {
-      const {name, comment} = dep;
+      const {name} = dep;
       if (name && name.charAt(0) === '.') {
         return {
+          ...dep,
           name: resolve(dirname(file), name),
-          comment
+          doNotTransform: false,
         }
       }
-      return dep;
+      return {
+        ...dep,
+        doNotTransform: true,
+      };
     })
 );
 
@@ -63,8 +67,8 @@ const rejectSystemFiles = (file: string, stats: Stats) => (
 export const remapImports = (data: FileContent[], root: string, targetDir: string, getRelative: (a: string, b: string) => string, imports: Record<string, string>) => (
   data
     .map(({file, content}) => mapImports(file, getDynamicImports(content)))
-    .forEach(importBlock => importBlock.forEach(({name, comment}) => {
-      imports[getRelative(root, name)] = `() => import(${comment}'${getRelative(targetDir, name)}')`
+    .forEach(importBlock => importBlock.forEach(({name, comment, doNotTransform}) => {
+      imports[getRelative(root, name)] = `() => import(${comment}'${doNotTransform ? name : getRelative(targetDir, name)}')`
     }))
 );
 
