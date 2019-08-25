@@ -6,5 +6,10 @@ import {injectLoadableTracker} from 'react-imported-component/boot';
 
 injectLoadableTracker('exampleTracker');
 
-// load the rest
-Promise.resolve().then(() => require('./main'));
+// load the rest after letting the browser kick off chunk loading
+
+Promise.resolve().then(() =>
+  Promise.resolve().then(() => {
+    require('./main')
+  })
+);

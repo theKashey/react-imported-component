@@ -6490,9 +6490,9 @@ react-hot-loader@^4.0.0:
     prop-types "^15.6.0"
     shallowequal "^1.0.2"
 
-react-imported-component@../../../react-imported-component-5.5.3.tgz:
-  version "5.5.3"
-  resolved "../../../react-imported-component-5.5.3.tgz#f66110d8d4de9aea105711fd8cf2ef4d62372fe2"
+react-imported-component@../../../react-imported-component-6.0.0-1.tgz:
+  version "6.0.0-1"
+  resolved "../../../react-imported-component-6.0.0-1.tgz#9ec8f95c65b4625bea1051183853142e879af43a"
   dependencies:
     crc-32 "^1.2.0"
     detect-node "^2.0.4"
@@ -6500,9 +6500,9 @@ react-imported-component@../../../react-imported-component-5.5.3.tgz:
     scan-directory "^1.0.0"
     tslib "^1.10.0"
 
-react-imported-component@../../../react-imported-component-6.0.0-1.tgz:
-  version "6.0.0-1"
-  resolved "../../../react-imported-component-6.0.0-1.tgz#9ec8f95c65b4625bea1051183853142e879af43a"
+react-imported-component@../../../react-imported-component-6.0.0-2.tgz:
+  version "6.0.0-2"
+  resolved "../../../react-imported-component-6.0.0-2.tgz#019abaa469b810597f49df55297382ea88d11790"
   dependencies:
     crc-32 "^1.2.0"
     detect-node "^2.0.4"

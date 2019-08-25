@@ -61,7 +61,10 @@ export default function middleware(req, res) {
   });
 
   // allow client to start loading js bundle
-  res.write(`<!DOCTYPE html><html><head><script defer src="${manifect['client.js']}"></script>\n`);
+  res.write(`<!DOCTYPE html><html><head>
+        <script async src="${manifect['client.js']}"></script>\n
+`);
+  //<script async src="${manifect['HelloWorld2.jsx']}"></script>
 
   /*
 
