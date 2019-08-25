@@ -195,9 +195,10 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
   const functionSignature = getFunctionSignature(importFunction);
 
   if (LOADABLE_SIGNATURE.has(functionSignature)) {
-    const loadable = LOADABLE_SIGNATURE.get(functionSignature);
+    const loadable = LOADABLE_SIGNATURE.get(functionSignature)!;
     loadable.replaceImportFunction(importFunction);
-    return loadable;
+
+    return loadable as any;
   }
 
   const loadable = toLoadable(importFunction as any);
