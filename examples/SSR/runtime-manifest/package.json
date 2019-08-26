@@ -1,0 +1,44 @@
+{
+  "scripts": {
+    "generate-imported-component": "imported-components app app/imported.ts",
+    "build": "yarn webpack",
+    "start": "node dist/server/index.js",
+    "cp:1": "cp -R ../../../dist ./node_modules/react-imported-component/",
+    "cp:2": "cp ../../../package.json ./node_modules/react-imported-component",
+    "cp:3": "cp ../../../boot ./node_modules/react-imported-component",
+    "cp": "yarn cp:1 && yarn cp:2 && yarn cp:3"
+  },
+  "dependencies": {
+    "@types/cheerio": "^0.22.7",
+    "@types/react": "^16.9.2",
+    "@types/redux-devtools-extension": "^2.13.2",
+    "@types/webpack-env": "^1.13.6",
+    "awesome-typescript-loader": "^5.0.0",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
+    "cheerio": "^1.0.0-rc.2",
+    "compression": "^1.7.2",
+    "express": "^4.16.3",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-helmet": "^5.2.0",
+    "react-imported-component": "^6.0.0-beta.3",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.2.2",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.2",
+    "ts-loader": "^4.2.0",
+    "typescript": "^2.8.3",
+    "webpack-serve": "^1.0.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-es2015": "^6.18.0",
+    "css-loader": "^2.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  }
+}

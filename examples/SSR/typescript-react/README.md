@@ -1,0 +1,1 @@
+Simple example with TS, React + imported-components using `renderToString` and `printDrainHydrateMarks`

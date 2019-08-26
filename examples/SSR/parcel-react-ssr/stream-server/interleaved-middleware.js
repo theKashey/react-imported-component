@@ -70,8 +70,6 @@ export default function middleware(req, res) {
 
   MultiStream(streams).pipe(res);
 
-  const importedStream  =
-
   // start by piping react and styled transform stream
   htmlStream.pipe(styledStream);
   styledStream.on('end', () => {
