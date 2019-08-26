@@ -63,7 +63,7 @@ function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loa
     },
 
     replaceImportFunction(newImportFunction) {
-      importFunction=newImportFunction;
+      importFunction = newImportFunction;
     },
 
     then(cb, err) {
@@ -102,8 +102,12 @@ function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loa
     },
 
     reload() {
-      this.promise = undefined;
-      return this.load();
+      if(this.promise) {
+        this.promise = undefined;
+
+        return this.load();
+      }
+      return Promise.resolve();
     },
 
     load() {
@@ -171,7 +175,12 @@ export const dryRender = (renderFunction: () => void) => {
 };
 
 export const assignImportedComponents = (set: Array<Promised<any>>) => {
-  set.forEach(imported => toLoadable(imported))
+  const countBefore = LOADABLE_SIGNATURE.size;
+  set.forEach(imported => toLoadable(imported));
+  if (countBefore === LOADABLE_SIGNATURE.size) {
+    console.error('react-imported-component: no import-marks found, please check babel plugin')
+  }
+  done();
 };
 
 export function executeLoadable(importFunction: DefaultImport<any> | Loadable<any>) {

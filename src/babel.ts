@@ -2,7 +2,9 @@ import {resolve, relative, dirname} from 'path';
 // @ts-ignore
 import * as crc32 from "crc-32";
 
-export const encipherImport = (str: string) => crc32.str(str).toString(32);
+export const encipherImport = (str: string) => {
+  return crc32.str(str).toString(32);
+};
 
 // Babel v7 compat
 let syntax: any;

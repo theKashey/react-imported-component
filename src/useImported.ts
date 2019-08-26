@@ -24,23 +24,34 @@ interface ImportedShape<T> {
   retry(): void;
 }
 
-export function useLoadable<T>(loadable: Loadable<T>) {
-  if(isBackend && !isItReady()) {
-    console.error('react-imported-component: trying to render not ready component. Have you `await whenComponentsReady()`?')
-  }
+interface HookOptions {
+  import?: boolean;
+  track?: boolean;
+}
 
+export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {}) {
   const UID = useContext(streamContext);
   const [, forceUpdate] = useState(() => {
     // use mark
-    useMark(UID, loadable.mark);
-    loadable.loadIfNeeded();
+    if (options.import !== false) {
+      if (options.track !== false) {
+        useMark(UID, loadable.mark);
+      }
+      loadable.loadIfNeeded();
+    }
 
     return {};
   });
 
   useEffect(() => {
-    loadLoadable(loadable, forceUpdate);
-  }, [loadable]);
+    if (options.import !== false) {
+      loadLoadable(loadable, forceUpdate);
+    }
+  }, [loadable, options.import]);
+
+  if (isBackend && !isItReady() && loadable.isLoading()) {
+    console.error('react-imported-component: trying to render not ready component. Have you `await whenComponentsReady()`?')
+  }
 
   // use mark
   // retry
@@ -54,8 +65,8 @@ export function useLoadable<T>(loadable: Loadable<T>) {
   }, [loadable]);
 
   if (process.env.NODE_ENV !== 'production') {
-    if(isBackend) {
-      if(!loadable.done) {
+    if (isBackend) {
+      if (!loadable.done) {
         console.error('react-imported-component: using not resolved loadable. You should `await whenComponentsReady()`.')
       }
     }
@@ -68,14 +79,14 @@ export function useLoadable<T>(loadable: Loadable<T>) {
   };
 }
 
-export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, exportPicker: (x: T) => K = es6import): ImportedShape<K> {
+export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, exportPicker: (x: T) => K = es6import, options: HookOptions = {}): ImportedShape<K> {
   const [topLoadable] = useState(getLoadable(importer));
   const postEffectRef = useRef(false);
   const {
     loadable,
     retry,
     update,
-  } = useLoadable<T>(topLoadable);
+  } = useLoadable<T>(topLoadable, options);
 
   // kick loading effect
   useEffect(() => {

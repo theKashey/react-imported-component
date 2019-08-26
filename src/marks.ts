@@ -58,12 +58,21 @@ export const rehydrateMarks = (marks?: string[]) => {
   const rehydratedMarks: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
   const tasks: Promise<any>[] = [];
 
+  const usedMarks = new Set<string>();
+
   LOADABLE_MARKS
     .forEach(({mark, loadable}) => {
       if (allIn(mark, rehydratedMarks)) {
+        mark.forEach(m => usedMarks.add(m));
         tasks.push(loadable.load())
       }
     });
+
+  rehydratedMarks.forEach(m => {
+    if (!usedMarks.has(m)) {
+      throw new Error(`react-imported-component: unknown mark(${m}) has been used. Client and Server should have the same babel configuration.`);
+    }
+  });
 
   return Promise.all(tasks);
 };

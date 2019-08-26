@@ -50,7 +50,7 @@ export interface Loadable<T> {
   tryResolveSync<Y = T>(then: (x: T) => Y): Promise<Y>;
 
   load(): Promise<T>;
-  reload(): Promise<T>;
+  reload(): Promise<void>;
 
   then(callback: (x: T) => void, err: () => void): Promise<any>;
 }
