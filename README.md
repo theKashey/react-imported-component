@@ -434,6 +434,24 @@ const MyPage = () => (
 );
 ```
 
+## Webpack integration (experimental)
+
+```js
+// get mark somehow
+import {getMarkedChunks} from 'react-imported-component/server';
+
+const chunkNames = getMarkedChunks(marks); 
+
+// use flush-webpack-chunks to discover assets behind chunk name
+```
+
+## React-snap
+`react-imported-component` is the only (even) theoretically compatible loader for [react-snap](https://github.com/stereobooster/react-snap).
+
+
+## Webpack-external-import
+`react-imported-component` is the only (even) theoretically compatible loader for [webpack-external-import](https://github.com/ScriptedAlchemy/webpack-external-import).
+
 ## SSR (Server side rendering)
 It was usually a headache - async components and SSR, which is currently sync.
 React-imported-component break this cycle, making ServerSide rendering sync, and providing
