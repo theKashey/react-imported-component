@@ -14,7 +14,7 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `() => [import('${rel}/a.js'), '', '${rel}/a.js']`
+      `[() => import('${rel}/a.js'), '', '${rel}/a.js']`
     ]);
   });
 
@@ -27,7 +27,7 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `() => [import(/* comment:42 */'${rel}/a.js'), '', '${rel}/a.js']`
+      `[() => import(/* comment:42 */'${rel}/a.js'), '', '${rel}/a.js']`
     ]);
   });
 
@@ -43,8 +43,8 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `() => [import(/* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js']`,
-      `() => [import(/* webpack: 123 */'${rel}/b.js'), '', '${rel}/b.js']`,
+      `[() => import(/* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js']`,
+      `[() => import(/* webpack: 123 */'${rel}/b.js'), '', '${rel}/b.js']`,
     ]);
   });
 
@@ -60,8 +60,8 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `() => [import(/* webpackChunkName: "chunk-a" */'${rel}/a.js'), 'chunk-a', '${rel}/a.js']`,
-      `() => [import(/* webpack: 123 */'${rel}/b.js'), '', '${rel}/b.js']`,
+      `[() => import(/* webpackChunkName: "chunk-a" */'${rel}/a.js'), 'chunk-a', '${rel}/a.js']`,
+      `[() => import(/* webpack: 123 */'${rel}/b.js'), '', '${rel}/b.js']`,
     ]);
   });
 
@@ -77,8 +77,8 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `() => [import(/*  *//* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js']`,
-      `() => [import(/*  */'${rel}/b.js'), '', '${rel}/b.js']`,
+      `[() => import(/*  *//* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js']`,
+      `[() => import(/*  */'${rel}/b.js'), '', '${rel}/b.js']`,
     ]);
   });
 });

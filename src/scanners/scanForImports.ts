@@ -81,7 +81,7 @@ export const remapImports = (
           const rootName = doNotTransform ? name : getRelative(root, name);
           const fileName = doNotTransform ? name : getRelative(targetDir, name);
 
-          imports[getRelative(root, name)] = `() => [import(${comment}'${fileName}'), '${getChunkName(comment)}', '${rootName}']`
+          imports[getRelative(root, name)] = `[() => import(${comment}'${fileName}'), '${getChunkName(comment)}', '${rootName}']`
         })
     ))
 );
