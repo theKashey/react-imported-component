@@ -12,7 +12,7 @@ import LazyBoundary from './LazyBoundary'
 import {setConfiguration} from './config';
 import {remapImports} from './helpers';
 
-import {useImported, useLoadable, useLazy} from './useImported'
+import {useImported, useLoadable, useLazy} from './useImported';
 
 export {
   printDrainHydrateMarks,

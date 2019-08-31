@@ -23,6 +23,11 @@ export type DefaultComponentImport<T> = () => Promise<DefaultComponent<T>>
 export type Defaultable<P> = P | Default<P>;
 export type DefaultImport<T> = () => Promise<Defaultable<T>>
 
+export interface MarkMeta {
+  mark: Mark;
+  chunkName: string;
+  fileName: string;
+}
 
 export type LazyImport<T> = () => Promise<DefaultImportedComponent<T>>
 

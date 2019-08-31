@@ -52,7 +52,7 @@ export const drainHydrateMarks = (stream: Stream = defaultStream) => {
 };
 
 
-const allIn = (a1: string[], a2: string[]) => a1.filter(mark => a2.indexOf(mark) >= 0).length === a1.length;
+export const markerOverlap = (a1: string[], a2: string[]) => a1.filter(mark => a2.indexOf(mark) >= 0).length === a1.length;
 
 export const rehydrateMarks = (marks?: string[]) => {
   const rehydratedMarks: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
@@ -62,7 +62,7 @@ export const rehydrateMarks = (marks?: string[]) => {
 
   LOADABLE_MARKS
     .forEach(({mark, loadable}) => {
-      if (allIn(mark, rehydratedMarks)) {
+      if (markerOverlap(mark, rehydratedMarks)) {
         mark.forEach(m => usedMarks.add(m));
         tasks.push(loadable.load())
       }
@@ -82,7 +82,7 @@ export const waitForMarks = (marks: string[]) => {
 
   LOADABLE_MARKS
     .forEach(({mark, loadable}) => {
-      if (allIn(mark, marks)) {
+      if (markerOverlap(mark, marks)) {
         tasks.push(loadable.resolution)
       }
     });

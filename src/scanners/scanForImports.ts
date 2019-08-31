@@ -14,7 +14,9 @@ const trimImport = (str: string) => str.replace(/['"]/g, '');
 const getImports = getMatchString(`(['"]?[\\w-/.]+['"]?)\\)`, 1);
 const getComment = getMatchString(/\/\*.*\*\// as any, 0);
 
-const clearComment = (str:string) => (
+const getChunkName = getMatchString('webpackChunkName: "([^"]*)"', 1);
+
+const clearComment = (str: string) => (
   str
     .replace("webpackPrefetch: true", '')
     .replace("webpackPreload: true", '')
@@ -64,12 +66,24 @@ const rejectSystemFiles = (file: string, stats: Stats) => (
   stats.isDirectory() && file.match(/node_modules/) || file.match(/(\/\.\w+)/)
 );
 
-export const remapImports = (data: FileContent[], root: string, targetDir: string, getRelative: (a: string, b: string) => string, imports: Record<string, string>) => (
+export const remapImports = (
+  data: FileContent[],
+  root: string,
+  targetDir: string,
+  getRelative: (a: string, b: string) => string,
+  imports: Record<string, string>,
+) => (
   data
     .map(({file, content}) => mapImports(file, getDynamicImports(content)))
-    .forEach(importBlock => importBlock.forEach(({name, comment, doNotTransform}) => {
-      imports[getRelative(root, name)] = `() => import(${comment}'${doNotTransform ? name : getRelative(targetDir, name)}')`
-    }))
+    .forEach(importBlock => (
+      importBlock
+        .forEach(({name, comment, doNotTransform}) => {
+          const rootName = doNotTransform ? name : getRelative(root, name);
+          const fileName = doNotTransform ? name : getRelative(targetDir, name);
+
+          imports[getRelative(root, name)] = `() => [import(${comment}'${fileName}'), '${getChunkName(comment)}', '${rootName}']`
+        })
+    ))
 );
 
 function scanTop(root: string, start: string, target: string) {

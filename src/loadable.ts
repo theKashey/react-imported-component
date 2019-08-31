@@ -1,6 +1,6 @@
 import {assingLoadableMark} from './marks';
 import {isBackend} from './detectBackend';
-import {DefaultImport, Loadable, Promised} from './types';
+import {DefaultImport, Loadable, Mark, MarkMeta, Promised} from './types';
 
 type AnyFunction = (x: any) => any;
 
@@ -18,7 +18,7 @@ const addPending = (promise: Promise<any>) => pending.push(promise);
 const removeFromPending = (promise: Promise<any>) => pending = pending.filter(a => a !== promise);
 const trimImport = (str: string) => str.replace(/['"]/g, '');
 
-export const importMatch = (functionString: string) => {
+export const importMatch = (functionString: string): Mark => {
   const markMatches = functionString.match(/`imported_(.*?)_component`/g) || [];
   return markMatches
     .map(match => match && trimImport((match.match(/`imported_(.*?)_component`/i) || [])[1]));
@@ -174,9 +174,21 @@ export const dryRender = (renderFunction: () => void) => {
     .then(done);
 };
 
-export const assignImportedComponents = (set: Array<Promised<any>>) => {
+export const markMeta: MarkMeta[] = [];
+
+const assignMetaData = (mark: Mark, chunkName: string, fileName: string) => {
+  markMeta.push({mark, chunkName, fileName});
+};
+
+type ImportedDefinition = [Promised<any>, string, string]
+
+export const assignImportedComponents = (set: Array<ImportedDefinition>) => {
   const countBefore = LOADABLE_SIGNATURE.size;
-  set.forEach(imported => toLoadable(imported));
+  set.forEach(imported => {
+    const loadable = toLoadable(imported[0]);
+    assignMetaData(loadable.mark, imported[1], imported[2]);
+  });
+
   if (countBefore === LOADABLE_SIGNATURE.size) {
     console.error('react-imported-component: no import-marks found, please check babel plugin')
   }
