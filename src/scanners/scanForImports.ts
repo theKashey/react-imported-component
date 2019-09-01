@@ -80,8 +80,11 @@ export const remapImports = (
         .forEach(({name, comment, doNotTransform}) => {
           const rootName = doNotTransform ? name : getRelative(root, name);
           const fileName = doNotTransform ? name : getRelative(targetDir, name);
+          const def = `[() => import(${comment}'${fileName}'), '${getChunkName(comment)}', '${rootName}']`;
+          const slot = getRelative(root, name);
 
-          imports[getRelative(root, name)] = `[() => import(${comment}'${fileName}'), '${getChunkName(comment)}', '${rootName}']`
+          // keep the maximal definition
+          imports[slot] = !imports[slot] ? def : (imports[slot].length > def.length ? imports[slot] : def);
         })
     ))
 );
@@ -95,6 +98,7 @@ function scanTop(root: string, start: string, target: string) {
       (await scanDirectory(join(root, start), undefined, rejectSystemFiles) as string[])
         .filter(name => normalizePath(name).indexOf(target) === -1)
         .filter(name => RESOLVE_EXTENSIONS.indexOf(extname(name)) >= 0)
+        .sort();
 
     const data: FileContent[] = await Promise.all(
       files
