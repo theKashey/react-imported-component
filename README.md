@@ -434,16 +434,57 @@ const MyPage = () => (
 );
 ```
 
-## Webpack integration (experimental)
+## Bundler integration
+Keep in mind - you dont "need" this. It will just make integration slightly better in terms of prefetching (which affects network recourse priority) and thus startup time.
+
+### Webpack integration
+You might preload/prefetch used styles and scripts, which were defined with `webpackChunkName`
 
 ```js
 // get mark somehow
 import {getMarkedChunks} from 'react-imported-component/server';
 
-const chunkNames = getMarkedChunks(marks); 
-
-// use flush-webpack-chunks to discover assets behind chunk name
+const chunkNames = getMarkedChunks(marks);
 ```
+
+#### Via stat.json
+If you do have `stat.json` - you can discover __all__ resources you have to preload
+using [flush-webpack-chunks](https://github.com/faceyspacey/webpack-flush-chunks)
+```js
+const { js, styles } = flushChunks(webpackStats, {
+  chunkNames,
+});
+
+const prefetch = (targets, as) => (
+  targets
+      .map(url => `<link as="${as}" rel="preload" href="${url}" />`)
+      .join('')
+);
+
+res.send(prefetch(scripts, "script"));
+res.send(prefetch(stylesheets, "style"));
+```
+__DO NOT__ actually __load__ reported resources - only preload them, and let webpack do rest.   
+
+#### Via assets.json
+You you are using [assets-webpack-plugin](https://github.com/ztoben/assets-webpack-plugin) then you have only list of assets, without dependencies between.
+That's enought.
+```js
+const prefetchChunks = (chunks, assets) => (
+  chunks
+      .map(chunk => [
+          assets[chunk].js && `<link rel="preload" as="script" href="${assets[chunk].js}" />`,
+          assets[chunk].css && `<link rel="preload" as="style" href="${assets[chunk].css}" />`,
+      ].join('')
+      ).join('')
+);
+
+res.send(prefetchChunks(chunkNames, assets));
+```
+
+### Parcel integration
+Use `parcel-manifest` and `getMarkedFileNames`(instead of `getMarkedChunks`) to find which files were required and has to be imported.
+
 
 ## React-snap
 `react-imported-component` is the only (even) theoretically compatible loader for [react-snap](https://github.com/stereobooster/react-snap).
