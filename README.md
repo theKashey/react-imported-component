@@ -67,6 +67,11 @@ Key features:
  - Loads chunks only after the `main one`, as long as loader code is bundled inside the main chunk, so it should be loaded first.
  - Not an issue with the `progressive hydration`, and might provide a better UX via feature detection.
  - Provides 👨‍🔬 technological workaround - [see here](#concurrent-loading)
+ 
+ 👯‍♀️Works better in pair
+ - [react-prerendered-component](https://github.com/theKashey/react-prerendered-component) for prerendering, partial hydration and react fragment caching
+ - [used-style](https://github.com/theKashey/used-styles) for CSS and critical CSS extraction
+ - [devolution](https://github.com/theKashey/devolution) for shipping legacy/modern bundles
     
 <a name="usage"/>
 
@@ -146,6 +151,8 @@ const MyCalendarComponent = () => {
 }
 ```
 What you could load using `useImported`? Everything - `imported` itself is using it to import components.
+
+> `useImported` is an excellent example for loading translations, which are usually a simple json, in a _trackable_ way.
 
 <a name="api"/>
 
@@ -505,6 +512,25 @@ It will detect server-side environment and precache all used components.
 It does not matter how do you bundle your application - it could be even browser. The secrect sause is a __cli__ command, to extract all your imports into imports map, and use it later to load chunks by request.
 - You might even dont have any separated chunk on the server side - it would still works.
 - You might even ship module/nomodule scripts, using, for example, [devolution](https://github.com/theKashey/devolution) - no additional configuration would be required.
+
+## Why you need SSR
+In case of imported component SSR is a "dry run" of your application - an easy way to discover required pieces
+powered by zero latency(you are already on the server) and super fast speed connection (all scripts are in memory).
+
+However - you dont need SSR to get the same benefits on pure ClientSideRendered solutions - _prediction_ would be enought.
+The common approach is to 
+- load first part of components, including Providers, which would load something they need. Like translations.
+- then hit, and load the current route
+- then do the same with the sub route
+
+This causes effect known as `loading waves`, the effect SSR could mitigate almost in full.
+
+However, nothing stops you from loading translation data in the parallel to the routes, and loading
+route and sub route in the same time, not sequentially. 
+You can have backend-for-frontend, why not to have frontend-for-frontend?
+Just handle route, cookies, and whatever you could handle, outside of React. [Redux-first-router](https://github.com/faceyspacey/redux-first-router) and principles behind it
+are the great example of this idealogy.
+
 
 ### Not using React.Lazy with React-Hot-Loader
 There is design limitation with React.lazy support from RHL size, so they could not be reloaded without
