@@ -407,8 +407,10 @@ In short (streamed example is NOT short)
   const usedStyles = getUsedStyles(markup, lookup);
 ```
 
-If you need `streamed` example with __reduced TTFB__ - 
+If you need _stream render_ example with __reduced TTFB__, or critical style extraction - 
 please refer to [used-styles](https://github.com/theKashey/used-styles) documentation, or our [parcel-bundler stream server example](https://github.com/theKashey/react-imported-component/tree/master/examples/SSR/parcel-react-ssr/stream-server).
+
+> everything is possible
 
 ## Timeout to display "spinners"   
 There is no build in timeouts to display Error or Loading states. You could control everything by yourself
