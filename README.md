@@ -31,7 +31,7 @@
   <br/>
 </div>
 
-👉 [Usage](#usage)  |  [API](#api)  | [SSR](#ssr)  |  [Concurrent loading](#concurrent-loading) 
+👉 [Usage](#usage)  |  [API](#api)  | [SSR](#ssr)  |  [Concurrent loading](#concurrent-loading)  |  [Webpack/Parcel](#bundler-integration) 
 
  
 Key features:
@@ -302,17 +302,17 @@ gathering information about how the final chunks are assembled, and __injects th
 thus all scripts, used to render something on the Server would be loaded in a parallel in on Client.
 Literally - they are defined in the HTML.
 `React-imported-component` is different, it starts "working" when the bundle is loaded, thus
-__loading of chunks is deferred__. 
+__the loading of chunks is deferred__. 
 > In the normals conditions `react-imported-component` would be "slower" than a "webpack" library.
 
-However, it is not a problem, as long as (for now), script execution is single trhreaded, and even you if can load multiple scripts
+However, it is not a problem, as long as (for now), script execution is single threaded, and even you if can __load__ multiple scripts
 simultaneously - you can't __run__ them in parallel*.
 
-Just change your entry point, to utilize this limitation.
+And there a way to utilize this limitation - just change your entry point, .
 
-Let's call it - __Scheduler optimization__. 
+And let's call it - a __Scheduler optimization__. See __loading prediction__ section for more details.
 
-#### Simply static render
+#### Scheduler optimization + simply static render
 1. Split your app into `boot` and `main` parts
 2. `rehydrate` at the boot
 ```js
@@ -327,14 +327,19 @@ Let's call it - __Scheduler optimization__.
  Promise.resolve().then(() =>
    Promise.resolve().then(() => {
      // load the rest
-     require('./main');
-     // don't forget to `await rehydrateMarks()` before render
+     require('./main'); // <--- your main scripts
+     // ! and don't forget to `await rehydrateMarks()` before render
    })
  );
+ 
+ // main.js 
+ rehydrateMarks().then(() => {
+   ReactDOM.hydrate(<App />, document.getElementById('root'));     
+ });
 ```
 This will just start loading extra chunks before the main bundle got completely parsed and executed.
 
-#### Stream render
+#### Scheduler optimization + stream render
 > See examples/SSR/parcel-react-ssr/server-stream for details
 1. Add your main bundle to the `head`, using __async__ script tag. Not defer! We have to do it async
 2. Add `loadableTracker` at server side
