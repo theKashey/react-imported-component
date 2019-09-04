@@ -1,6 +1,7 @@
 import {assingLoadableMark} from './marks';
 import {isBackend} from './detectBackend';
 import {DefaultImport, Loadable, Mark, MarkMeta, Promised} from './types';
+import {settings} from "./config";
 
 type AnyFunction = (x: any) => any;
 
@@ -13,6 +14,7 @@ let pending: Array<Promise<any>> = [];
 
 const LOADABLE_WEAK_SIGNATURE = new WeakMap<any, Loadable<any>>();
 const LOADABLE_SIGNATURE = new Map<string, Loadable<any>>();
+const REJECTED_MARKS = new Set<string>();
 
 const addPending = (promise: Promise<any>) => pending.push(promise);
 const removeFromPending = (promise: Promise<any>) => pending = pending.filter(a => a !== promise);
@@ -29,6 +31,8 @@ export const getFunctionSignature = (fn: AnyFunction | string) => (
     .replace(/(["'])/g, '`')
     .replace(/\/\*([^\*]*)\*\//ig, 'DEL')
 );
+
+const isMarkRejected = (mark: string) => REJECTED_MARKS.has(mark);
 
 function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
   let importFunction = firstImportFunction;
@@ -134,7 +138,7 @@ function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loa
     }
   };
 
-  if (mark && mark.length) {
+  if (mark && mark.length && !mark.some(isMarkRejected)) {
     LOADABLE_SIGNATURE.set(functionSignature, loadable);
     assingLoadableMark(mark, loadable);
   } else {
@@ -185,6 +189,10 @@ type ImportedDefinition = [Promised<any>, string, string]
 export const assignImportedComponents = (set: Array<ImportedDefinition>) => {
   const countBefore = LOADABLE_SIGNATURE.size;
   set.forEach(imported => {
+    if (!settings.fileFilter(imported[2])) {
+      const marks = importMatch(getFunctionSignature(imported[0])) || [];
+      marks.forEach(mark => REJECTED_MARKS.add(mark))
+    }
     const loadable = toLoadable(imported[0]);
     assignMetaData(loadable.mark, imported[1], imported[2]);
   });

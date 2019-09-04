@@ -16,6 +16,8 @@ const getComment = getMatchString(/\/\*.*\*\// as any, 0);
 
 const getChunkName = getMatchString('webpackChunkName: "([^"]*)"', 1);
 
+const clientSideOnly = (comment:string) => comment.indexOf('client-side') >= 0;
+
 const clearComment = (str: string) => (
   str
     .replace("webpackPrefetch: true", '')
@@ -78,6 +80,9 @@ export const remapImports = (
     .forEach(importBlock => (
       importBlock
         .forEach(({name, comment, doNotTransform}) => {
+          if (clientSideOnly(comment)) {
+            return;
+          }
           const rootName = doNotTransform ? name : getRelative(root, name);
           const fileName = doNotTransform ? name : getRelative(targetDir, name);
           const def = `[() => import(${comment}'${fileName}'), '${getChunkName(comment)}', '${rootName}']`;

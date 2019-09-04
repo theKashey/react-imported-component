@@ -517,6 +517,21 @@ React-imported-component break this cycle, making ServerSide rendering sync, and
 comprehensive ways to rehydrate rendered tree on client. 
 It will detect server-side environment and precache all used components.
 
+### Server Side Auto Import
+On the server side `imported` __would auto-import__ any found import. As long as not all imports could be executed at Server Side you might
+pop out this feature using a "magic comment".
+```js
+import(/* client-side */ './file');
+```
+Or file filtering
+```js
+import {setConfiguration} from 'react-imported-component';
+
+setConfiguration({
+  fileFilter: (fileName) => file.indexOf('/client')!==0
+});
+```
+
 ### Bundler independent SSR
 It does not matter how do you bundle your application - it could be even browser. The secrect sause is a __cli__ command, to extract all your imports into imports map, and use it later to load chunks by request.
 - You might even dont have any separated chunk on the server side - it would still works.
