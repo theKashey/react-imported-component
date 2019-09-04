@@ -234,6 +234,8 @@ CLI command `imported-components [sources ROOT] [targetFile.js]` (use .ts for Ty
 When you will execute this command - all `imports` among your codebase would be found and extracted to a file provided.
 This will gave ability to orchestrate code-splitting later.
 
+If you need to search inside more that one top-level directory - just define more command, saving information into more than one target file. 
+
 > The current implementation will discover and use all `imports`, even // commented ones
 
 ## 3. Start using `imported`, `lazy` or `useImported`
