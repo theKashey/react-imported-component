@@ -4,6 +4,7 @@ import fs from 'fs';
 import MultiStream from 'multistream';
 import {getProjectStyles, createStyleStream} from 'used-styles';
 import {printDrainHydrateMarks, ImportedStream} from 'react-imported-component';
+import {createLoadableStream, createLoadableTransformer, getLoadableTrackerCallback} from 'react-imported-component/server';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import {StaticRouter} from 'react-router-dom';
@@ -36,9 +37,9 @@ export default function middleware(req, res) {
   // Generate the server-rendered HTML using the appropriate router
   const context = {};
 
-  let streamUID = 0;
+  let streamUID = createLoadableStream();
   const htmlStream = ReactDOM.renderToNodeStream(
-    <ImportedStream takeUID={uid => streamUID = uid}>
+    <ImportedStream stream={streamUID}>
       <StaticRouter location={req.originalUrl} context={context}>
         <App/>
       </StaticRouter>
@@ -56,11 +57,29 @@ export default function middleware(req, res) {
   // create a style steam
   const styledStream = createStyleStream(projectStyles, (style) => {
     // emit a line to header Stream
-    headerStream.push(`<link href="dist/${style}" rel="stylesheet">\n`);
+    headerStream.push(`\n/*used style*/<link href="dist/${style}" rel="stylesheet">\n`);
   });
 
   // allow client to start loading js bundle
-  res.write(`<!DOCTYPE html><html><head><script defer src="${manifect['client.js']}"></script>`);
+  res.write([
+    '<!DOCTYPE html><html><head>'
+    `<script async src="${manifect['client.js']}"></script>`,
+    // HINT!
+    // uncomment this line to convert this example in a "classical one", when all scripts are present in the HTML code
+    // `<script async src="${manifect['HelloWorld2.jsx']}"></script>`,
+  ].join('\n'));
+
+  /*
+
+  res
+   <- headerStream
+   <- middleStream
+   <- styledStream
+      <- importedHelper
+         <- htmlStream (React)
+         <- htmlStream "end"
+   */
+
 
   const middleStream = readableString('</head><body><div id="app">');
   const endStream = readableString('</div></body></html>');
@@ -72,10 +91,15 @@ export default function middleware(req, res) {
     endStream,
   ];
 
+  const importedHelper = createLoadableTransformer(streamUID, getLoadableTrackerCallback("exampleTracker"));
+
   MultiStream(streams).pipe(res);
 
   // start by piping react and styled transform stream
-  htmlStream.pipe(styledStream, {end: false});
+  htmlStream
+    .pipe(importedHelper)
+    .pipe(styledStream, {end: false});
+
   htmlStream.on('end', () => {
     // push loaded chunks information
     headerStream.push(printDrainHydrateMarks(streamUID));

@@ -2,11 +2,15 @@
   "scripts": {
     "generate-imported-component": "imported-components app app/imported.ts",
     "build": "yarn webpack",
-    "start": "node dist/server/index.js"
+    "start": "node dist/server/index.js",
+    "cp:1": "cp -R ../../../dist ./node_modules/react-imported-component/",
+    "cp:2": "cp ../../../package.json ./node_modules/react-imported-component",
+    "cp:3": "cp ../../../boot ./node_modules/react-imported-component",
+    "cp": "yarn cp:1 && yarn cp:2 && yarn cp:3"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.7",
-    "@types/react": "^16.3.13",
+    "@types/react": "^16.9.2",
     "@types/redux-devtools-extension": "^2.13.2",
     "@types/webpack-env": "^1.13.6",
     "awesome-typescript-loader": "^5.0.0",
@@ -16,8 +20,8 @@
     "express": "^4.16.3",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
-    "react": "^16.3.2",
-    "react-dom": "^16.3.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "react-helmet": "^5.2.0",
     "react-imported-component": "^5.0.1",
     "react-redux": "^5.0.7",

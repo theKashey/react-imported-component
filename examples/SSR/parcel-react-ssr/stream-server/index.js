@@ -5,8 +5,8 @@ import express from 'express';
 
 // Pick one of these
 
-//import middleware from './middleware';
-import middleware from './interleaved-middleware';
+import middleware from './middleware';
+// import middleware from './interleaved-middleware';
 
 const app = express();
 

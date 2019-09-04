@@ -1,22 +1,23 @@
 {
   "name": "react-imported-component",
-  "version": "5.5.3",
+  "version": "6.0.0-beta.6",
   "description": "I will import your component, and help to handle it",
-  "main": "dist/cjs/index.js",
+  "main": "dist/es5/index.js",
   "jsnext:main": "dist/es2015/index.js",
   "module": "dist/es2015/index.js",
   "sideEffects": false,
-  "types": "module.d.ts",
+  "types": "dist/es5/index.d.ts",
   "scripts": {
-    "build:cjs": "NODE_ENV=cjs babel src -d dist/cjs",
-    "build:es5": "NODE_ENV=es2015 babel src -d dist/es2015",
-    "build:flow": "cp ./module.js.flow ./dist/cjs/index.js.flow && cp ./module.js.flow ./dist/es2015/index.js.flow",
-    "build": "rm -Rf ./dist && yarn build:es5 && yarn build:cjs && yarn build:flow",
-    "test": "npm run test:pick -- '_tests/**/*spec.js'",
-    "test:pick": "BABEL_ENV=cjs mocha --compilers js:@babel/register -r jsdom-global/register",
+    "build": "ts-react-toolbox build",
+    "test": "ts-react-toolbox test",
     "prepublish": "npm run build",
-    "lint": "eslint src tests",
-    "lint:fix": "eslint src tests --fix"
+    "lint": "ts-react-toolbox lint",
+    "dev": "ts-react-toolbox dev",
+    "test:ci": "ts-react-toolbox test --runInBand --coverage",
+    "release": "ts-react-toolbox release",
+    "static": "ts-react-toolbox publish",
+    "format": "ts-react-toolbox format",
+    "analyze": "ts-react-toolbox analyze"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,7 @@
     "hmr"
   ],
   "peerDependencies": {
-    "react": "^15.0.0 || ^16.0.0"
+    "react": "^16.3.0"
   },
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
@@ -44,52 +45,42 @@
   },
   "homepage": "https://github.com/theKashey/react-hot-component-loader#readme",
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.2.0",
-    "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-flow": "^7.0.0",
+    "@babel/core": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
-    "@babel/register": "^7.0.0",
-    "@types/react": "^16.8.1",
-    "babel-eslint": "^9.0.0",
-    "babel-plugin-dynamic-import-node": "^1.2.0",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "chai": "^4.1.0",
-    "chai-enzyme": "^1.0.0-beta.0",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.6.0",
-    "eslint": "^4.2.0",
-    "eslint-plugin-mocha": "^5.0.0",
-    "eslint-plugin-react": "^7.7.0",
-    "flowgen": "^1.2.2",
-    "jsdom": "11.11.0",
-    "jsdom-global": "3.0.2",
-    "mocha": "^5.2.0",
-    "nyc": "^12.0.2",
-    "react": "^16.6.0",
-    "react-deep-force-update": "^2.1.1",
-    "react-dom": "^16.6.0",
-    "react-hot-loader": "^4.1.2",
+    "@babel/runtime": "^7.3.1",
+    "@size-limit/preset-small-lib": "^2.1.1",
+    "@types/node": "^12.7.2",
+    "babel-plugin-dynamic-import-node": "^2.3.0",
     "react-test-renderer": "^16.6.0",
     "sinon": "^5.0.10",
-    "size-limit": "^0.21.1"
+    "size-limit": "^2.0.2",
+    "ts-react-toolbox": "^0.2.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.3.1",
     "crc-32": "^1.2.0",
     "detect-node": "^2.0.4",
-    "prop-types": "15.6.2",
-    "scan-directory": "^1.0.0"
+    "prop-types": "^15.6.2",
+    "scan-directory": "^1.0.0",
+    "tslib": "^1.10.0"
   },
   "size-limit": [
     {
       "path": "dist/es2015/index.js",
-      "limit": "3.5 KB"
+      "limit": "3 KB"
+    },
+    {
+      "path": "dist/es2015/boot.js",
+      "limit": "1.5 KB"
     }
+  ],
+  "engines": {
+    "node": ">=8.5.0"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "boot",
+    "server",
+    "babel.js"
   ]
 }

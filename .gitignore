@@ -3,3 +3,5 @@ node_modules/
 /dist/
 .DS_Store
 .nyc_output
+yarn-error.log
+*.tgz

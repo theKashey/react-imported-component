@@ -1,26 +1,16 @@
 import React from 'react'
 
-const RAND = Math.round(Math.random() * 1000)
+// const RAND = Math.round(Math.random() * 1000)
 
 class Counter extends React.Component {
-  state = { count: 0 }
-  gen = 0
-
-  componentDidMount() {
-    this.setState({
-      count: RAND,
-    })
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval)
-  }
+  state = { count: Math.round(Math.random() * 1000) };
+  gen = 0;
 
   render() {
     // gen should change. count - no.
     return (
       <span>
-        {this.state.count}:{this.gen++}
+        state({this.state.count}):rerender({this.gen++})
       </span>
     )
   }

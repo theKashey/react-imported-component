@@ -2,7 +2,7 @@ import React from 'react'
 import { Portal } from 'react-portal'
 import hidden from './HiddenComponent'
 
-const Hidden = hidden()
+const Hidden = hidden();
 
 const APortal = () => (
   <Portal>
@@ -13,7 +13,7 @@ const APortal = () => (
 
 export default () => (
   <div>
-    ASYNC
+    ASYNC 77
     <Hidden.counter />
     and <APortal />
   </div>
