@@ -36,7 +36,7 @@
     "react-helmet": "^5.2.0",
     "react-imported-component": "../../../react-imported-component-6.0.0-2.tgz",
     "react-router-dom": "^4.2.2",
-    "used-styles": "^1.1.0"
+    "used-styles": "^2.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
