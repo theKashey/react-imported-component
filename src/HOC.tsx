@@ -1,13 +1,11 @@
 import * as React from 'react';
 import {ImportedComponent} from './Component';
-import {executeLoadable, getLoadable} from './loadable';
-import {HOC, HOCType, LazyImport, Loadable} from "./types";
+import {getLoadable} from './loadable';
+import {ComponentOptions, DefaultComponentImport, HOCOptions, HOCType, LazyImport} from "./types";
 import {useLoadable} from "./useImported";
-import {useEffect, useRef, useState, useMemo} from "react";
+import {useMemo} from "react";
 import {asDefault} from "./utils";
 import {isBackend} from "./detectBackend";
-import {Simulate} from "react-dom/test-utils";
-import load = Simulate.load;
 
 /**
  *
@@ -18,7 +16,10 @@ import load = Simulate.load;
  * @param {Function} [options.onError] - error handler. Will consume the real error.
  * @param {Function} [options.async] - enable React 16+ suspense.
  */
-const loader: HOC = (loaderFunction, baseOptions = {}) => {
+function loader<P, K = P>(
+  loaderFunction: DefaultComponentImport<P>,
+  baseOptions: Partial<ComponentOptions<P, K>> & HOCOptions = {}
+): HOCType<P, K> {
   const loadable = getLoadable(loaderFunction);
 
   const Imported = React.forwardRef<any, any>(

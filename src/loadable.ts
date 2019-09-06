@@ -109,7 +109,7 @@ function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loa
       if(this.promise) {
         this.promise = undefined;
 
-        return this.load();
+        return this.load() as any;
       }
       return Promise.resolve();
     },

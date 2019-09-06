@@ -14,6 +14,21 @@ function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
     .then(upd, upd);
 }
 
+const WEAK_MAP = new WeakMap<Loadable<any>, any>();
+
+
+function executeLoadableEventually(loadable: Loadable<any>, cb: any) {
+  const tracker = {};
+  WEAK_MAP.set(loadable, tracker);
+
+  // execute loadable after some timeout to let HMR propagate thought
+  setTimeout(() => {
+    if (WEAK_MAP.get(loadable) === tracker) {
+      loadable.reload().then(cb);
+    }
+  }, 16);
+}
+
 interface ImportedShape<T> {
   imported?: T;
   error?: any;
@@ -91,7 +106,7 @@ export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, 
   // kick loading effect
   useEffect(() => {
     if (postEffectRef.current) {
-      executeLoadable(importer).then(update);
+      executeLoadableEventually(loadable, update);
     }
 
     postEffectRef.current = true;

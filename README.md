@@ -163,9 +163,12 @@ What you could load using `useImported`? Everything - `imported` itself is using
 <a name="api"/>
 
 # API
+> Don't forget - there are TS typings provided.
 
 ### Code splitting components
 > import {*} from 'react-imported-component';
+
+##### importedComponent
 - `importedComponent(importFunction, [options]): ComponentLoader` - main API, default export, HOC to create imported component.
   - `importFunction - function which resolves with Component to be imported.
   - `options` - optional settings
@@ -178,12 +181,18 @@ What you could load using `useImported`? Everything - `imported` itself is using
   
   - [static] `.preload` - static method to preload components.
 
+##### lazy
 - `lazy(importFunction)` - helper to mimic __React.lazy__ behavior
 
-- `useImported(importFunction, exportPicker?)` - code splitting hook
-  - `importFunction` - a function which resolves to `default` or `wildcard` import(T | {default:T})
-  - `exportPicker` - function to pick "T" from the import
+##### useImported
 
+- `useImported(importFunction, [exportPicker], [options])` - code splitting hook
+  - `importFunction` - a function which resolves to `default` or `wildcard` import(T | {default:T})
+  - `[exportPicker]` - function to pick "T" from the import
+  - `[options]` - options to the hook
+    - `[options.import]` - controls import. Hooks would be executed only if this is not false
+    - `[options.track]` - ability to disable server-side usage tracking. 
+]
 ### Server side API
 > import {*} from 'react-imported-component/server';
 - `whenComponentsReady():Promise` - will be resolved, when all components are loaded. Usually on the next "Promise" tick.

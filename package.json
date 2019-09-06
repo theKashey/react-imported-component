@@ -65,12 +65,16 @@
   },
   "size-limit": [
     {
+      "path": ["dist/es2015/index.js", "dist/es2015/boot.js"],
+      "limit": "3.3 KB"
+    },
+    {
       "path": "dist/es2015/index.js",
       "limit": "3 KB"
     },
     {
       "path": "dist/es2015/boot.js",
-      "limit": "1.5 KB"
+      "limit": "1.6 KB"
     }
   ],
   "engines": {
