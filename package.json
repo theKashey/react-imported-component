@@ -1,6 +1,6 @@
 {
   "name": "react-imported-component",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "description": "I will import your component, and help to handle it",
   "main": "dist/es5/index.js",
   "jsnext:main": "dist/es2015/index.js",
@@ -65,7 +65,10 @@
   },
   "size-limit": [
     {
-      "path": ["dist/es2015/index.js", "dist/es2015/boot.js"],
+      "path": [
+        "dist/es2015/index.js",
+        "dist/es2015/boot.js"
+      ],
       "limit": "3.3 KB"
     },
     {
