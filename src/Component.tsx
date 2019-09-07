@@ -1,7 +1,10 @@
 import * as React from 'react';
+import {ReactElement} from "react";
+import {uid} from "react-uid";
+
 import {ComponentOptions} from "./types";
 import {useImported} from "./useImported";
-import {ReactElement} from "react";
+
 
 function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | null {
   const {loading, error, loadable, imported: Component, retry} = useImported(props.loadable);
@@ -15,7 +18,8 @@ function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | 
   }
 
   if (Component) {
-    return <Component {...props.forwardProps} ref={props.forwardRef}/>
+    // importedUUID for cache busting
+    return <Component {...props.forwardProps} ref={props.forwardRef} importedUUID={uid(Component)}/>
   }
 
   if (loading) {
