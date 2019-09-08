@@ -2,6 +2,7 @@ import * as React from 'react';
 import {ReactElement} from "react";
 import {uid} from "react-uid";
 
+import {settings} from './config';
 import {ComponentOptions} from "./types";
 import {useImported} from "./useImported";
 
@@ -29,6 +30,15 @@ function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | 
   }
 
   if (error) {
+    // always report about errors
+    console.error('react-imported-component', error);
+    // let's rethrow the error after react leaves this function
+    // this might be very crucial for the "safe" dev mode
+    if (settings.rethrowErrors) {
+      setTimeout(() => {
+        throw error
+      });
+    }
     if (props.ErrorComponent) {
       return (
         <props.ErrorComponent
