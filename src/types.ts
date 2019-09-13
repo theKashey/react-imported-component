@@ -24,6 +24,7 @@ export type Defaultable<P> = P | Default<P>;
 export type DefaultImport<T> = () => Promise<Defaultable<T>>
 
 export interface MarkMeta {
+  loadable: Loadable<any>;
   mark: Mark;
   chunkName: string;
   fileName: string;

@@ -13,6 +13,7 @@ import {setConfiguration} from './config';
 import {remapImports} from './helpers';
 
 import {useImported, useLoadable, useLazy} from './useImported';
+import {loadByChunkname} from './loadByChunkName';
 
 export {
   printDrainHydrateMarks,
@@ -22,6 +23,8 @@ export {
   whenComponentsReady,
   dryRender,
   assignImportedComponents,
+
+  loadByChunkname,
 
   ComponentLoader,
   loadableResource,

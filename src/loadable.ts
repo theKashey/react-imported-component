@@ -180,8 +180,8 @@ export const dryRender = (renderFunction: () => void) => {
 
 export const markMeta: MarkMeta[] = [];
 
-const assignMetaData = (mark: Mark, chunkName: string, fileName: string) => {
-  markMeta.push({mark, chunkName, fileName});
+const assignMetaData = (mark: Mark, loadable: Loadable<any>, chunkName: string, fileName: string) => {
+  markMeta.push({mark, loadable, chunkName, fileName});
 };
 
 type ImportedDefinition = [Promised<any>, string, string]
@@ -194,7 +194,7 @@ export const assignImportedComponents = (set: Array<ImportedDefinition>) => {
       marks.forEach(mark => REJECTED_MARKS.add(mark))
     }
     const loadable = toLoadable(imported[0]);
-    assignMetaData(loadable.mark, imported[1], imported[2]);
+    assignMetaData(loadable.mark, loadable, imported[1], imported[2]);
   });
 
   if (countBefore === LOADABLE_SIGNATURE.size) {

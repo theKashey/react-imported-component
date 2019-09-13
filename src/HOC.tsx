@@ -36,6 +36,7 @@ function loader<P, K = P>(
           onError={options.onError}
 
           render={options.render}
+          async={options.async}
 
           forwardProps={props || {}}
           forwardRef={ref}
@@ -51,7 +52,7 @@ function loader<P, K = P>(
   Imported.done = loadable.resolution;
 
   return Imported;
-};
+}
 
 export function lazy<T>(importer: LazyImport<T>): React.FC<T> {
   if (isBackend) {

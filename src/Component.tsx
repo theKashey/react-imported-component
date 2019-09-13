@@ -24,6 +24,9 @@ function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | 
   }
 
   if (loading) {
+    if (props.async) {
+      throw loadable.resolution;
+    }
     return props.LoadingComponent
       ? <props.LoadingComponent {...props.forwardProps} />
       : null;

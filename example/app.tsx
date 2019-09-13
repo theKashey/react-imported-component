@@ -1,22 +1,41 @@
-import * as React from 'react';
-import {Component} from 'react';
-import {GHCorner} from 'react-gh-corner';
-import {AppWrapper} from './styled';
-export interface AppState {
-  
-}
-const repoUrl = 'https://github.com/zzarcon/';
-export default class App extends Component <{}, AppState> {
-  state: AppState = {
-    
-  }
+import * as React from "react";
 
-  render() {
-    return (
-      <AppWrapper>
-        <GHCorner openInNewTab href={repoUrl} />
-        Example!
-      </AppWrapper>
-    )
-  }
+import imported, {lazy, LazyBoundary} from "../src";
+
+const deferImport = (promise: Promise<any>) => new Promise(resolve => setTimeout(() => resolve(promise), 2000));
+
+const Lazy = () => <div>I AM LAZY</div>;
+
+
+const ReactLazy = React.lazy(() => deferImport({default: Lazy}));
+const ImportedLazy = lazy(() => deferImport({default: Lazy}));
+const Imported = imported(() => deferImport({default: Lazy}));
+const ImportedLoading = imported(() => deferImport({default: Lazy}), { LoadingComponent: () => "imported is loading"});
+
+function App() {
+  return (
+    <div className="App">
+      <h1>Lazy Loading</h1>
+      <ul>
+        <li>
+          <React.Suspense fallback={<div>Loading (React)</div>}>
+            <ReactLazy/>
+          </React.Suspense>
+        </li>
+        <li>
+          <LazyBoundary fallback={<div>Loading (Imported)</div>}>
+            <ImportedLazy/>
+          </LazyBoundary>
+        </li>
+        <li>
+            <Imported/>
+        </li>
+        <li>
+            <ImportedLoading/>
+        </li>
+      </ul>
+    </div>
+  );
 }
+
+export default App;

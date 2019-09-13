@@ -70,11 +70,11 @@
         "dist/es2015/index.js",
         "dist/es2015/boot.js"
       ],
-      "limit": "3.3 KB"
+      "limit": "3.4 KB"
     },
     {
       "path": "dist/es2015/index.js",
-      "limit": "3 KB"
+      "limit": "3.1 KB"
     },
     {
       "path": "dist/es2015/boot.js",
