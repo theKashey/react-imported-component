@@ -138,7 +138,7 @@ import {useImported} from 'react-imported-component'
 
 const MyCalendarComponent = () => {
   const {
-      moment,
+      imported: moment,
       loading
     } = useImported(() => import("moment"));
   
@@ -195,8 +195,16 @@ What you could load using `useImported`? Everything - `imported` itself is using
   - `[exportPicker]` - function to pick "T" from the import
   - `[options]` - options to the hook
     - `[options.import]` - controls import. Hooks would be executed only if this is not false
-    - `[options.track]` - ability to disable server-side usage tracking. 
-]
+    - `[options.track]` - ability to disable server-side usage tracking.
+    
+`useImported` returns complex object(ImportedShape):
+-  `imported` - the imported resource
+- `error` - error (if present)
+- `loading` - is it loading right now?
+- `loadable` - the underlying `Loadable` object
+- `retry` - retry action (in case of error)
+     
+
 ### Server side API
 > import {*} from 'react-imported-component/server';
 - `whenComponentsReady():Promise` - will be resolved, when all components are loaded. Usually on the next "Promise" tick.
@@ -213,6 +221,14 @@ What you could load using `useImported`? Everything - `imported` itself is using
 - `whenComponentsReady():Promise`, will be resolved, when all (loading right now) marks are loaded.
 - `rehydrateMarks([marks]):Promise`, loads _marked_ async chunks.
 - `injectLoadableTracker` - helper factory for the stream transformer
+   
+   
+### Types
+#### Loadable
+All imports inside library are converted into `Loadable` object, and it's often accessible from outside via
+`useImported().loadable`, `useLoadable`(not documented), `getLoadable`(not documented). Even if it's documented from TS point of view - 
+let's keep all fields in a secret, except one:
+- `resolution` - promise reflecting resolution of this loadable object
    
 <a name="setup"/>   
    
@@ -563,6 +579,19 @@ Use `parcel-manifest` and `getMarkedFileNames`(instead of `getMarkedChunks`) to 
 
 ## Webpack-external-import
 `react-imported-component` is the only (even) theoretically compatible loader for [webpack-external-import](https://github.com/ScriptedAlchemy/webpack-external-import).
+
+## `useImported` and `Suspense`
+`useImported` is not supposed to be used with Suspense, while it could
+```js
+const MyComponent = () => {
+  const {loading, error, loadable, imported} = useImported(() => import("..."));
+
+  if (loading) throw loadable.resolution; // throw to the nearest Suspense boundary
+  if (error) throw error;                 // throw to the nearest Error boundary
+  
+  // do something with `imported` value
+}
+```
 
 ## SSR (Server side rendering)
 It was usually a headache - async components and SSR, which is currently sync.
