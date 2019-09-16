@@ -83,6 +83,15 @@ Key features:
     
 <a name="usage"/>
 
+
+| Library | Suspense | SSR | Hooks | Library splitting | Non-modules | import(`./${value}`) |
+| ------------- | ----- | ----- | ----- | ----- | ----- | ----- |
+| React.lazy|✅|❌|❌|❌|❌|
+| react-loadable |	✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| @loadable/component |	✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| imported-component |	✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+
+
 # Usage
 
 ## Server side
@@ -229,6 +238,7 @@ All imports inside library are converted into `Loadable` object, and it's often 
 `useImported().loadable`, `useLoadable`(not documented), `getLoadable`(not documented). Even if it's documented from TS point of view - 
 let's keep all fields in a secret, except one:
 - `resolution` - promise reflecting resolution of this loadable object
+ 
    
 <a name="setup"/>   
    
