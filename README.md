@@ -88,7 +88,9 @@ Key features:
  - [react-prerendered-component](https://github.com/theKashey/react-prerendered-component) for prerendering, partial hydration and react fragment caching
  - [used-style](https://github.com/theKashey/used-styles) for CSS and critical CSS extraction
  - [devolution](https://github.com/theKashey/devolution) for shipping legacy/modern bundles
-    
+ - [webpack-imported](https://github.com/theKashey/webpack-imported) for deep `webpack` integration, the only bundler dependent tool in this list.
+ 
+   
 <a name="usage"/>
 
 # Usage
