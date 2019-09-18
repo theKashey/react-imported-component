@@ -2,6 +2,7 @@ import {assingLoadableMark} from './marks';
 import {isBackend} from './detectBackend';
 import {DefaultImport, Loadable, Mark, MarkMeta, Promised} from './types';
 import {settings} from "./config";
+import {getPreloaders} from "./preloaders";
 
 type AnyFunction = (x: any) => any;
 
@@ -14,7 +15,6 @@ let pending: Array<Promise<any>> = [];
 
 const LOADABLE_WEAK_SIGNATURE = new WeakMap<any, Loadable<any>>();
 const LOADABLE_SIGNATURE = new Map<string, Loadable<any>>();
-const REJECTED_MARKS = new Set<string>();
 
 const addPending = (promise: Promise<any>) => pending.push(promise);
 const removeFromPending = (promise: Promise<any>) => pending = pending.filter(a => a !== promise);
@@ -29,14 +29,18 @@ export const importMatch = (functionString: string): Mark => {
 export const getFunctionSignature = (fn: AnyFunction | string) => (
   String(fn)
     .replace(/(["'])/g, '`')
-    .replace(/\/\*([^\*]*)\*\//ig, 'DEL')
+    .replace(/\/\*([^\*]*)\*\//ig, '')
 );
 
-const isMarkRejected = (mark: string) => REJECTED_MARKS.has(mark);
 
 function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
   let importFunction = firstImportFunction;
-  const _load = () => Promise.resolve().then(importFunction);
+  const _load = (): Promise<T> => (
+    Promise.all([
+      importFunction(),
+      ...getPreloaders(),
+    ]).then(([result]) => result)
+  );
   const functionSignature = getFunctionSignature(importFunction);
   const mark = importMatch(functionSignature);
 
@@ -138,7 +142,7 @@ function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loa
     }
   };
 
-  if (mark && mark.length && !mark.some(isMarkRejected)) {
+  if (mark && mark.length) {
     LOADABLE_SIGNATURE.set(functionSignature, loadable);
     assingLoadableMark(mark, loadable);
   } else {
@@ -184,22 +188,20 @@ const assignMetaData = (mark: Mark, loadable: Loadable<any>, chunkName: string, 
   markMeta.push({mark, loadable, chunkName, fileName});
 };
 
-type ImportedDefinition = [Promised<any>, string, string]
+type ImportedDefinition = [Promised<any>, string, string, boolean];
 
 export const assignImportedComponents = (set: Array<ImportedDefinition>) => {
   const countBefore = LOADABLE_SIGNATURE.size;
   set.forEach(imported => {
-    if (!settings.fileFilter(imported[2])) {
-      const marks = importMatch(getFunctionSignature(imported[0])) || [];
-      marks.forEach(mark => REJECTED_MARKS.add(mark))
-    }
-    const loadable = toLoadable(imported[0]);
+    const allowAutoLoad = !(imported[3] || !settings.fileFilter(imported[2]));
+    const loadable = toLoadable(imported[0], allowAutoLoad);
     assignMetaData(loadable.mark, loadable, imported[1], imported[2]);
   });
 
   if (countBefore === LOADABLE_SIGNATURE.size) {
     console.error('react-imported-component: no import-marks found, please check babel plugin')
   }
+
   done();
 };
 

@@ -85,7 +85,7 @@ Key features:
 
 
 | Library | Suspense | SSR | Hooks | Library splitting | Non-modules | import(`./${value}`) |
-| ------------- | ----- | ----- | ----- | ----- | ----- | ----- |
+| :-------------: | :----- | ----- | ----- | ----- | ----- | ----- |
 | React.lazy|✅|❌|❌|❌|❌|
 | react-loadable |	✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | @loadable/component |	✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
@@ -213,6 +213,9 @@ What you could load using `useImported`? Everything - `imported` itself is using
 - `loadable` - the underlying `Loadable` object
 - `retry` - retry action (in case of error)
      
+##### Misc
+There is also API method, unique for imported-component, which could be useful on the client side
+- `addPreloader(fn):fn` - adds a function, result of which would be _awaited_ when any component is loaded. Returns cancel method.     
 
 ### Server side API
 > import {*} from 'react-imported-component/server';
@@ -529,6 +532,33 @@ In short (streamed example is NOT short)
 If you need _stream render_ example with __reduced TTFB__ - 
 please refer to [used-styles](https://github.com/theKashey/used-styles) documentation, or our [parcel-bundler stream server example](https://github.com/theKashey/react-imported-component/tree/master/examples/SSR/parcel-react-ssr/stream-server).
 
+#### Critical style extraction and Preloader
+With the critical style extracting you might not need the "real" and "full" styles on the page load - 
+only `js` is really required for hydration.
+Thus - you might skip loading styles for the initial render, however still need them for the next render.
+However - your bundler might think that you have loaded them, this is not true.
+To handle this case you need `addPreloader` method
+
+```js
+// load initial bundle
+// await dom ready
+// -> HYDRATE APP <-
+// add preloader
+
+import {addPreloader} from 'react-imported-component/boot';
+
+addPreloader(() => {
+  // check that styles are loaded
+  // or return Promise if they are not
+});
+
+// any not yet loaded ImportedComponent 
+// will await for it's own `import` as well as for
+// promise returned from preloaders
+```
+
+See critical css example for details
+
 <a name="bundler-integration"/>
 
 ## Bundler integration
@@ -538,14 +568,27 @@ Keep in mind - you dont "need" this. It will just make integration slightly bett
 You might preload/prefetch used styles and scripts, which were defined with `webpackChunkName`
 
 ```js
-// get mark somehow
+// get mark somehow (drainHydrateMarks(importedStream))
 import {getMarkedChunks} from 'react-imported-component/server';
 
 const chunkNames = getMarkedChunks(marks);
 ```
 
+#### Via webpack-imported
+[webpack-imported](https://github.com/theKashey/webpack-imported) - provides `webpack` plugin to get data from the build, as well as to use it.
+Supports prefetching and critical style _guidance_.
+
+```js
+import {WebpackImport} from "webpack-imported/react";
+import importedStat from "build/imported.json";
+
+<WebpackImport stats={importedStat} chunks={getMarkedChunks(drainHydrateMarks())} />
+```
+
 #### Via stat.json
-If you do have `stat.json` - you can discover __all__ resources you have to preload
+If you do have only `stat.json` - it could be converted into "importedStat" by `webpack-imported` without adding plugin.
+
+Alternatively - you can discover __all__ resources you have to preload
 using [flush-webpack-chunks](https://github.com/faceyspacey/webpack-flush-chunks)
 ```js
 const { js, styles } = flushChunks(webpackStats, {
@@ -584,14 +627,15 @@ Use `parcel-manifest` and `getMarkedFileNames`(instead of `getMarkedChunks`) to 
 
 
 ## React-snap
-`react-imported-component` is the only (even) theoretically compatible loader for [react-snap](https://github.com/stereobooster/react-snap).
+`react-imported-component` is compatible with [react-snap](https://github.com/stereobooster/react-snap) out of the box.
+Works even better with `react-prerendered-component`.
 
-
-## Webpack-external-import
-`react-imported-component` is the only (even) theoretically compatible loader for [webpack-external-import](https://github.com/ScriptedAlchemy/webpack-external-import).
+## Webpack-external-import (or native import)
+`react-imported-component` is compatible with [webpack-external-import](https://github.com/ScriptedAlchemy/webpack-external-import),
+as long as it executes `imports`, thus executes custom logic
 
 ## `useImported` and `Suspense`
-`useImported` is not supposed to be used with Suspense, while it could
+`useImported` is not supposed to be used with Suspense (by design), while it could
 ```js
 const MyComponent = () => {
   const {loading, error, loadable, imported} = useImported(() => import("..."));

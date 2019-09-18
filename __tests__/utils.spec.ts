@@ -14,9 +14,23 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `[() => import('${rel}/a.js'), '', '${rel}/a.js']`
+      `[() => import('${rel}/a.js'), '', '${rel}/a.js', false]`
     ]);
   });
+
+  it('should map client-side import', () => {
+    const imports = {};
+    remapImports(
+      [{file: 'a', content: 'blabla;import(/* client-side */"./a.js"); blabla;'}],
+      root, root,
+      (a, b) => a + b,
+      imports
+    );
+    expect(Object.values(imports)).toEqual([
+      `[() => import(/* client-side */'${rel}/a.js'), '', '${rel}/a.js', true]`
+    ]);
+  });
+
 
   it('should map simple import with a comment', () => {
     const imports = {};
@@ -27,7 +41,7 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `[() => import(/* comment:42 */'${rel}/a.js'), '', '${rel}/a.js']`
+      `[() => import(/* comment:42 */'${rel}/a.js'), '', '${rel}/a.js', false]`
     ]);
   });
 
@@ -43,8 +57,8 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `[() => import(/* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js']`,
-      `[() => import(/* webpack: 123 */'${rel}/b.js'), '', '${rel}/b.js']`,
+      `[() => import(/* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js', false]`,
+      `[() => import(/* webpack: 123 */'${rel}/b.js'), '', '${rel}/b.js', false]`,
     ]);
   });
 
@@ -60,8 +74,8 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `[() => import(/* webpackChunkName: "chunk-a" */'${rel}/a.js'), 'chunk-a', '${rel}/a.js']`,
-      `[() => import(/* webpack: 123 */'${rel}/b.js'), '', '${rel}/b.js']`,
+      `[() => import(/* webpackChunkName: "chunk-a" */'${rel}/a.js'), 'chunk-a', '${rel}/a.js', false]`,
+      `[() => import(/* webpack: 123 */'${rel}/b.js'), '', '${rel}/b.js', false]`,
     ]);
   });
 
@@ -77,8 +91,8 @@ describe('scanForImports', () => {
       imports
     );
     expect(Object.values(imports)).toEqual([
-      `[() => import(/*  *//* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js']`,
-      `[() => import(/*  */'${rel}/b.js'), '', '${rel}/b.js']`,
+      `[() => import(/*  *//* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js', false]`,
+      `[() => import(/*  */'${rel}/b.js'), '', '${rel}/b.js', false]`,
     ]);
   });
 });

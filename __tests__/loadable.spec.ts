@@ -59,5 +59,9 @@ describe('importMatch', () => {
     expect(importMatch(getFunctionSignature(`function _() {
         "imported_1pn9k36_component", blablabla- importedWrapper("imported_-1556gns_component")
     }`))).toEqual(['1pn9k36', '-1556gns']);
+  });
+
+  it('maps function signatures', () => {
+    expect(getFunctionSignature(`import('file')`)).toEqual(getFunctionSignature(`import(/* */'file')`))
   })
 });
