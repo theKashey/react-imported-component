@@ -1,5 +1,56 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`babel macro macros lazy: lazy 1`] = `
+"
+import {lazy} from \\"../macro\\";
+const v = lazy(() => import('./a'));
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+function _interopRequireWildcard(obj) {
+  if (obj && obj.__esModule) {
+    return obj;
+  } else {
+    var newObj = {};
+    if (obj != null) {
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          var desc =
+            Object.defineProperty && Object.getOwnPropertyDescriptor
+              ? Object.getOwnPropertyDescriptor(obj, key)
+              : {};
+          if (desc.get || desc.set) {
+            Object.defineProperty(newObj, key, desc);
+          } else {
+            newObj[key] = obj[key];
+          }
+        }
+      }
+    }
+    newObj.default = obj;
+    return newObj;
+  }
+}
+
+var importedWrapper = function(marker, realImport) {
+  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
+    __deoptimization_sideEffect__(marker, realImport);
+  }
+
+  return realImport;
+};
+
+import { lazy } from \\"react-imported-component\\";
+const v = lazy(() =>
+  importedWrapper(
+    \\"imported_-mg71kn_component\\",
+    Promise.resolve().then(() => _interopRequireWildcard(require(\\"./a\\")))
+  )
+);
+
+"
+`;
+
 exports[`babel macro macros many: many 1`] = `
 "
 import {imported, useImported} from \\"../macro\\";        
@@ -56,6 +107,36 @@ const x = () =>
       Promise.resolve().then(() => _interopRequireWildcard(require(\\"./b\\")))
     )
   );
+
+"
+`;
+
+exports[`babel macro macros no usage: no usage 1`] = `
+"
+import {lazy} from \\"../macro\\";
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+var importedWrapper = function(marker, realImport) {
+  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
+    __deoptimization_sideEffect__(marker, realImport);
+  }
+
+  return realImport;
+};
+
+import { lazy } from \\"react-imported-component\\";
+
+"
+`;
+
+exports[`babel macro macros nothing: nothing 1`] = `
+"
+const a = 42;
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const a = 42;
 
 "
 `;

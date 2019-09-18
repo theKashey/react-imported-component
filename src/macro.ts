@@ -83,7 +83,8 @@ function addReactImports(babel: any, state: any, imports: string[]) {
 const lazy: typeof import('./HOC').lazy = null as any;
 const imported: typeof import('./HOC').default = null as any;
 const useImported: typeof import('./useImported').useImported = null as any;
+const assignImportedComponents: typeof import('./loadable').assignImportedComponents = null as any;
 
-export {lazy, imported, useImported};
+export {lazy, imported, useImported, assignImportedComponents};
 
 export default createMacro(macro)

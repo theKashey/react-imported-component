@@ -5,7 +5,7 @@ import {mount} from 'enzyme';
 
 import {ImportedComponent} from '../src/Component';
 import {settings} from '../src/config';
-import toLoadable, {done as whenDone} from '../src/loadable';
+import {toLoadable, done as whenDone} from '../src/loadable';
 import {createLoadableStream, drainHydrateMarks, rehydrateMarks} from '../src/marks';
 import imported from '../src/HOC';
 import {ImportedStream} from '../src/context';

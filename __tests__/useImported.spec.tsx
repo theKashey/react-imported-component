@@ -2,7 +2,7 @@ import * as React from 'react';
 import {mount} from 'enzyme';
 import {act} from "react-dom/test-utils";
 import {useLoadable, useImported} from '../src/useImported';
-import toLoadable, {getLoadable} from "../src/loadable";
+import {toLoadable, getLoadable} from "../src/loadable";
 import {drainHydrateMarks} from "../src";
 
 
@@ -51,7 +51,7 @@ describe('useImported', () => {
       SourceComponent = getSourceComponent(importer);
     });
 
-    const  wrapper = mount(<SourceComponent/>);
+    const wrapper = mount(<SourceComponent/>);
 
     expect(wrapper.html()).toContain("loaded!");
     expect(drainHydrateMarks()).toEqual(["mark0"]);

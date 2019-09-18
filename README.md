@@ -173,6 +173,13 @@ What you could load using `useImported`? Everything - `imported` itself is using
 
 > 💡 did you know that there is another hook based solution to load _"something might might need"_? The [use-sidecar](https://github.com/theKashey/use-sidecar) pattern.
 
+## Babel macro
+If you could not use babel plugin, but do have `babel-plugin-macro` (like CRA) - consider using macro API:
+```js
+import {imported, lazy, useImported} from "react-imported-component/macro";
+// notice - there is no default import here
+```
+
 <a name="api"/>
 
 # API
@@ -624,7 +631,6 @@ res.send(prefetchChunks(chunkNames, assets));
 
 ### Parcel integration
 Use `parcel-manifest` and `getMarkedFileNames`(instead of `getMarkedChunks`) to find which files were required and has to be imported.
-
 
 ## React-snap
 `react-imported-component` is compatible with [react-snap](https://github.com/stereobooster/react-snap) out of the box.

@@ -33,7 +33,7 @@ export const getFunctionSignature = (fn: AnyFunction | string) => (
 );
 
 
-function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
+export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
   let importFunction = firstImportFunction;
   const _load = (): Promise<T> => (
     Promise.all([
@@ -110,7 +110,7 @@ function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loa
     },
 
     reload() {
-      if(this.promise) {
+      if (this.promise) {
         this.promise = undefined;
 
         return this.load() as any;
@@ -203,6 +203,8 @@ export const assignImportedComponents = (set: Array<ImportedDefinition>) => {
   }
 
   done();
+
+  return set;
 };
 
 export function executeLoadable(importFunction: DefaultImport<any> | Loadable<any>) {
@@ -239,5 +241,3 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
 }
 
 export const clearImportedCache = () => LOADABLE_SIGNATURE.clear();
-
-export default toLoadable;

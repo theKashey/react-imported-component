@@ -2,7 +2,7 @@ import * as React from 'react';
 import {mount} from 'enzyme';
 import loader from '../src/HOC';
 import {ImportedComponent} from '../src/Component';
-import toLoadable from '../src/loadable';
+import {toLoadable} from '../src/loadable';
 
 describe('Async Component', () => {
 
