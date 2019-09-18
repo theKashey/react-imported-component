@@ -1,3 +1,5 @@
+import {assignImportedComponents} from 'react-imported-component/macro';
+import {lazy, useImported} from 'react-imported-component/macro';
 import imported from 'react-imported-component';
 
 const AsyncComponent0 = imported(() => import(/* webpackChunkName:namedChunk */'./MyComponent'));

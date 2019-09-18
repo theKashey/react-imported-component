@@ -49,6 +49,32 @@ export const createTransformer = ({types: t, template}: any) => {
   return {
     traverse(programPath: any, file: any) {
       programPath.traverse({
+        ImportDeclaration(path: any) {
+          const source = path.node.source.value;
+          if (source === 'react-imported-component/macro') {
+            const {specifiers} = path.node;
+            path.remove();
+            const assignName = 'assignImportedComponents';
+            if (specifiers.length === 1 && specifiers[0].imported.name === assignName) {
+              programPath.node.body.unshift(
+                t.importDeclaration([
+                    t.importSpecifier(t.identifier(assignName), t.identifier(assignName))
+                  ],
+                  t.stringLiteral('react-imported-component/boot')
+                )
+              )
+            } else {
+              programPath.node.body.unshift(
+                t.importDeclaration(
+                  specifiers.map((spec: any) =>
+                    t.importSpecifier(t.identifier(spec.imported.name), t.identifier(spec.imported.name))
+                  ),
+                  t.stringLiteral('react-imported-component')
+                )
+              )
+            }
+          }
+        },
         Import({parentPath}: any) {
           if (visitedNodes.has(parentPath.node)) {
             return;
@@ -88,6 +114,7 @@ export const createTransformer = ({types: t, template}: any) => {
 
 export default function (babel: any) {
   const transformer = createTransformer(babel);
+
   return {
     inherits: syntax,
 

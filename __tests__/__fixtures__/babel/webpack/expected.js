@@ -6,6 +6,8 @@ var importedWrapper = function (marker, realImport) {
   return realImport;
 };
 
+import { lazy, useImported } from "react-imported-component";
+import { assignImportedComponents } from "react-imported-component/boot";
 import imported from 'react-imported-component';
 const AsyncComponent0 = imported(() => importedWrapper("imported_18g2v0c_component", import(
 /* webpackChunkName:namedChunk */
