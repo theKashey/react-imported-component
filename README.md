@@ -36,7 +36,15 @@
 
 👉 [Usage](#usage)  |  [API](#api) | [Setup](#setup) | [SSR](#ssr)  | [CCS](#css) [Concurrent loading](#concurrent-loading)  |  [Webpack/Parcel](#bundler-integration) 
 
- 
+| Library | Suspense | SSR | Hooks | Library | Non-modules | import(`./${value}`) |
+| ------------- | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: |
+| React.lazy|✅|❌|❌|❌|❌|
+| react-loadable | ✅| ✅| ❌| ❌| ✅| ❌ |
+| @loadable/component |	✅| ✅| ❌| ✅| ❌ | ✅ |
+| imported-component |✅| ✅| ✅| ✅| ✅ | ❌ |
+
+> Read more abotu [what this table displays](#comparisonLegend)
+
 Key features:
  - 1️⃣ Single source of truth - your __bundler drives__ everything
  - 📖 __library__ level code __splitting__
@@ -82,15 +90,6 @@ Key features:
  - [devolution](https://github.com/theKashey/devolution) for shipping legacy/modern bundles
     
 <a name="usage"/>
-
-
-| Library | Suspense | SSR | Hooks | Library splitting | Non-modules | import(`./${value}`) |
-| :-------------: | :----- | ----- | ----- | ----- | ----- | ----- |
-| React.lazy|✅|❌|❌|❌|❌|
-| react-loadable |	✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| @loadable/component |	✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
-| imported-component |	✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-
 
 # Usage
 
@@ -703,6 +702,16 @@ There is design limitation with React.lazy support from RHL size, so they could 
 state loss if `lazy` is created not in the user space. At it would be created inside imported.
 
 If React-Hot-Loader is detected `lazy` switches to `imported async` mode, this behaves absolutely the same. 
+
+<a name="comparisonLegend" />
+### Comparison table legend
+- Library - the library name
+- Suspense - does it support Suspense feature
+- SSR - does it support SSR
+- Hooks - does it have hooks API
+- Library - does it support _library_, not Component level splitting
+- Non-modules - could it "import" generic promise, not a real dynamic module import
+- import(`./${value}`) - does it support a full dynamic import
 
 ## Other loaders
 Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
