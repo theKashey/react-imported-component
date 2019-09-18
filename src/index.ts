@@ -15,6 +15,8 @@ import {remapImports} from './helpers';
 import {useImported, useLoadable, useLazy} from './useImported';
 import {loadByChunkname} from './loadByChunkName';
 
+import {addPreloader} from "./preloaders";
+
 export {
   printDrainHydrateMarks,
   drainHydrateMarks,
@@ -32,6 +34,7 @@ export {
   ImportedStream,
   setConfiguration,
 
+  imported,
   lazy,
   LazyBoundary,
   remapImports,
@@ -39,5 +42,7 @@ export {
   useLoadable,
   useImported,
   useLazy,
+
+  addPreloader,
 }
 export default imported;

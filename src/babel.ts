@@ -30,7 +30,7 @@ const templateOptions = {
   placeholderPattern: /^([A-Z0-9]+)([A-Z0-9_]+)$/,
 };
 
-export default function ({types: t, template}: any) {
+export const createTransformer = ({types: t, template}: any) => {
   const headerTemplate = template(`var importedWrapper = function(marker, realImport) { 
       if (typeof __deoptimization_sideEffect__ !== 'undefined') {
         __deoptimization_sideEffect__(marker, realImport);
@@ -47,47 +47,60 @@ export default function ({types: t, template}: any) {
   const visitedNodes = new Map();
 
   return {
+    traverse(programPath: any, file: any) {
+      programPath.traverse({
+        Import({parentPath}: any) {
+          if (visitedNodes.has(parentPath.node)) {
+            return;
+          }
+
+          const localFile = file.opts.filename;
+          const newImport = parentPath.node;
+          const importName = parentPath.get('arguments')[0].node.value;
+
+          if (!importName) {
+            return;
+          }
+          const requiredFileHash = encipherImport(resolveImport(importName, localFile));
+
+          let replace = null;
+
+          replace = importRegistration({
+            MARK: t.stringLiteral(`imported_${requiredFileHash}_component`),
+            IMPORT: newImport
+          });
+
+          hasImports.add(localFile);
+          visitedNodes.set(newImport, true);
+
+          parentPath.replaceWith(replace);
+        }
+      });
+    },
+
+    finish(node: any) {
+      node.body.unshift(headerTemplate());
+    },
+
+    hasImports,
+  }
+};
+
+export default function (babel: any) {
+  const transformer = createTransformer(babel);
+  return {
     inherits: syntax,
 
     visitor: {
-      // using program to replace imports before "dynamic-import-node"
-      // see: https://jamie.build/babel-plugin-ordering.html
       Program: {
         enter(programPath: any, {file}: any) {
-          programPath.traverse({
-            Import({parentPath}:any) {
-              if (visitedNodes.has(parentPath.node)) {
-                return;
-              }
-
-              const localFile = file.opts.filename;
-              const newImport = parentPath.node;
-              const importName = parentPath.get('arguments')[0].node.value;
-
-              if (!importName) {
-                return;
-              }
-              const requiredFileHash = encipherImport(resolveImport(importName, localFile));
-
-              let replace = null;
-
-              replace = importRegistration({
-                MARK: t.stringLiteral(`imported_${requiredFileHash}_component`),
-                IMPORT: newImport
-              });
-
-              hasImports.add(localFile);
-              visitedNodes.set(newImport, true);
-
-              parentPath.replaceWith(replace);
-            }
-          });
+          transformer.traverse(programPath, file);
         },
 
         exit({node}: any, {file}: any) {
-          if (!hasImports.has(file.opts.filename)) return;
+          if (!transformer.hasImports.has(file.opts.filename)) return;
 
-          node.body.unshift(headerTemplate());
+          transformer.finish(node);
         }
       },
     }

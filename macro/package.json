@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "main": "../dist/es5/macro.js",
+  "jsnext:main": "../dist/es2015/macro.js",
+  "module": "../dist/es2015/macro.js",
+  "types": "../dist/es2015/macro.d.ts"
+}

@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`babel macro macros many: many 1`] = `
+"
+import {imported, useImported} from \\"../macro\\";        
+const v = imported(() => import('./a'));
+const x = () => useImported(() => import('./b'));
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+function _interopRequireWildcard(obj) {
+  if (obj && obj.__esModule) {
+    return obj;
+  } else {
+    var newObj = {};
+    if (obj != null) {
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          var desc =
+            Object.defineProperty && Object.getOwnPropertyDescriptor
+              ? Object.getOwnPropertyDescriptor(obj, key)
+              : {};
+          if (desc.get || desc.set) {
+            Object.defineProperty(newObj, key, desc);
+          } else {
+            newObj[key] = obj[key];
+          }
+        }
+      }
+    }
+    newObj.default = obj;
+    return newObj;
+  }
+}
+
+var importedWrapper = function(marker, realImport) {
+  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
+    __deoptimization_sideEffect__(marker, realImport);
+  }
+
+  return realImport;
+};
+
+import { imported, useImported } from \\"react-imported-component\\";
+const v = imported(() =>
+  importedWrapper(
+    \\"imported_-mg71kn_component\\",
+    Promise.resolve().then(() => _interopRequireWildcard(require(\\"./a\\")))
+  )
+);
+
+const x = () =>
+  useImported(() =>
+    importedWrapper(
+      \\"imported_15vaa6j_component\\",
+      Promise.resolve().then(() => _interopRequireWildcard(require(\\"./b\\")))
+    )
+  );
+
+"
+`;

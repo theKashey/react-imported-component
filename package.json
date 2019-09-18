@@ -51,6 +51,9 @@
     "@size-limit/preset-small-lib": "^2.1.1",
     "@types/node": "^12.7.2",
     "babel-plugin-dynamic-import-node": "^2.3.0",
+    "babel-plugin-macros": "^2.6.1",
+    "babel-plugin-tester": "^7.0.1",
+    "prettier": "^1.18.2",
     "react-test-renderer": "^16.6.0",
     "sinon": "^5.0.10",
     "size-limit": "^2.0.2",
@@ -89,6 +92,7 @@
     "dist",
     "boot",
     "server",
+    "macro",
     "babel.js"
   ]
 }
