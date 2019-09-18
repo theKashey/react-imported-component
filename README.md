@@ -565,6 +565,11 @@ addPreloader(() => {
 
 See critical css example for details
 
+#### Create React App
+Use `react-imported-component/macro` for CRA compatible SSR code splitting without ejecting.
+
+> It is safe to always use `react-imported-component/macro` without `babel-plugin-macros`, BUT with `react-hot-loader/babel` enabled, as long as it will remove all `macros`.
+
 <a name="bundler-integration"/>
 
 ## Bundler integration
@@ -651,6 +656,7 @@ const MyComponent = () => {
   // do something with `imported` value
 }
 ```
+
 
 ## SSR (Server side rendering)
 It was usually a headache - async components and SSR, which is currently sync.
