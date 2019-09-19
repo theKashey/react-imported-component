@@ -637,6 +637,10 @@ res.send(prefetchChunks(chunkNames, assets));
 
 ### Parcel integration
 Use `parcel-manifest` and `getMarkedFileNames`(instead of `getMarkedChunks`) to find which files were required and has to be imported.
+Keep in mind - the base path would be different and you have to `resolve` the _right_ files in to the _right_ files (`/app/index` to `index.js`).
+
+### CRA integration
+Consider using [concurrent-loading](#concurrent-loading) technique only.
 
 ## React-snap
 `react-imported-component` is compatible with [react-snap](https://github.com/stereobooster/react-snap) out of the box.
