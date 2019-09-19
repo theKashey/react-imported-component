@@ -16,6 +16,9 @@ describe('babel macro', () => {
     tests: {
       "nothing": "const a = 42;",
       "no usage": `import {lazy} from "../macro";`,
+      "flat import": `import "../macro";
+      import('./a.js')
+      `,
       "boot": `
       import {assignImportedComponents, lazy} from "../macro";
       assignImportedComponents([() => import('./a')]);

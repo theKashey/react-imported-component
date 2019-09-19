@@ -19,6 +19,7 @@ function getMacroType(tagName: string) {
 
 function macro({references, state, babel}: any) {
   const {types: t} = babel;
+  const fileName = state.file.opts.filename;
 
   const imports: Record<string, string[]> = {};
   const transformer = createTransformer(babel);
@@ -35,15 +36,17 @@ function macro({references, state, babel}: any) {
           let expression = tag.parentPath;
 
           if (t.isCallExpression(expression)) {
-            transformer.traverse(expression, state.file)
+            transformer.traverse(expression, fileName);
           }
         });
       }
     });
 
-  if (addReactImports(babel, state, imports)) {
-    transformer.finish(state.file.path.node);
-  }
+  transformer.traverse(state.file.path, fileName);
+
+  addReactImports(babel, state, imports);
+
+  transformer.finish(state.file.path.node, fileName);
 }
 
 function addReactImports(babel: any, state: any, importsGroups: Record<string, string[]>) {

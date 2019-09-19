@@ -60,6 +60,54 @@ lazy(() =>
 "
 `;
 
+exports[`babel macro macros flat import: flat import 1`] = `
+"
+import \\"../macro\\";
+      import('./a.js')
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+function _interopRequireWildcard(obj) {
+  if (obj && obj.__esModule) {
+    return obj;
+  } else {
+    var newObj = {};
+    if (obj != null) {
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          var desc =
+            Object.defineProperty && Object.getOwnPropertyDescriptor
+              ? Object.getOwnPropertyDescriptor(obj, key)
+              : {};
+          if (desc.get || desc.set) {
+            Object.defineProperty(newObj, key, desc);
+          } else {
+            newObj[key] = obj[key];
+          }
+        }
+      }
+    }
+    newObj.default = obj;
+    return newObj;
+  }
+}
+
+var importedWrapper = function(marker, realImport) {
+  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
+    __deoptimization_sideEffect__(marker, realImport);
+  }
+
+  return realImport;
+};
+
+importedWrapper(
+  \\"imported_-1ko6oiq_component\\",
+  Promise.resolve().then(() => _interopRequireWildcard(require(\\"./a.js\\")))
+);
+
+"
+`;
+
 exports[`babel macro macros lazy: lazy 1`] = `
 "
 import {lazy} from \\"../macro\\";
@@ -176,14 +224,6 @@ exports[`babel macro macros no usage: no usage 1`] = `
 import {lazy} from \\"../macro\\";
 
       ↓ ↓ ↓ ↓ ↓ ↓
-
-var importedWrapper = function(marker, realImport) {
-  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
-    __deoptimization_sideEffect__(marker, realImport);
-  }
-
-  return realImport;
-};
 
 import { lazy } from \\"react-imported-component\\";
 

@@ -181,6 +181,10 @@ import {imported, lazy, useImported} from "react-imported-component/macro";
 // notice - there is no default import here
 ```
 
+### Indirect usage
+Just importing `react-imported-component/macro` would enable babel transformation for the current file.
+If you have `imported` definition in one file, and use it from another - just `import "react-imported-component/macro"` in that another file. See [#142](https://github.com/theKashey/react-imported-component/issues/142)
+
 <a name="api"/>
 
 # API

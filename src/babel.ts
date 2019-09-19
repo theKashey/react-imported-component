@@ -47,7 +47,7 @@ export const createTransformer = ({types: t, template}: any) => {
   const visitedNodes = new Map();
 
   return {
-    traverse(programPath: any, file: any) {
+    traverse(programPath: any, fileName: string) {
       programPath.traverse({
         ImportDeclaration(path: any) {
           const source = path.node.source.value;
@@ -80,14 +80,13 @@ export const createTransformer = ({types: t, template}: any) => {
             return;
           }
 
-          const localFile = file.opts.filename;
           const newImport = parentPath.node;
           const importName = parentPath.get('arguments')[0].node.value;
 
           if (!importName) {
             return;
           }
-          const requiredFileHash = encipherImport(resolveImport(importName, localFile));
+          const requiredFileHash = encipherImport(resolveImport(importName, fileName));
 
           let replace = null;
 
@@ -96,7 +95,7 @@ export const createTransformer = ({types: t, template}: any) => {
             IMPORT: newImport
           });
 
-          hasImports.add(localFile);
+          hasImports.add(fileName);
           visitedNodes.set(newImport, true);
 
           parentPath.replaceWith(replace);
@@ -104,7 +103,8 @@ export const createTransformer = ({types: t, template}: any) => {
       });
     },
 
-    finish(node: any) {
+    finish(node: any, filename: string) {
+      if (!hasImports.has(filename)) return;
       node.body.unshift(headerTemplate());
     },
 
@@ -121,13 +121,11 @@ export default function (babel: any) {
     visitor: {
       Program: {
         enter(programPath: any, {file}: any) {
-          transformer.traverse(programPath, file);
+          transformer.traverse(programPath, file.opts.filename);
         },
 
         exit({node}: any, {file}: any) {
-          if (!transformer.hasImports.has(file.opts.filename)) return;
-
-          transformer.finish(node);
+          transformer.finish(node, file.opts.filename);
         }
       },
     }
