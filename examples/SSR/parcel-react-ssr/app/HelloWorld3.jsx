@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import './codeSplitAssets/NyanCat.css';
 import Go from './codeSplitAssets/NyanCat.js';
+import {say42} from "./codeSplitAssets/utils";
 
 export default class Nyan extends Component {
 
@@ -11,7 +12,7 @@ export default class Nyan extends Component {
 
   render() {
     return <div style={{position:'absolute',top:'500px'}}>
-      I am async cat
+      I am async {say42()} cat
       <div className="wrapper">
         <div className="rainbow">
           <span></span>

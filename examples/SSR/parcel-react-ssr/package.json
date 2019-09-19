@@ -13,7 +13,7 @@
   "repository": "reactivestack/parcel-react-ssr",
   "scripts": {
     "dev": "parcel app/index.html",
-    "build": "rimraf dist && npm run build-client && npm run build-server && npm run build-server-stream",
+    "build": "rimraf dist && npm run build-imported && npm run build-client && npm run build-server && npm run build-server-stream",
     "build-imported": "imported-components app app/imported-chunk.js",
     "build-client": "cross-env BABEL_ENV=client parcel build app/index.html -d dist/client --public-url /dist --no-minify --no-cache",
     "build-server": "cross-env BABEL_ENV=server parcel build server/index.js -d dist/server --public-url /dist --target=node --no-minify  --no-cache",
@@ -34,7 +34,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-helmet": "^5.2.0",
-    "react-imported-component": "../../../react-imported-component-6.0.0-2.tgz",
+    "react-imported-component": "^6.1.0",
     "react-router-dom": "^4.2.2",
     "used-styles": "^1.1.0"
   },

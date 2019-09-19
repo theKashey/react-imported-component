@@ -1,0 +1,1 @@
+export const say42 = () => 42;

@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import './codeSplitAssets/NyanCat.css';
 import Go from './codeSplitAssets/NyanCat.js';
-import HelloWorld3 from './HelloWorld3';
+// import HelloWorld3 from './HelloWorld3';
 
 // right now Parcel does not support `import inside import` - https://github.com/parcel-bundler/parcel/issues/2620
 
-//import importedComponent from "react-imported-component";
+import importedComponent from "react-imported-component";
 
-//const HelloWorld3 = importedComponent(() => import('./HelloWorld3'));
+const HelloWorld3 = importedComponent(() => import('./HelloWorld3'));
 
 export default class Nyan extends Component {
 
