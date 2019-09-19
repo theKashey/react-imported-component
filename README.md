@@ -36,14 +36,14 @@
 
 👉 [Usage](#usage)  |  [API](#api) | [Setup](#setup) | [SSR](#ssr)  | [CCS](#css) [Concurrent loading](#concurrent-loading)  |  [Webpack/Parcel](#bundler-integration) 
 
-| Library | Suspense | SSR | Hooks | Library | Non-modules | import(`./${value}`) |
-| ------------- | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: |
-| React.lazy|✅|❌|❌|❌|❌|
-| react-loadable | ✅| ✅| ❌| ❌| ✅| ❌ |
-| @loadable/component |	✅| ✅| ❌| ✅| ❌ | ✅ |
-| imported-component |✅| ✅| ✅| ✅| ✅ | ❌ |
+| Library | Suspense | SSR | Hooks | Library | Non-modules | import(`./${value}`) | babel-macro | webpack only |
+| ------------- | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: |
+| React.lazy|✅|❌|❌|❌|❌|❌|😹|
+| react-loadable | ✅| ✅| ❌| ❌| ✅| ❌ |❌|😿|
+| @loadable/component |	✅| ✅| ❌| ✅| ❌ | ✅ |❌|😿|
+| imported-component |✅| ✅| ✅| ✅| ✅ | ❌ | ✅ |😸|
 
-> Read more abotu [what this table displays](#comparisonLegend)
+> Read more about [what this table displays](#comparisonLegend)
 
 Key features:
  - 1️⃣ Single source of truth - your __bundler drives__ everything
@@ -717,13 +717,15 @@ If React-Hot-Loader is detected `lazy` switches to `imported async` mode, this b
 
 <a name="comparisonLegend" />
 ### Comparison table legend
-- Library - the library name
-- Suspense - does it support Suspense feature
-- SSR - does it support SSR
-- Hooks - does it have hooks API
-- Library - does it support _library_, not Component level splitting
-- Non-modules - could it "import" generic promise, not a real dynamic module import
-- import(`./${value}`) - does it support a full dynamic import
+- `Library` - the library name
+- `Suspense` - does it support Suspense feature
+- `SSR` - does it support SSR
+- `Hooks` - does it have hooks API
+- `Library` - does it support _library_, not Component level splitting
+- `Non-modules` - could it "import" generic promise, not a real dynamic module import
+- `import('./${value}')` - does it support a _full dynamic import_ - ability to import any file.
+- `babel macro` - ability to work with babel-plugin-macros
+- `webpack only` - is this solution hard bould to webpack 
 
 ## Other loaders
 Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
