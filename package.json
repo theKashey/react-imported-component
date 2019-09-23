@@ -55,7 +55,7 @@
     "babel-plugin-tester": "^7.0.1",
     "prettier": "^1.18.2",
     "react-test-renderer": "^16.6.0",
-    "sinon": "^5.0.10",
+    "sinon": "^7.5.0",
     "size-limit": "^2.0.2",
     "ts-react-toolbox": "^0.2.2"
   },
