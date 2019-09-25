@@ -6,7 +6,8 @@ export const settings = {
   hot: (!!module as any).hot,
   SSR: isBackend,
   rethrowErrors: process.env.NODE_ENV !== 'production',
-  fileFilter: rejectNetwork
+  fileFilter: rejectNetwork,
+  updateOnReload: false,
 };
 
 export const setConfiguration = (config: Partial<typeof settings>) => {

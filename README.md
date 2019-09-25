@@ -174,6 +174,36 @@ What you could load using `useImported`? Everything - `imported` itself is using
 
 > 💡 did you know that there is another hook based solution to load _"something might might need"_? The [use-sidecar](https://github.com/theKashey/use-sidecar) pattern.
 
+🤔 Keep in mind - __everything here is using `useImported`__, and __you can build whatever you need__ using just it.
+
+### Module
+A slim helper to help handle `modules`, you might require using `useImported` in a component way
+```js
+import {importedModule, ImportedModule} from 'react-imported-component';
+
+const Moment = importedModule(() => import('moment'));
+
+<Moment fallback="long time ago">
+  {(momentjs /* default imports are auto-imported*/) => momentjs(date).fromNow()}
+</Moment>
+```
+> Yes, this example was taken from [loadable.lib](https://www.smooth-code.com/open-source/loadable-components/docs/library-splitting/)
+
+Can I also use a ref, populated when the library is loaded? No, you cant. Use `useImported` for any special case like this.
+
+Plus, there is a Component helper:
+```js
+<ImportedModule
+ // import is just a _trackable_ promise - do what ever you want
+ import={() => import('moment').then(({momentDefault})=> momentDefault(date).fromNow()} 
+ fallback="long time ago"
+>
+ {(fromNow) => fromNow()}
+</ImportedModule>
+``` 
+
+> ImportedModule will throw a promise to the nearest Suspense boundary if no `fallback` provided.
+
 ## Babel macro
 If you could not use babel plugin, but do have `babel-plugin-macro` (like CRA) - consider using macro API:
 ```js
@@ -224,6 +254,10 @@ If you have `imported` definition in one file, and use it from another - just `i
 - `loading` - is it loading right now?
 - `loadable` - the underlying `Loadable` object
 - `retry` - retry action (in case of error)
+
+Hints:
+- use `options.import=false` to perform conditional import - `importFunction` would not be used if this option set to `false.
+- use `options.track=true` to perform SSR only import - to usage would be tracked if this option set to `false.
      
 ##### Misc
 There is also API method, unique for imported-component, which could be useful on the client side

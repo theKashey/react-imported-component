@@ -63,7 +63,6 @@
     "crc-32": "^1.2.0",
     "detect-node": "^2.0.4",
     "prop-types": "^15.6.2",
-    "react-uid": "^2.2.0",
     "scan-directory": "^1.0.0",
     "tslib": "^1.10.0"
   },

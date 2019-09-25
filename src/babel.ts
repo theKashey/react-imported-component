@@ -30,7 +30,7 @@ const templateOptions = {
   placeholderPattern: /^([A-Z0-9]+)([A-Z0-9_]+)$/,
 };
 
-export const createTransformer = ({types: t, template}: any) => {
+export const createTransformer = ({types: t, template}: any, excludeMacro = false) => {
   const headerTemplate = template(`var importedWrapper = function(marker, realImport) { 
       if (typeof __deoptimization_sideEffect__ !== 'undefined') {
         __deoptimization_sideEffect__(marker, realImport);
@@ -50,6 +50,10 @@ export const createTransformer = ({types: t, template}: any) => {
     traverse(programPath: any, fileName: string) {
       programPath.traverse({
         ImportDeclaration(path: any) {
+          if(excludeMacro){
+            return;
+          }
+
           const source = path.node.source.value;
           if (source === 'react-imported-component/macro') {
             const {specifiers} = path.node;

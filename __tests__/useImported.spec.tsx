@@ -2,7 +2,7 @@ import * as React from 'react';
 import {mount} from 'enzyme';
 import {act} from "react-dom/test-utils";
 import {useLoadable, useImported} from '../src/useImported';
-import {toLoadable, getLoadable} from "../src/loadable";
+import {toLoadable, getLoadable, done} from "../src/loadable";
 import {drainHydrateMarks} from "../src";
 
 
@@ -15,8 +15,6 @@ describe('useLoadable', () => {
     const Component = () => {
       const used = useLoadable(loadable);
     }
-
-
   });
 });
 
@@ -91,4 +89,39 @@ describe('useImported', () => {
     expect(wrapper.html()).toContain("error");
     expect(drainHydrateMarks()).toEqual([]);
   });
+
+  it('conditional import', async () => {
+    const importer = () => importedWrapper('imported_mark1_component', Promise.resolve(() => <span>loaded!</span>));
+
+    const Comp = ({loadit}) => {
+      const {loading, imported: Component,} = useImported(importer, undefined, {import: loadit});
+
+      if (Component) {
+        return <Component/>
+      }
+
+      if (loading) {
+        return <span>loading</span>;
+      }
+      return <span>nothing</span>;
+    };
+
+    const wrapper = mount(<Comp loadit={false}/>);
+    expect(wrapper.html()).toContain("nothing");
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(wrapper.update().html()).toContain("nothing");
+    wrapper.setProps({loadit: true});
+    expect(wrapper.update().html()).toContain("nothing");
+
+    await act(async () => {
+      await done();
+    });
+
+    expect(wrapper.update().html()).toContain("loaded!");
+    expect(drainHydrateMarks()).toEqual(["mark1"]);
+  })
 });

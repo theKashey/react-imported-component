@@ -9,6 +9,7 @@ function getMacroType(tagName: string) {
     case "lazy":
     case "useImported":
       return "react-imported-component";
+
     case "assignImportedComponents":
       return "react-imported-component/boot";
 
@@ -22,7 +23,7 @@ function macro({references, state, babel}: any) {
   const fileName = state.file.opts.filename;
 
   const imports: Record<string, string[]> = {};
-  const transformer = createTransformer(babel);
+  const transformer = createTransformer(babel, true);
 
   Object
     .keys(references)
@@ -42,10 +43,8 @@ function macro({references, state, babel}: any) {
       }
     });
 
-  transformer.traverse(state.file.path, fileName);
-
   addReactImports(babel, state, imports);
-
+  transformer.traverse(state.file.path, fileName);
   transformer.finish(state.file.path.node, fileName);
 }
 

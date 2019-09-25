@@ -146,7 +146,11 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
     LOADABLE_SIGNATURE.set(functionSignature, loadable);
     assingLoadableMark(mark, loadable);
   } else {
-    console.warn('react-imported-component: no mark found at', importFunction);
+    console.warn(
+      'react-imported-component: no mark found at',
+      importFunction,
+      'Please check babel plugin or macro setup, as well as imported-component\'s limitations. See https://github.com/theKashey/react-imported-component/issues/147'
+    );
   }
 
   // trigger preload on the server side

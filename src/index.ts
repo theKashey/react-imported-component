@@ -7,6 +7,7 @@ import {
   assignImportedComponents
 } from './loadable';
 import {ImportedComponent as ComponentLoader} from './Component';
+import {ImportedModule, importedModule} from './Module';
 import {ImportedStream} from "./context";
 import LazyBoundary from './LazyBoundary'
 import {setConfiguration} from './config';
@@ -29,12 +30,14 @@ export {
   loadByChunkname,
 
   ComponentLoader,
+  ImportedModule,
   loadableResource,
 
   ImportedStream,
   setConfiguration,
 
   imported,
+  importedModule,
   lazy,
   LazyBoundary,
   remapImports,

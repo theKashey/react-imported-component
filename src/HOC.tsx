@@ -1,9 +1,10 @@
 import * as React from 'react';
+import {useMemo} from "react";
+
 import {ImportedComponent} from './Component';
 import {getLoadable} from './loadable';
 import {ComponentOptions, DefaultComponentImport, HOCOptions, HOCType, LazyImport} from "./types";
 import {useLoadable} from "./useImported";
-import {useMemo} from "react";
 import {asDefault} from "./utils";
 import {isBackend} from "./detectBackend";
 

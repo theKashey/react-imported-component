@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {ReactElement} from "react";
-import {uid} from "react-uid";
 
 import {settings} from './config';
 import {ComponentOptions} from "./types";
@@ -20,7 +19,7 @@ function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | 
 
   if (Component) {
     // importedUUID for cache busting
-    return <Component {...props.forwardProps} ref={props.forwardRef} importedUUID={uid(Component)}/>
+    return <Component {...props.forwardProps} ref={props.forwardRef} />
   }
 
   if (loading) {

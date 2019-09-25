@@ -1,4 +1,4 @@
-import {ComponentType, ForwardRefExoticComponent, Ref, ReactElement} from "react";
+import {ComponentType, ForwardRefExoticComponent, Ref, ReactElement, ReactNode} from "react";
 
 export interface DefaultImportedComponent<P> {
   default: ComponentType<P>;
@@ -61,6 +61,7 @@ export interface Loadable<T> {
   then(callback: (x: T) => void, err: () => void): Promise<any>;
 }
 
+
 export type ComponentOptions<P, K> = {
   loadable: DefaultComponentImport<P> | Loadable<ComponentType<P>>,
 
@@ -89,6 +90,26 @@ export type AdditionalHOC = {
 export type HOCType<P, K> =
   ForwardRefExoticComponent<K & { importedProps?: Partial<ComponentOptions<P, K>> }> &
   AdditionalHOC;
+
+export interface ImportModuleHOCProps {
+  fallback: NonNullable<ReactNode>|null;
+}
+
+export interface ImportModuleProps<T> extends ImportModuleHOCProps {
+  children: (arg: T) => ReactElement | null;
+}
+
+
+export interface FullImportModuleProps<T> extends ImportModuleProps<T> {
+  import: DefaultImport<T> | Loadable<T>;
+}
+
+export type ModuleFC<T> = (props: ImportModuleProps<T>) => ReactElement | null;
+
+export type HOCModuleType<T> =
+  ModuleFC<T> &
+  AdditionalHOC;
+
 
 export interface HOC {
   <P, K = P>(loader: DefaultComponentImport<P>, options?: Partial<ComponentOptions<P, K>> & HOCOptions): HOCType<P, K>;

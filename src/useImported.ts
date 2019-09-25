@@ -1,6 +1,7 @@
 import {useCallback, useContext, useEffect, useState, lazy, useRef, LazyExoticComponent, ComponentType} from 'react';
 import {streamContext} from "./context";
-import {executeLoadable, getLoadable, isItReady} from "./loadable";
+import {settings} from "./config";
+import {getLoadable, isItReady} from "./loadable";
 import {useMark} from "./marks";
 import {DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable} from './types';
 import {es6import} from "./utils";
@@ -60,6 +61,9 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
 
   useEffect(() => {
     if (options.import !== false) {
+      if (options.track !== false) {
+        useMark(UID, loadable.mark);
+      }
       loadLoadable(loadable, forceUpdate);
     }
   }, [loadable, options.import]);
@@ -106,7 +110,9 @@ export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, 
   // kick loading effect
   useEffect(() => {
     if (postEffectRef.current) {
-      executeLoadableEventually(loadable, update);
+      executeLoadableEventually(
+        loadable,
+        () => settings.updateOnReload && update({}));
     }
 
     postEffectRef.current = true;
