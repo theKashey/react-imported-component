@@ -754,6 +754,7 @@ state loss if `lazy` is created not in the user space. At it would be created in
 If React-Hot-Loader is detected `lazy` switches to `imported async` mode, this behaves absolutely the same. 
 
 <a name="comparisonLegend" />
+
 ### Comparison table legend
 - `Library` - the library name
 - `Suspense` - does it support Suspense feature
