@@ -766,6 +766,10 @@ If React-Hot-Loader is detected `lazy` switches to `imported async` mode, this b
 - `babel macro` - ability to work with babel-plugin-macros
 - `webpack only` - is this solution hard bould to webpack 
 
+## Featured in
+- https://medium.com/hackernoon/react-and-code-splitting-made-easy-f118befb5168 
+- https://dev.to/thekashey/react-imported-component-v6-4304
+
 ## Other loaders
 Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
 
