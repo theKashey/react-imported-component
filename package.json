@@ -49,7 +49,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.1",
     "@size-limit/preset-small-lib": "^2.1.1",
-    "@types/node": "^12.7.2",
+    "@types/node": "^12.11.2",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "babel-plugin-macros": "^2.6.1",
     "babel-plugin-tester": "^7.0.1",
