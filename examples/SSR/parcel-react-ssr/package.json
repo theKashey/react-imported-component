@@ -34,7 +34,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-helmet": "^5.2.0",
-    "react-imported-component": "^6.1.0",
+    "react-imported-component": "^6.1.1",
     "react-router-dom": "^4.2.2",
     "used-styles": "^2.0.2"
   },
