@@ -2291,10 +2291,10 @@ find-up@^3.0.0:
   dependencies:
     locate-path "^3.0.0"
 
-flow-bin@^0.74.0:
-  version "0.74.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.74.0.tgz#8017bb00efb37cbe8d81fbb7f464038bde06adc9"
-  integrity sha512-tIN9J5qg71S4UbofCu80tve8a+p7Hj7ytwUtu79cLg9KJVVTNnVVJXKgCghVzaZT1Rvl9SMHVPlDs9uYhPHEGQ==
+flow-bin@^0.110.0:
+  version "0.110.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.110.0.tgz#c6c140e239f662839d8f61b64b7b911f12d3306c"
+  integrity sha512-mmdEPEMoTuX+mguy/tjRlOlCtPfVdXZQeMgCAsEDVDgWMA5vwWhM2y653OcJiKX38t4gtZ2e/MNVo0qzyYeZDQ==
 
 flush-write-stream@^1.0.0:
   version "1.0.3"
@@ -4335,10 +4335,10 @@ react-hot-loader@^4.12.12:
     shallowequal "^1.1.0"
     source-map "^0.7.3"
 
-react-imported-component@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/react-imported-component/-/react-imported-component-6.0.1.tgz#b1b88c612e2474a1139be261eaed93e9b4da9780"
-  integrity sha512-+No+Qhu6Z/d8hmj3PneuQZ/4MaO0WQdPdDbLeQlJOE5mvyjyft53el7Lpazvte+3kXX787nnH7SkoDZ0OU+NUQ==
+react-imported-component@^6.1.1:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/react-imported-component/-/react-imported-component-6.2.0.tgz#268dbb771a519cbd646bccff04750ccb5dda0bac"
+  integrity sha512-nUNp6e04mP6ShwFsZYKYipAHTbvjioS0pVlp0mztjiKmYyA0F7+t0EyqKSC54ze00hb7HIVUV/8hhUIqynOA2w==
   dependencies:
     crc-32 "^1.2.0"
     detect-node "^2.0.4"
