@@ -62,7 +62,7 @@ Key features:
  - 🛠 HOC, Component, Hooks API
  - 🐳 stream rendering support
  - 👥 partial hydration out of the box
- - 📦 and yes - this is the only __parcel-bundler compatible__ SSR-friendly React code splitting library
+ - 📦 and yes - this is the only __parcel-bundler compatible__ SSR-friendly React code splitting library, as well as a perfect solution for __Create React App__
  
  👍 Better than [React.Lazy](https://reactjs.org/docs/code-splitting.html#reactlazy):
  - It __IS__ Lazy, just with some stuff around<sup>*</sup>
