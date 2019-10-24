@@ -9899,10 +9899,10 @@ sax@^1.2.4, sax@~1.2.4:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
-scan-directory@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/scan-directory/-/scan-directory-1.0.0.tgz#46b6769dbd893d9bd7490ae9dcc43811a38b7fbb"
-  integrity sha512-StSp3ahu7EE1oqVfemF9nV7DVusIaVRuZVa4CZX5rzCUwspqO21wWdNshxZuFIQD7zj/HvvglBoycIizZbTBdw==
+scan-directory@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/scan-directory/-/scan-directory-2.0.0.tgz#99fcb923ca26b8e2541cc3afb34d50cf494ea65f"
+  integrity sha512-0lsRfL5lKFQEQA//Ud4WatdCGD9krgzaEL9VqAPmddeLLvaKAgHEUvzN87V/0F9E2B813ha78PIiZFAtmLNwjw==
 
 scheduler@^0.10.0:
   version "0.10.0"
