@@ -57,7 +57,7 @@
     "react-test-renderer": "^16.6.0",
     "sinon": "^5.0.10",
     "size-limit": "^2.0.2",
-    "ts-react-toolbox": "^0.2.2"
+    "ts-react-toolbox": "^0.2.11"
   },
   "dependencies": {
     "crc-32": "^1.2.0",
