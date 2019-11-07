@@ -1,22 +1,19 @@
-import {useCallback, useContext, useEffect, useState, lazy, useRef, LazyExoticComponent, ComponentType} from 'react';
-import {streamContext} from "./context";
-import {settings} from "./config";
-import {getLoadable, isItReady} from "./loadable";
-import {useMark} from "./marks";
-import {DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable} from './types';
-import {es6import} from "./utils";
-import {isBackend} from "./detectBackend";
+import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { settings } from './config';
+import { streamContext } from './context';
+import { isBackend } from './detectBackend';
+import { getLoadable, isItReady } from './loadable';
+import { useMark } from './marks';
+import { DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable } from './types';
+import { es6import } from './utils';
 
 function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
   const upd = () => callback({});
 
-  loadable
-    .loadIfNeeded()
-    .then(upd, upd);
+  loadable.loadIfNeeded().then(upd, upd);
 }
 
 const WEAK_MAP = new WeakMap<Loadable<any>, any>();
-
 
 function executeLoadableEventually(loadable: Loadable<any>, cb: any) {
   const tracker = {};
@@ -69,7 +66,10 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
   }, [loadable, options.import]);
 
   if (isBackend && !isItReady() && loadable.isLoading()) {
-    console.error('react-imported-component: trying to render not ready component. Have you `await whenComponentsReady()`?')
+    /* tslint:disable:next-line no-console */
+    console.error(
+      'react-imported-component: trying to render a component which is not ready.You should `await whenComponentsReady()`?'
+    );
   }
 
   // use mark
@@ -86,7 +86,10 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
   if (process.env.NODE_ENV !== 'production') {
     if (isBackend) {
       if (!loadable.done) {
-        console.error('react-imported-component: using not resolved loadable. You should `await whenComponentsReady()`.')
+        /* tslint:disable:next-line no-console */
+        console.error(
+          'react-imported-component: using not resolved loadable. You should `await whenComponentsReady()`.'
+        );
       }
     }
   }
@@ -98,21 +101,19 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
   };
 }
 
-export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, exportPicker: (x: T) => K = es6import, options: HookOptions = {}): ImportedShape<K> {
+export function useImported<T, K = T>(
+  importer: DefaultImport<T> | Loadable<T>,
+  exportPicker: (x: T) => K = es6import,
+  options: HookOptions = {}
+): ImportedShape<K> {
   const [topLoadable] = useState(getLoadable(importer));
   const postEffectRef = useRef(false);
-  const {
-    loadable,
-    retry,
-    update,
-  } = useLoadable<T>(topLoadable, options);
+  const { loadable, retry, update } = useLoadable<T>(topLoadable, options);
 
   // kick loading effect
   useEffect(() => {
     if (postEffectRef.current) {
-      executeLoadableEventually(
-        loadable,
-        () => settings.updateOnReload && update({}));
+      executeLoadableEventually(loadable, () => settings.updateOnReload && update({}));
     }
 
     postEffectRef.current = true;
@@ -123,7 +124,7 @@ export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, 
       error: loadable.error,
       loadable,
       retry,
-    }
+    };
   }
 
   if (loadable.done) {
@@ -131,7 +132,7 @@ export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, 
       imported: exportPicker(loadable.payload as T),
       loadable,
       retry,
-    }
+    };
   }
 
   return {
@@ -142,7 +143,8 @@ export function useImported<T, K = T>(importer: DefaultImport<T> | Loadable<T>, 
 }
 
 export function useLazy<T>(importer: DefaultComponentImport<T>): LazyExoticComponent<ComponentType<T>> {
-  const [{resolve, reject, lazyComponent}] = useState(() => {
+  const [{ resolve, reject, lazyComponent }] = useState(() => {
+    /* tslint:disable no-shadowed-variable */
     let resolve: any;
     let reject: any;
     const promise = new Promise<DefaultImportedComponent<T>>((rs, rej) => {
@@ -154,14 +156,15 @@ export function useLazy<T>(importer: DefaultComponentImport<T>): LazyExoticCompo
       resolve,
       reject,
       lazyComponent: lazy(() => promise),
-    }
+    };
+    /* tslint:enable */
   });
 
-  const {error, imported} = useImported(importer);
+  const { error, imported } = useImported(importer);
 
   useEffect(() => {
     if (error) {
-      reject!(error)
+      reject!(error);
     }
     if (imported) {
       resolve!(imported);

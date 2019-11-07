@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": { "*": ["types/*"] },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
@@ -14,17 +14,11 @@
     "noImplicitAny": true,
     "removeComments": true,
     "importHelpers": true,
-    "target": "es2015",
-    "lib": [
-      "dom",
-      "es5",
-      "scripthost",
-      "es2015",
-      "es2015.collection",
-      "es2015.symbol",
-      "es2015.iterable",
-      "es2015.promise"
-    ],
+    "target": "es6",
+    "moduleResolution": "node",
+    "lib": ["dom", "es5", "scripthost", "es2015.collection", "es2015.symbol", "es2015.iterable", "es2015.promise"],
+    "types": ["node", "jest"],
+    "typeRoots": ["./node_modules/@types"],
     "jsx": "react"
   }
 }
