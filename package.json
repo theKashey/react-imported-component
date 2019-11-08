@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@babel/preset-react": "^7.7.0",
-    "@babel/runtime": "^7.3.1",
+    "@babel/runtime": "^7.7.2",
     "@size-limit/preset-small-lib": "^2.1.1",
     "@types/node": "^12.7.2",
     "babel-plugin-dynamic-import-node": "^2.3.0",
