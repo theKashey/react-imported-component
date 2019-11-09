@@ -1416,15 +1416,12 @@ babel-plugin-syntax-trailing-function-commas@^6.22.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-trailing-function-commas/-/babel-plugin-syntax-trailing-function-commas-6.22.0.tgz#ba0360937f8d06e40180a43fe0d5616fff532cf3"
   integrity sha1-ugNgk3+NBuQBgKQ/4NVhb/9TLPM=
 
-babel-plugin-tester@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-tester/-/babel-plugin-tester-7.0.1.tgz#75730c51f30184ddb5fc4aa79bb514a73769fe82"
-  integrity sha512-+K1d6BGmFDSMVtf9HG4sPhIZEHLVnUIV3BeJGkpR+l7Y5MCaB9Gv98kWFbqtmg/B3DVRFT3UncyAeOdc91HooQ==
+babel-plugin-tester@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/babel-plugin-tester/-/babel-plugin-tester-7.0.2.tgz#cc7f8517de28c407f6ad6fe7ca63bbf590ac819d"
+  integrity sha512-Q/U4Lin3TK/O+cmzhuW5vW6gO0CGIKlXSsDtDaaDWooswoSpJ7x+OyVXWy/9YnOH8dEJaqkJ3nWWnlKyuKtRig==
   dependencies:
-    common-tags "^1.4.0"
-    invariant "^2.2.2"
     lodash.mergewith "^4.6.0"
-    path-exists "^4.0.0"
     strip-indent "^3.0.0"
 
 babel-plugin-transform-async-generator-functions@^6.24.1:
