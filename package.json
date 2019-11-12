@@ -51,7 +51,7 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.1",
-    "@size-limit/preset-small-lib": "^2.1.1",
+    "@size-limit/preset-small-lib": "^2.2.0",
     "@theuiteam/lib-builder": "0.0.8",
     "@types/detect-node": "^2.0.0",
     "@types/enzyme": "^3.10.3",
