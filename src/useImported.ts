@@ -68,7 +68,7 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
   if (isBackend && !isItReady() && loadable.isLoading()) {
     /* tslint:disable:next-line no-console */
     console.error(
-      'react-imported-component: trying to render a component which is not ready.You should `await whenComponentsReady()`?'
+      'react-imported-component: trying to render a component which is not ready. You should `await whenComponentsReady()`?'
     );
   }
 

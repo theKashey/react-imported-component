@@ -39,7 +39,8 @@
     "hmr"
   ],
   "peerDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.9.0",
+    "@types/react": "^16.9.0"
   },
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
@@ -66,11 +67,9 @@
     "sinon": "^5.0.10"
   },
   "dependencies": {
-    "@types/react": "^16.9.0",
     "babel-plugin-macros": "^2.6.1",
     "crc-32": "^1.2.0",
     "detect-node": "^2.0.4",
-    "prop-types": "^15.6.2",
     "scan-directory": "^2.0.0",
     "tslib": "^1.10.0"
   },
