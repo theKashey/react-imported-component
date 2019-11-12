@@ -1,22 +1,23 @@
-import imported, {lazy} from './HOC';
-import {drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks, waitForMarks} from './marks';
+import { ImportedComponent as ComponentLoader } from './Component';
+import { ImportedComponent } from './Component';
+import { setConfiguration } from './config';
+import { ImportedStream } from './context';
+import { remapImports } from './helpers';
+import imported, { lazy } from './HOC';
+import LazyBoundary from './LazyBoundary';
 import {
-  getLoadable as loadableResource,
+  assignImportedComponents,
   done as whenComponentsReady,
   dryRender,
-  assignImportedComponents
+  getLoadable as loadableResource,
 } from './loadable';
-import {ImportedComponent as ComponentLoader} from './Component';
-import {ImportedModule, importedModule} from './Module';
-import {ImportedStream} from "./context";
-import LazyBoundary from './LazyBoundary'
-import {setConfiguration} from './config';
-import {remapImports} from './helpers';
+import { drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks, waitForMarks } from './marks';
+import { ImportedModule, importedModule } from './Module';
 
-import {useImported, useLoadable, useLazy} from './useImported';
-import {loadByChunkname} from './loadByChunkName';
+import { loadByChunkname } from './loadByChunkName';
+import { useImported, useLazy, useLoadable } from './useImported';
 
-import {addPreloader} from "./preloaders";
+import { addPreloader } from './preloaders';
 
 export {
   printDrainHydrateMarks,
@@ -26,26 +27,21 @@ export {
   whenComponentsReady,
   dryRender,
   assignImportedComponents,
-
   loadByChunkname,
-
   ComponentLoader,
+  ImportedComponent,
   ImportedModule,
   loadableResource,
-
   ImportedStream,
   setConfiguration,
-
   imported,
   importedModule,
   lazy,
   LazyBoundary,
   remapImports,
-
   useLoadable,
   useImported,
   useLazy,
-
   addPreloader,
-}
+};
 export default imported;

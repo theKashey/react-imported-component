@@ -1,4 +1,3 @@
-// @ts-ignore
 import isNodeDetected from 'detect-node';
 
-export const isBackend = isNodeDetected || (typeof window === 'undefined');
+export const isBackend = isNodeDetected || typeof window === 'undefined';
