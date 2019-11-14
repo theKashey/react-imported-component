@@ -14,13 +14,15 @@
     "lint": "lib-builder lint",
     "dev": "lib-builder dev",
     "test:ci": "jest --runInBand --coverage",
-    "release": "yarn build && yarn test",
+    "release": "yarn build && yarn test && yarn changelog",
     "format": "lib-builder format",
     "size": "npx size-limit",
     "size:report": "npx size-limit --json > .size.json",
     "update": "lib-builder update",
     "docz:dev": "docz dev",
-    "docz:build": "docz build"
+    "docz:build": "docz build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "changelog:rewrite": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "repository": {
     "type": "git",
@@ -39,8 +41,8 @@
     "hmr"
   ],
   "peerDependencies": {
-    "react": "^16.9.0",
-    "@types/react": "^16.9.0"
+    "@types/react": "^16.9.0",
+    "react": "^16.9.0"
   },
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
@@ -60,6 +62,7 @@
     "@types/react-dom": "^16.9.4",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "babel-plugin-tester": "^7.0.1",
+    "conventional-changelog-cli": "^2.0.27",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "prettier": "^1.18.2",
