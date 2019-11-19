@@ -114,6 +114,13 @@ export function useImported<T, K = T>(
   useEffect(() => {
     if (postEffectRef.current) {
       executeLoadableEventually(loadable, () => settings.updateOnReload && update({}));
+    } else {
+      // initial render
+      // if it's already loading - do nothing
+      // however - if it's already loaded (cannot be so quick) - that's an indication of passed HMR event
+      if (!loadable.isLoading()) {
+        executeLoadableEventually(loadable, () => settings.updateOnReload && update({}));
+      }
     }
 
     postEffectRef.current = true;
