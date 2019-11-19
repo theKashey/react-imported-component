@@ -1,8 +1,8 @@
-import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useState } from 'react';
 import { settings } from './config';
 import { streamContext } from './context';
 import { isBackend } from './detectBackend';
-import { getLoadable, isItReady } from './loadable';
+import { getLoadable, InnerLoadable, isItReady } from './loadable';
 import { useMark } from './marks';
 import { DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable } from './types';
 import { es6import } from './utils';
@@ -11,20 +11,6 @@ function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
   const upd = () => callback({});
 
   loadable.loadIfNeeded().then(upd, upd);
-}
-
-const WEAK_MAP = new WeakMap<Loadable<any>, any>();
-
-function executeLoadableEventually(loadable: Loadable<any>, cb: any) {
-  const tracker = {};
-  WEAK_MAP.set(loadable, tracker);
-
-  // execute loadable after some timeout to let HMR propagate thought
-  setTimeout(() => {
-    if (WEAK_MAP.get(loadable) === tracker) {
-      loadable.reload().then(cb);
-    }
-  }, 16);
 }
 
 interface ImportedShape<T> {
@@ -107,24 +93,17 @@ export function useImported<T, K = T>(
   options: HookOptions = {}
 ): ImportedShape<K> {
   const [topLoadable] = useState(getLoadable(importer));
-  const postEffectRef = useRef(false);
   const { loadable, retry, update } = useLoadable<T>(topLoadable, options);
 
-  // kick loading effect
-  useEffect(() => {
-    if (postEffectRef.current) {
-      executeLoadableEventually(loadable, () => settings.updateOnReload && update({}));
-    } else {
-      // initial render
-      // if it's already loading - do nothing
-      // however - if it's already loaded (cannot be so quick) - that's an indication of passed HMR event
-      if (!loadable.isLoading()) {
-        executeLoadableEventually(loadable, () => settings.updateOnReload && update({}));
+  // support HMR
+  if (process.env.NODE_ENV === 'development') {
+    // kick loading effect
+    useEffect(() => {
+      if (settings.updateOnReload) {
+        (topLoadable as InnerLoadable<any>)._probeChanges().then(changed => changed && update({}));
       }
-    }
-
-    postEffectRef.current = true;
-  }, ['hot']);
+    }, []);
+  }
 
   if (loadable.error) {
     return {

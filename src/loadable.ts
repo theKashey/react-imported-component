@@ -1,14 +1,15 @@
-import {assingLoadableMark} from './marks';
-import {isBackend} from './detectBackend';
-import {DefaultImport, Loadable, Mark, MarkMeta, Promised} from './types';
-import {settings} from "./config";
-import {getPreloaders} from "./preloaders";
+import { settings } from './config';
+import { isBackend } from './detectBackend';
+import { assingLoadableMark } from './marks';
+import { getPreloaders } from './preloaders';
+import { DefaultImport, Loadable, Mark, MarkMeta, Promised } from './types';
 
 type AnyFunction = (x: any) => any;
 
-interface InnerLoadable<T> extends Loadable<T> {
+export interface InnerLoadable<T> extends Loadable<T> {
   ok: boolean;
   promise: Promise<T> | undefined;
+  _probeChanges(): Promise<boolean>;
 }
 
 let pending: Array<Promise<any>> = [];
@@ -17,30 +18,22 @@ const LOADABLE_WEAK_SIGNATURE = new WeakMap<any, Loadable<any>>();
 const LOADABLE_SIGNATURE = new Map<string, Loadable<any>>();
 
 const addPending = (promise: Promise<any>) => pending.push(promise);
-const removeFromPending = (promise: Promise<any>) => pending = pending.filter(a => a !== promise);
+const removeFromPending = (promise: Promise<any>) => (pending = pending.filter(a => a !== promise));
 const trimImport = (str: string) => str.replace(/['"]/g, '');
 
 export const importMatch = (functionString: string): Mark => {
   const markMatches = functionString.match(/`imported_(.*?)_component`/g) || [];
-  return markMatches
-    .map(match => match && trimImport((match.match(/`imported_(.*?)_component`/i) || [])[1]));
+  return markMatches.map(match => match && trimImport((match.match(/`imported_(.*?)_component`/i) || [])[1]));
 };
 
-export const getFunctionSignature = (fn: AnyFunction | string) => (
+export const getFunctionSignature = (fn: AnyFunction | string) =>
   String(fn)
     .replace(/(["'])/g, '`')
-    .replace(/\/\*([^\*]*)\*\//ig, '')
-);
-
+    .replace(/\/\*([^\*]*)\*\//gi, '');
 
 export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
   let importFunction = firstImportFunction;
-  const _load = (): Promise<T> => (
-    Promise.all([
-      importFunction(),
-      ...getPreloaders(),
-    ]).then(([result]) => result)
-  );
+  const callLoad = (): Promise<T> => Promise.all([importFunction(), ...getPreloaders()]).then(([result]) => result);
   const functionSignature = getFunctionSignature(importFunction);
   const mark = importMatch(functionSignature);
 
@@ -102,8 +95,8 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
             // synchronous thenable - https://github.com/facebook/react/pull/14626
             cb(result);
             return Promise.resolve(result);
-          }
-        } as any
+          },
+        } as any;
       }
 
       return this.loadIfNeeded().then(then);
@@ -118,10 +111,18 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
       return Promise.resolve();
     },
 
+    _probeChanges() {
+      return callLoad()
+        .then(payload => payload !== this.payload)
+        .catch(err => {
+          throw err;
+        });
+    },
+
     load() {
       if (!this.promise) {
-        const promise = this.promise = _load()
-          .then((payload) => {
+        const promise = (this.promise = callLoad().then(
+          payload => {
             this.done = true;
             this.ok = true;
             this.payload = payload;
@@ -129,23 +130,26 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
             removeFromPending(promise);
             resolveResolution(payload);
             return payload;
-          }, (err) => {
+          },
+          err => {
             this.done = true;
             this.ok = false;
             this.error = err;
             removeFromPending(promise);
             throw err;
-          });
+          }
+        ));
         addPending(promise);
       }
       return this.promise;
-    }
+    },
   };
 
   if (mark && mark.length) {
     LOADABLE_SIGNATURE.set(functionSignature, loadable);
     assingLoadableMark(mark, loadable);
   } else {
+    // tslint:disable-next-line:no-console
     console.warn(
       'react-imported-component: no mark found at',
       importFunction,
@@ -167,8 +171,7 @@ export const isItReady = () => readyFlag;
 export const done = (): Promise<void> => {
   if (pending.length) {
     readyFlag = false;
-    return Promise
-      .all(pending)
+    return Promise.all(pending)
       .then(a => a[1])
       .then(done);
   }
@@ -181,20 +184,18 @@ export const done = (): Promise<void> => {
 export const dryRender = (renderFunction: () => void) => {
   renderFunction();
 
-  return Promise
-    .resolve()
-    .then(done);
+  return Promise.resolve().then(done);
 };
 
 export const markMeta: MarkMeta[] = [];
 
 const assignMetaData = (mark: Mark, loadable: Loadable<any>, chunkName: string, fileName: string) => {
-  markMeta.push({mark, loadable, chunkName, fileName});
+  markMeta.push({ mark, loadable, chunkName, fileName });
 };
 
 type ImportedDefinition = [Promised<any>, string, string, boolean];
 
-export const assignImportedComponents = (set: Array<ImportedDefinition>) => {
+export const assignImportedComponents = (set: ImportedDefinition[]) => {
   const countBefore = LOADABLE_SIGNATURE.size;
   set.forEach(imported => {
     const allowAutoLoad = !(imported[3] || !settings.fileFilter(imported[2]));
@@ -203,7 +204,8 @@ export const assignImportedComponents = (set: Array<ImportedDefinition>) => {
   });
 
   if (countBefore === LOADABLE_SIGNATURE.size) {
-    console.error('react-imported-component: no import-marks found, please check babel plugin')
+    // tslint:disable-next-line:no-console
+    console.error('react-imported-component: no import-marks found, please check babel plugin');
   }
 
   done();
@@ -232,6 +234,7 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
   const functionSignature = getFunctionSignature(importFunction);
 
   if (LOADABLE_SIGNATURE.has(functionSignature)) {
+    // tslint:disable-next-line:no-shadowed-variable
     const loadable = LOADABLE_SIGNATURE.get(functionSignature)!;
     loadable.replaceImportFunction(importFunction);
 
