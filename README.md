@@ -225,7 +225,7 @@ If you have `imported` definition in one file, and use it from another - just `i
 
 ##### importedComponent
 - `importedComponent(importFunction, [options]): ComponentLoader` - main API, default export, HOC to create imported component.
-  - `importFunction - function which resolves with Component to be imported.
+  - `importFunction` - function which resolves with Component to be imported.
   - `options` - optional settings
   - `options.async` - activates react suspense support. Will throw a Promise in a Loading State - use it with Suspense in a same way you use __React.lazy__.
   - `options.LoadingComponent` - component to be shown in Loading state
