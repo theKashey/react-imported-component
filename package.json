@@ -70,7 +70,7 @@
     "sinon": "^5.0.10"
   },
   "dependencies": {
-    "babel-plugin-macros": "^2.6.1",
+    "babel-plugin-macros": "^2.7.1",
     "crc-32": "^1.2.0",
     "detect-node": "^2.0.4",
     "scan-directory": "^2.0.0",
