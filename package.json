@@ -62,7 +62,7 @@
     "@types/react-dom": "^16.9.4",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "babel-plugin-tester": "^7.0.1",
-    "conventional-changelog-cli": "^2.0.27",
+    "conventional-changelog-cli": "^2.0.31",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "prettier": "^1.18.2",
