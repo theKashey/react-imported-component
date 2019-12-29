@@ -7,6 +7,7 @@ import imported, { lazy } from './HOC';
 import LazyBoundary from './LazyBoundary';
 import {
   assignImportedComponents,
+  clearImportedCache,
   done as whenComponentsReady,
   dryRender,
   getLoadable as loadableResource,
@@ -43,5 +44,6 @@ export {
   useImported,
   useLazy,
   addPreloader,
+  clearImportedCache,
 };
 export default imported;
