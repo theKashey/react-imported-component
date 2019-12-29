@@ -85,7 +85,8 @@
     "boot",
     "server",
     "macro",
-    "babel.js"
+    "babel.js",
+    "wrapper.js"
   ],
   "husky": {
     "hooks": {

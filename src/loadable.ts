@@ -2,9 +2,8 @@ import { settings } from './config';
 import { isBackend } from './detectBackend';
 import { assingLoadableMark } from './marks';
 import { getPreloaders } from './preloaders';
-import { DefaultImport, Loadable, Mark, MarkMeta, Promised } from './types';
-
-type AnyFunction = (x: any) => any;
+import { getFunctionSignature, importMatch } from './signatures';
+import { AnyFunction, DefaultImport, Loadable, Mark, MarkMeta, Promised } from './types';
 
 export interface InnerLoadable<T> extends Loadable<T> {
   ok: boolean;
@@ -19,17 +18,6 @@ const LOADABLE_SIGNATURE = new Map<string, Loadable<any>>();
 
 const addPending = (promise: Promise<any>) => pending.push(promise);
 const removeFromPending = (promise: Promise<any>) => (pending = pending.filter(a => a !== promise));
-const trimImport = (str: string) => str.replace(/['"]/g, '');
-
-export const importMatch = (functionString: string): Mark => {
-  const markMatches = functionString.match(/`imported_(.*?)_component`/g) || [];
-  return markMatches.map(match => match && trimImport((match.match(/`imported_(.*?)_component`/i) || [])[1]));
-};
-
-export const getFunctionSignature = (fn: AnyFunction | string) =>
-  String(fn)
-    .replace(/(["'])/g, '`')
-    .replace(/\/\*([^\*]*)\*\//gi, '');
 
 export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
   let importFunction = firstImportFunction;
@@ -149,12 +137,14 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
     LOADABLE_SIGNATURE.set(functionSignature, loadable);
     assingLoadableMark(mark, loadable);
   } else {
-    // tslint:disable-next-line:no-console
-    console.warn(
-      'react-imported-component: no mark found at',
-      importFunction,
-      'Please check babel plugin or macro setup, as well as imported-component\'s limitations. See https://github.com/theKashey/react-imported-component/issues/147'
-    );
+    if (process.env.NODE_ENV !== 'development') {
+      // tslint:disable-next-line:no-console
+      console.warn(
+        'react-imported-component: no mark found at',
+        importFunction,
+        'Please check babel plugin or macro setup, as well as imported-component\'s limitations. See https://github.com/theKashey/react-imported-component/issues/147'
+      );
+    }
   }
 
   // trigger preload on the server side
