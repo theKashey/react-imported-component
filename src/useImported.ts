@@ -47,7 +47,10 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
       if (options.track !== false) {
         useMark(UID, loadable.mark);
       }
-      loadLoadable(loadable, forceUpdate);
+      // on the clientside it might be already loaded
+      if (!loadable.done) {
+        loadLoadable(loadable, forceUpdate);
+      }
     }
   }, [loadable, options.import]);
 
