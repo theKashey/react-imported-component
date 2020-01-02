@@ -42,13 +42,15 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
     return {};
   });
 
+  const wasDone = loadable.done;
+
   useEffect(() => {
     if (options.import !== false) {
       if (options.track !== false) {
         useMark(UID, loadable.mark);
       }
       // on the clientside it might be already loaded
-      if (!loadable.done) {
+      if (!wasDone) {
         loadLoadable(loadable, forceUpdate);
       }
     }
