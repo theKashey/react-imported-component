@@ -1,4 +1,4 @@
-import {isBackend} from "./detectBackend";
+import { isBackend } from './detectBackend';
 
 const rejectNetwork = (url: string) => url.indexOf('http') !== 0;
 
@@ -7,7 +7,7 @@ export const settings = {
   SSR: isBackend,
   rethrowErrors: process.env.NODE_ENV !== 'production',
   fileFilter: rejectNetwork,
-  updateOnReload: false,
+  updateOnReload: true,
 };
 
 export const setConfiguration = (config: Partial<typeof settings>) => {

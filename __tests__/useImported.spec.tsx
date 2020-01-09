@@ -146,7 +146,7 @@ describe('useImported', () => {
 
     expect(wrapper.update().html()).toContain('nothing');
     wrapper.setProps({ loadit: true });
-    expect(wrapper.update().html()).toContain('nothing');
+    expect(wrapper.update().html()).toContain('loading');
 
     await act(async () => {
       await done();
