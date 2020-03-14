@@ -12,6 +12,6 @@ module.exports = [
   {
     path: 'dist/es2015/boot.js',
     ignore: ['tslib'],
-    limit: '1.7 KB',
+    limit: '1.8 KB',
   },
 ];

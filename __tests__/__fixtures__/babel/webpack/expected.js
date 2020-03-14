@@ -1,10 +1,4 @@
-var importedWrapper = function (marker, realImport) {
-  if (typeof __deoptimization_sideEffect__ !== 'undefined') {
-    __deoptimization_sideEffect__(marker, realImport);
-  }
-
-  return realImport;
-};
+var importedWrapper = require('react-imported-component/wrapper');
 
 import { lazy, useImported } from "react-imported-component";
 import { assignImportedComponents } from "react-imported-component/boot";

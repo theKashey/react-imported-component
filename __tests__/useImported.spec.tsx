@@ -146,7 +146,7 @@ describe('useImported', () => {
 
     expect(wrapper.update().html()).toContain('nothing');
     wrapper.setProps({ loadit: true });
-    expect(wrapper.update().html()).toContain('nothing');
+    expect(wrapper.update().html()).toContain('loading');
 
     await act(async () => {
       await done();
@@ -154,5 +154,33 @@ describe('useImported', () => {
 
     expect(wrapper.update().html()).toContain('loaded!');
     expect(drainHydrateMarks()).toEqual(['conditional-mark']);
+  });
+
+  it('cached import', async () => {
+    // this test is not working as it should (it should be broken)
+    const importer = () => () => <span>loaded!</span>;
+
+    const Comp = () => {
+      const { loading, imported: Component } = useImported(importer as any);
+
+      if (Component) {
+        return <Component />;
+      }
+
+      if (loading) {
+        return <span>loading</span>;
+      }
+      return <span>nothing</span>;
+    };
+
+    const wrapper = mount(<Comp />);
+    expect(wrapper.html()).toContain('loading');
+    expect(wrapper.update().html()).toContain('loading');
+
+    await act(async () => {
+      await done();
+    });
+
+    expect(wrapper.update().html()).toContain('loaded!');
   });
 });

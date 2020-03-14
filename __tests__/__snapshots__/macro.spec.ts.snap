@@ -33,13 +33,7 @@ function _interopRequireWildcard(obj) {
   }
 }
 
-var importedWrapper = function(marker, realImport) {
-  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
-    __deoptimization_sideEffect__(marker, realImport);
-  }
-
-  return realImport;
-};
+var importedWrapper = require(\\"react-imported-component/wrapper\\");
 
 import { lazy } from \\"react-imported-component\\";
 import { assignImportedComponents } from \\"react-imported-component/boot\\";
@@ -92,13 +86,7 @@ function _interopRequireWildcard(obj) {
   }
 }
 
-var importedWrapper = function(marker, realImport) {
-  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
-    __deoptimization_sideEffect__(marker, realImport);
-  }
-
-  return realImport;
-};
+var importedWrapper = require(\\"react-imported-component/wrapper\\");
 
 importedWrapper(
   \\"imported_-1ko6oiq_component\\",
@@ -140,13 +128,7 @@ function _interopRequireWildcard(obj) {
   }
 }
 
-var importedWrapper = function(marker, realImport) {
-  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
-    __deoptimization_sideEffect__(marker, realImport);
-  }
-
-  return realImport;
-};
+var importedWrapper = require(\\"react-imported-component/wrapper\\");
 
 import { lazy } from \\"react-imported-component\\";
 const v = lazy(() =>
@@ -192,13 +174,7 @@ function _interopRequireWildcard(obj) {
   }
 }
 
-var importedWrapper = function(marker, realImport) {
-  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
-    __deoptimization_sideEffect__(marker, realImport);
-  }
-
-  return realImport;
-};
+var importedWrapper = require(\\"react-imported-component/wrapper\\");
 
 import { imported, useImported } from \\"react-imported-component\\";
 const v = imported(() =>
@@ -249,13 +225,7 @@ const x = () => useImported(() => import('./b'));
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-var importedWrapper = function(marker, realImport) {
-  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
-    __deoptimization_sideEffect__(marker, realImport);
-  }
-
-  return realImport;
-};
+var importedWrapper = require(\\"react-imported-component/wrapper\\");
 
 function _interopRequireWildcard(obj) {
   if (obj && obj.__esModule) {
@@ -282,13 +252,7 @@ function _interopRequireWildcard(obj) {
   }
 }
 
-var importedWrapper = function(marker, realImport) {
-  if (typeof __deoptimization_sideEffect__ !== \\"undefined\\") {
-    __deoptimization_sideEffect__(marker, realImport);
-  }
-
-  return realImport;
-};
+var importedWrapper = require(\\"react-imported-component/wrapper\\");
 
 import { imported, useImported } from \\"react-imported-component\\";
 const v = imported(() =>

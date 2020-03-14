@@ -1,6 +1,6 @@
 {
   "name": "react-imported-component",
-  "version": "6.2.1",
+  "version": "6.2.4",
   "description": "I will import your component, and help to handle it",
   "main": "dist/es5/index.js",
   "jsnext:main": "dist/es2015/index.js",
@@ -85,7 +85,8 @@
     "boot",
     "server",
     "macro",
-    "babel.js"
+    "babel.js",
+    "wrapper.js"
   ],
   "husky": {
     "hooks": {

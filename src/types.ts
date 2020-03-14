@@ -1,27 +1,28 @@
-import {ComponentType, ForwardRefExoticComponent, Ref, ReactElement, ReactNode} from "react";
+import { ComponentType, ForwardRefExoticComponent, ReactElement, ReactNode, Ref } from 'react';
 
 export interface DefaultImportedComponent<P> {
   default: ComponentType<P>;
 }
 
+export type AnyFunction = (x: any) => any;
+
 export interface Default<T> {
   default: T;
 }
 
-export type Stream = {
-  marks: Record<any,any>
-};
+export interface Stream {
+  marks: Record<any, any>;
+}
 
 export type Mark = string[];
 
 export type Promised<T> = () => Promise<T>;
 
 export type DefaultComponent<P> = ComponentType<P> | DefaultImportedComponent<P>;
-export type DefaultComponentImport<T> = () => Promise<DefaultComponent<T>>
-
+export type DefaultComponentImport<T> = () => Promise<DefaultComponent<T>>;
 
 export type Defaultable<P> = P | Default<P>;
-export type DefaultImport<T> = () => Promise<Defaultable<T>>
+export type DefaultImport<T> = () => Promise<Defaultable<T>>;
 
 export interface MarkMeta {
   loadable: Loadable<any>;
@@ -30,9 +31,9 @@ export interface MarkMeta {
   fileName: string;
 }
 
-export type LazyImport<T> = () => Promise<DefaultImportedComponent<T>>
+export type LazyImport<T> = () => Promise<DefaultImportedComponent<T>>;
 
-export type LoadableComponentState = {
+export interface LoadableComponentState {
   loading?: boolean;
   error?: any;
 }
@@ -61,14 +62,13 @@ export interface Loadable<T> {
   then(callback: (x: T) => void, err: () => void): Promise<any>;
 }
 
+export interface ComponentOptions<P, K> {
+  loadable: DefaultComponentImport<P> | Loadable<ComponentType<P>>;
 
-export type ComponentOptions<P, K> = {
-  loadable: DefaultComponentImport<P> | Loadable<ComponentType<P>>,
+  LoadingComponent?: ComponentType<any>;
+  ErrorComponent?: ComponentType<any>;
 
-  LoadingComponent?: ComponentType<any>,
-  ErrorComponent?: ComponentType<any>,
-
-  onError?: (a: any) => void,
+  onError?: (a: any) => void;
 
   async?: boolean;
 
@@ -78,27 +78,25 @@ export type ComponentOptions<P, K> = {
   forwardProps?: K;
 }
 
-export type HOCOptions = {
+export interface HOCOptions {
   noAutoImport?: boolean;
 }
 
-export type AdditionalHOC = {
-  preload(): Promise<void>;
+export interface AdditionalHOC {
   done: Promise<void>;
+  preload(): Promise<void>;
 }
 
-export type HOCType<P, K> =
-  ForwardRefExoticComponent<K & { importedProps?: Partial<ComponentOptions<P, K>> }> &
+export type HOCType<P, K> = ForwardRefExoticComponent<K & { importedProps?: Partial<ComponentOptions<P, K>> }> &
   AdditionalHOC;
 
 export interface ImportModuleHOCProps {
-  fallback: NonNullable<ReactNode>|null;
+  fallback: NonNullable<ReactNode> | null;
 }
 
 export interface ImportModuleProps<T> extends ImportModuleHOCProps {
   children: (arg: T) => ReactElement | null;
 }
-
 
 export interface FullImportModuleProps<T> extends ImportModuleProps<T> {
   import: DefaultImport<T> | Loadable<T>;
@@ -106,14 +104,9 @@ export interface FullImportModuleProps<T> extends ImportModuleProps<T> {
 
 export type ModuleFC<T> = (props: ImportModuleProps<T>) => ReactElement | null;
 
-export type HOCModuleType<T> =
-  ModuleFC<T> &
-  AdditionalHOC;
+export type HOCModuleType<T> = ModuleFC<T> & AdditionalHOC;
 
-
-export interface HOC {
-  <P, K = P>(loader: DefaultComponentImport<P>, options?: Partial<ComponentOptions<P, K>> & HOCOptions): HOCType<P, K>;
-}
+export type HOC = <P, K = P>(loader: DefaultComponentImport<P>, options?: Partial<ComponentOptions<P, K>> & HOCOptions) => HOCType<P, K>;
 
 export interface ImportedComponents {
   [index: number]: () => Promise<DefaultComponent<any>>;

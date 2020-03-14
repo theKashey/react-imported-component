@@ -1,4 +1,4 @@
-import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useState } from 'react';
+import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { settings } from './config';
 import { streamContext } from './context';
 import { isBackend } from './detectBackend';
@@ -30,26 +30,22 @@ interface HookOptions {
 
 export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {}) {
   const UID = useContext(streamContext);
-  const [, forceUpdate] = useState(() => {
-    // use mark
+
+  const wasDone = loadable.done;
+
+  const [, forceUpdate] = useState({});
+
+  useMemo(() => {
     if (options.import !== false) {
       if (options.track !== false) {
         useMark(UID, loadable.mark);
       }
-      loadable.loadIfNeeded();
-    }
-
-    return {};
-  });
-
-  useEffect(() => {
-    if (options.import !== false) {
-      if (options.track !== false) {
-        useMark(UID, loadable.mark);
+      if (!wasDone) {
+        loadLoadable(loadable, forceUpdate);
       }
-      loadLoadable(loadable, forceUpdate);
     }
-  }, [loadable, options.import]);
+    return true;
+  }, [loadable, options.import, options.track]);
 
   if (isBackend && !isItReady() && loadable.isLoading()) {
     /* tslint:disable:next-line no-console */
@@ -102,7 +98,7 @@ export function useImported<T, K = T>(
       if (settings.updateOnReload) {
         (topLoadable as InnerLoadable<any>)._probeChanges().then(changed => changed && update({}));
       }
-    }, []);
+    }, ['hot']);
   }
 
   if (loadable.error) {
