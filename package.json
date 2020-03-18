@@ -58,7 +58,7 @@
     "@theuiteam/lib-builder": "0.0.8",
     "@types/detect-node": "^2.0.0",
     "@types/enzyme": "^3.10.3",
-    "@types/node": "^12.12.6",
+    "@types/node": "^13.9.2",
     "@types/react-dom": "^16.9.4",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "babel-plugin-tester": "^7.0.1",
