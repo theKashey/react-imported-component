@@ -42,7 +42,7 @@
   ],
   "peerDependencies": {
     "@types/react": "^16.9.0",
-    "react": "^16.9.0"
+    "react": "^16.13.1"
   },
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
