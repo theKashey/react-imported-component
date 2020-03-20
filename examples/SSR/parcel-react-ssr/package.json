@@ -44,7 +44,7 @@
     "@babel/plugin-proposal-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-modules-commonjs": "^7.9.0",
     "@babel/preset-env": "7.9.0",
-    "@babel/preset-react": "7.8.3",
+    "@babel/preset-react": "7.9.1",
     "cross-env": "^7.0.0",
     "node-sass": "^4.13.1",
     "parcel-bundler": "^1.12.4",
