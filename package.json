@@ -59,7 +59,7 @@
     "@types/detect-node": "^2.0.0",
     "@types/enzyme": "^3.10.3",
     "@types/node": "^12.12.6",
-    "@types/react-dom": "^16.9.4",
+    "@types/react-dom": "^16.9.6",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "babel-plugin-tester": "^7.0.1",
     "conventional-changelog-cli": "^2.0.27",
