@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@types/cheerio": "^0.22.7",
-    "@types/react": "^16.9.2",
+    "@types/react": "^16.9.33",
     "@types/redux-devtools-extension": "^2.13.2",
     "@types/webpack-env": "^1.13.6",
     "awesome-typescript-loader": "^5.0.0",
