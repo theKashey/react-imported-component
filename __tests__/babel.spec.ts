@@ -5,14 +5,14 @@ import { join } from 'path';
 const FIXTURE_PATH = join(__dirname, '__fixtures__/babel');
 
 const testPlugin = {
-  node: (code: string) => {
+  /*node: (code: string) => {
     const result = transform(code, {
       presets: ['@babel/preset-react'],
       plugins: [require.resolve('../dist/es5/babel'), 'dynamic-import-node'],
     });
 
     return result!.code;
-  },
+  },*/
   webpack: (code: string) => {
     const result = transform(code, {
       presets: ['@babel/preset-react'],

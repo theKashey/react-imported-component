@@ -1,6 +1,7 @@
 // @ts-ignore
 import * as crc32 from 'crc-32';
-import { dirname, relative, resolve } from 'path';
+import { existsSync } from 'fs';
+import { dirname, join, relative, resolve } from 'path';
 
 export const encipherImport = (str: string) => {
   return crc32.str(str).toString(32);
@@ -32,7 +33,27 @@ const templateOptions = {
   placeholderPattern: /^([A-Z0-9]+)([A-Z0-9_]+)$/,
 };
 
-export const createTransformer = ({ types: t, template }: any, excludeMacro = false) => {
+function getImportArg(callPath: any) {
+  return callPath.get('arguments.0');
+}
+
+function getComments(callPath: any) {
+  return callPath.has('leadingComments') ? callPath.get('leadingComments') : [];
+}
+
+const ItoI = (I: any) => I;
+
+export type CommentProcessor = (comments: string[], target: string, file: string) => string[];
+
+// load configuration
+const configurationFile = join(process.cwd(), '.imported.js');
+const { processComment: bundledProcessor = ItoI } = existsSync(configurationFile) ? require(configurationFile) : {};
+
+export const createTransformer = (
+  { types: t, template }: any,
+  excludeMacro = false,
+  processComment: CommentProcessor = bundledProcessor
+) => {
   const headerTemplate = template(
     `var importedWrapper = require('react-imported-component/wrapper');`,
     templateOptions
@@ -81,7 +102,19 @@ export const createTransformer = ({ types: t, template }: any, excludeMacro = fa
           }
 
           const newImport = parentPath.node;
-          const importName = parentPath.get('arguments')[0].node.value;
+          const rawImport = getImportArg(parentPath);
+          const importName = rawImport.node.value;
+          const rawComments = getComments(rawImport);
+          const comments = rawComments.map((parent: any) => parent.node.value);
+
+          const newComments = processComment(comments, importName, fileName);
+
+          if (newComments !== comments) {
+            rawComments.forEach((comment: any) => comment.remove());
+            newComments.forEach((comment: string) => {
+              rawImport.addComment('leading', comment);
+            });
+          }
 
           if (!importName) {
             return;
@@ -104,7 +137,9 @@ export const createTransformer = ({ types: t, template }: any, excludeMacro = fa
     },
 
     finish(node: any, filename: string) {
-      if (!hasImports.has(filename)) { return; }
+      if (!hasImports.has(filename)) {
+        return;
+      }
       node.body.unshift(headerTemplate());
     },
 

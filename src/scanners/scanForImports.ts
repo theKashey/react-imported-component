@@ -1,11 +1,11 @@
-/*eslint no-console: "warn"*/
+/* tslint:disable no-console */
 
+import { dirname, extname, join, resolve } from 'path';
 // @ts-ignore
 import scanDirectory from 'scan-directory';
-import {extname, resolve, dirname, join} from 'path';
 
-import {getFileContent, getMatchString, pWriteFile, normalizePath, getRelative} from "./shared";
-import {Stats} from "fs";
+import { existsSync, Stats } from 'fs';
+import { getFileContent, getMatchString, getRelative, normalizePath, pWriteFile } from './shared';
 
 const RESOLVE_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
 
@@ -18,11 +18,7 @@ const getChunkName = getMatchString('webpackChunkName: "([^"]*)"', 1);
 
 const clientSideOnly = (comment: string) => comment.indexOf('client-side') >= 0;
 
-const clearComment = (str: string) => (
-  str
-    .replace("webpackPrefetch: true", '')
-    .replace("webpackPreload: true", '')
-);
+const clearComment = (str: string) => str.replace('webpackPrefetch: true', '').replace('webpackPreload: true', '');
 
 interface MappedImport {
   name: string;
@@ -34,93 +30,100 @@ interface FileContent {
   content: string;
 }
 
-const getImportString = (pattern: string, selected: number) => (str: string): MappedImport[] => (
-  getMatchString(pattern, selected)(str)
-    .map(statement => {
-      return {
-        name: trimImport(getImports(statement + ')')[0] || ''),
-        comment: clearComment(getComment(statement)[0] || ''),
-      }
-    })
-);
+const getImportString = (pattern: string, selected: number) => (str: string): MappedImport[] =>
+  getMatchString(pattern, selected)(str).map(statement => {
+    return {
+      name: trimImport(getImports(statement + ')')[0] || ''),
+      comment: clearComment(getComment(statement)[0] || ''),
+    };
+  });
 
 export const getDynamicImports = getImportString(`import[\\s]?\\((([^)])+['"]?)\\)`, 1);
 
-const mapImports = (file: string, imports: MappedImport[]) => (
-  imports
-    .map(dep => {
-      const {name} = dep;
-      if (name && name.charAt(0) === '.') {
-        return {
-          ...dep,
-          name: resolve(dirname(file), name),
-          doNotTransform: false,
-        }
-      }
+const mapImports = (file: string, imports: MappedImport[]) =>
+  imports.map(dep => {
+    const { name } = dep;
+    if (name && name.charAt(0) === '.') {
       return {
         ...dep,
-        doNotTransform: true,
+        file,
+        name: resolve(dirname(file), name),
+        doNotTransform: false,
       };
-    })
-);
+    }
+    return {
+      ...dep,
+      file,
+      doNotTransform: true,
+    };
+  });
 
-const rejectSystemFiles = (file: string, stats: Stats) => (
-  stats.isDirectory() && file.match(/node_modules/) || file.match(/(\/\.\w+)/)
-);
+const rejectSystemFiles = (file: string, stats: Stats) =>
+  (stats.isDirectory() && file.match(/node_modules/)) || file.match(/(\/\.\w+)/);
 
 export const remapImports = (
   data: FileContent[],
   root: string,
   targetDir: string,
-  getRelative: (a: string, b: string) => string,
+  getRelativeName: (a: string, b: string) => string,
   imports: Record<string, string>,
-) => (
+  testImport: (target: string, source: string) => boolean
+) =>
   data
-    .map(({file, content}) => mapImports(file, getDynamicImports(content)))
-    .forEach(importBlock => (
-      importBlock
-        .forEach(({name, comment, doNotTransform}) => {
-          const rootName = doNotTransform ? name : getRelative(root, name);
-          const fileName = doNotTransform ? name : getRelative(targetDir, name);
+    .map(({ file, content }) => mapImports(file, getDynamicImports(content)))
+    .forEach(importBlock =>
+      importBlock.forEach(({ name, comment, doNotTransform, file }) => {
+        const rootName = doNotTransform ? name : getRelativeName(root, name);
+        const fileName = doNotTransform ? name : getRelativeName(targetDir, name);
+        const sourceName = getRelativeName(root, file);
+        if (testImport(rootName, sourceName)) {
           const isClientSideOnly = clientSideOnly(comment);
-          const def = `[() => import(${comment}'${fileName}'), '${getChunkName(comment)}', '${rootName}', ${isClientSideOnly}]`;
-          const slot = getRelative(root, name);
+          const def = `[() => import(${comment}'${fileName}'), '${getChunkName(
+            comment
+          )}', '${rootName}', ${isClientSideOnly}] /* from ${sourceName} */`;
+          const slot = getRelativeName(root, name);
 
           // keep the maximal definition
-          imports[slot] = !imports[slot] ? def : (imports[slot].length > def.length ? imports[slot] : def);
-        })
-    ))
-);
+          imports[slot] = !imports[slot] ? def : imports[slot].length > def.length ? imports[slot] : def;
+        }
+      })
+    );
 
 function scanTop(root: string, start: string, target: string) {
-
   async function scan() {
     console.log('scanning', start, 'for imports...');
 
-    const files =
-      (await scanDirectory(join(root, start), undefined, rejectSystemFiles) as string[])
-        .filter(name => normalizePath(name).indexOf(target) === -1)
-        .filter(name => RESOLVE_EXTENSIONS.indexOf(extname(name)) >= 0)
-        .sort();
+    // try load configuration
+    const configurationFile = join(root, '.imported.js');
+    const { testFile = () => true, testImport = () => true } = existsSync(configurationFile)
+      ? require(configurationFile)
+      : {};
+
+    const files = ((await scanDirectory(join(root, start), undefined, rejectSystemFiles)) as string[])
+      .filter(name => normalizePath(name).indexOf(target) === -1)
+      .filter(name => RESOLVE_EXTENSIONS.indexOf(extname(name)) >= 0)
+      .filter(name => testFile(name))
+      .sort();
 
     const data: FileContent[] = await Promise.all(
-      files
-        .map(async function (file) {
-          const content = await getFileContent(file);
-          return {
-            file,
-            content
-          }
-        })
+      files.map(async file => {
+        const content = await getFileContent(file);
+        return {
+          file,
+          content,
+        };
+      })
     );
 
     const imports: Record<string, string> = {};
     const targetDir = resolve(root, dirname(target));
-    remapImports(data, root, targetDir, getRelative, imports);
+    remapImports(data, root, targetDir, getRelative, imports, testImport);
 
     console.log(`${Object.keys(imports).length} imports found, saving to ${target}`);
 
-    pWriteFile(target, `
+    pWriteFile(
+      target,
+      `
     /* eslint-disable */
     /* tslint:disable */
     
@@ -131,16 +134,14 @@ function scanTop(root: string, start: string, target: string) {
     // all, even the ones you tried to hide in comments (that's the cost of making a very fast parser)
     // to remove any import from here
     // 1) use magic comment \`import(/* client-side */ './myFile')\` - and it will disappear
-    // 2) use file filter to ignore specific locations (refer to the README)
+    // 2) use file filter to ignore specific locations (refer to the README - https://github.com/theKashey/react-imported-component/#server-side-auto-import)
+    // 3) use .imported.js to control this table generation (refer to the README - https://github.com/theKashey/react-imported-component/#-imported-js)
     
     const applicationImports = assignImportedComponents([
-     ${
-      Object
-        .keys(imports)
-        .map(key => `      ${imports[key]},`)
-        .sort()
-        .join('\n')
-      }
+${Object.keys(imports)
+  .map(key => `      ${imports[key]},`)
+  .sort()
+  .join('\n')}
     ]);
     
     export default applicationImports;
@@ -153,15 +154,14 @@ function scanTop(root: string, start: string, target: string) {
        // @ts-ignore
        module.hot.accept(() => null);
     }    
-    `)
+    `
+    );
   }
 
   return scan();
 }
 
-
 // --------
-
 
 if (!process.argv[3]) {
   console.log('usage: imported-components sourceRoot targetFile');

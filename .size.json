@@ -2,16 +2,16 @@
   {
     "name": "dist/es2015/index.js, dist/es2015/boot.js",
     "passed": true,
-    "size": 3428
+    "size": 3401
   },
   {
     "name": "dist/es2015/index.js",
     "passed": true,
-    "size": 3133
+    "size": 3109
   },
   {
     "name": "dist/es2015/boot.js",
     "passed": true,
-    "size": 1756
+    "size": 1738
   }
 ]

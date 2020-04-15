@@ -1,5 +1,4 @@
 import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { settings } from './config';
 import { streamContext } from './context';
 import { isBackend } from './detectBackend';
 import { getLoadable, InnerLoadable, isItReady } from './loadable';
@@ -11,6 +10,15 @@ function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
   const upd = () => callback({});
 
   loadable.loadIfNeeded().then(upd, upd);
+}
+
+function updateLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
+  // support HMR
+  if (process.env.NODE_ENV === 'development') {
+    const upd = () => callback({});
+
+    (loadable as InnerLoadable<any>)._probeChanges().then(changed => changed && upd(), upd);
+  }
 }
 
 interface ImportedShape<T> {
@@ -42,6 +50,8 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
       }
       if (!wasDone) {
         loadLoadable(loadable, forceUpdate);
+      } else {
+        updateLoadable(loadable, forceUpdate);
       }
     }
     return true;
@@ -62,7 +72,7 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
     }
     loadable.reset();
     forceUpdate({});
-    loadLoadable(loadable, forceUpdate);
+    updateLoadable(loadable, forceUpdate);
   }, [loadable]);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -89,17 +99,7 @@ export function useImported<T, K = T>(
   options: HookOptions = {}
 ): ImportedShape<K> {
   const [topLoadable] = useState(getLoadable(importer));
-  const { loadable, retry, update } = useLoadable<T>(topLoadable, options);
-
-  // support HMR
-  if (process.env.NODE_ENV === 'development') {
-    // kick loading effect
-    useEffect(() => {
-      if (settings.updateOnReload) {
-        (topLoadable as InnerLoadable<any>)._probeChanges().then(changed => changed && update({}));
-      }
-    }, ['hot']);
-  }
+  const { loadable, retry } = useLoadable<T>(topLoadable, options);
 
   if (loadable.error) {
     return {

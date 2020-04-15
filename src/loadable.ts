@@ -8,6 +8,7 @@ import { AnyFunction, DefaultImport, Loadable, Mark, MarkMeta, Promised } from '
 export interface InnerLoadable<T> extends Loadable<T> {
   ok: boolean;
   promise: Promise<T> | undefined;
+
   _probeChanges(): Promise<boolean>;
 }
 
@@ -100,7 +101,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
     },
 
     _probeChanges() {
-      return callLoad()
+      return Promise.resolve(importFunction())
         .then(payload => payload !== this.payload)
         .catch(err => {
           throw err;

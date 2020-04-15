@@ -7,7 +7,6 @@ export const settings = {
   SSR: isBackend,
   rethrowErrors: process.env.NODE_ENV !== 'production',
   fileFilter: rejectNetwork,
-  updateOnReload: true,
 };
 
 export const setConfiguration = (config: Partial<typeof settings>) => {
