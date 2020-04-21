@@ -14,7 +14,7 @@
     "@types/redux-devtools-extension": "^2.13.2",
     "@types/webpack-env": "^1.13.6",
     "awesome-typescript-loader": "^5.0.0",
-    "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-plugin-dynamic-import-node": "^2.3.3",
     "cheerio": "^1.0.0-rc.2",
     "compression": "^1.7.2",
     "express": "^4.16.3",
