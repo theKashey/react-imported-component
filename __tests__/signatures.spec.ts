@@ -89,4 +89,10 @@ describe('importMatch', () => {
   it('maps function signatures', () => {
     expect(getFunctionSignature(`import('file')`)).toEqual(getFunctionSignature(`import(/* */'file')`));
   });
+
+  it('maps function signatures after terser pass', () => {
+    expect(getFunctionSignature('()=>$(`imported_-f5674t_component`,n.e(3).then(n.bind(null,`xxx`,7)))')).toEqual(
+      getFunctionSignature('()=>$(`imported_-f5674t_component`,x.e(3).then(x.bind(null,`xxx`,7)))')
+    );
+  });
 });

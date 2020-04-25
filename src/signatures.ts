@@ -9,6 +9,16 @@ export const importMatch = (functionString: string): Mark => {
 
 export const getFunctionSignature = (fn: AnyFunction | string) =>
   String(fn)
+    // quotes
     .replace(/(["'])/g, '`')
+
+    // comments
     .replace(/\/\*([^\*]*)\*\//gi, '')
+
+    // webpack specific
+    .replace(/\w+.e\(/, 'we(')
+    .replace(/\w+.t.bind\(/, 'wbind(')
+    .replace(/\w+.bind\(/, 'wbind(')
+
+    // prefix imported
     .replace(/([A-z0-9_]+)\(`imported_/g, '$(`imported_');
