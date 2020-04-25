@@ -1,3 +1,26 @@
+## [6.3.1](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.0...v6.3.1) (2020-04-25)
+
+### Bug Fixes
+
+- terser changes files; add webpack/terser sgnature cleanup; fixes [#166](https://github.com/theKashey/react-hot-component-loader/issues/166) ([5a851d2](https://github.com/theKashey/react-hot-component-loader/commit/5a851d2c2650b0ff762126f3371227130d092fdf))
+
+# [6.3.0](https://github.com/theKashey/react-hot-component-loader/compare/v6.2.4...v6.3.0) (2020-04-15)
+
+### Features
+
+- allow control code generation throught settings ([df3d995](https://github.com/theKashey/react-hot-component-loader/commit/df3d995b7c770fa9d7c56bac197f4d0d50bf3b82))
+
+## [6.2.4](https://github.com/theKashey/react-hot-component-loader/compare/v6.2.3...v6.2.4) (2020-01-02)
+
+## [6.2.3](https://github.com/theKashey/react-hot-component-loader/compare/v6.2.2...v6.2.3) (2019-12-30)
+
+## [6.2.2](https://github.com/theKashey/react-hot-component-loader/compare/v6.2.1...v6.2.2) (2019-12-29)
+
+### Bug Fixes
+
+- autoload updates on passed HMR event, fixes [#160](https://github.com/theKashey/react-hot-component-loader/issues/160) ([6a487a8](https://github.com/theKashey/react-hot-component-loader/commit/6a487a8bffd92177148f85d2e000b50c53407e1d))
+- terser might compress different files differently, fixes [#166](https://github.com/theKashey/react-hot-component-loader/issues/166) ([79a0618](https://github.com/theKashey/react-hot-component-loader/commit/79a061857c4c638ef83092312518375036a38427))
+
 ## [6.2.1](https://github.com/theKashey/react-hot-component-loader/compare/v6.2.0...v6.2.1) (2019-11-14)
 
 ### Bug Fixes
@@ -51,9 +74,9 @@
 
 ### Bug Fixes
 
+- replace isNode to isBrowser check ([426d49c](https://github.com/theKashey/react-hot-component-loader/commit/426d49c0679a6e46bdabb98a320e2d2f8bab4569))
 - **package:** update multistream to version 3.0.0 ([102f50a](https://github.com/theKashey/react-hot-component-loader/commit/102f50a3f651f22e1961ea3778744c6a6906c2b4))
 - **package:** update multistream to version 4.0.0 ([8954ab9](https://github.com/theKashey/react-hot-component-loader/commit/8954ab905b414a62f26c573d4152def29fab6af1))
-- replace isNode to isBrowser check ([426d49c](https://github.com/theKashey/react-hot-component-loader/commit/426d49c0679a6e46bdabb98a320e2d2f8bab4569))
 
 ## [5.5.3](https://github.com/theKashey/react-hot-component-loader/compare/v5.5.2...v5.5.3) (2019-02-25)
 
