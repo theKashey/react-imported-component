@@ -13,8 +13,7 @@ describe('scanForImports', () => {
       root,
       (a, b) => a + b,
       imports,
-      () => true,
-      x => x
+      () => true
     );
     expect(Object.values(imports)).toEqual([`[() => import('${rel}/a.js'), '', '${rel}/a.js', false] /* from .a */`]);
   });
@@ -27,8 +26,7 @@ describe('scanForImports', () => {
       root,
       (a, b) => a + b,
       imports,
-      () => true,
-      x => x
+      () => true
     );
     expect(Object.values(imports)).toEqual([
       `[() => import(/* client-side */'${rel}/a.js'), '', '${rel}/a.js', true] /* from .a */`,
@@ -43,8 +41,7 @@ describe('scanForImports', () => {
       root,
       (a, b) => a + b,
       imports,
-      () => true,
-      x => x
+      () => true
     );
     expect(Object.values(imports)).toEqual([
       `[() => import(/* comment:42 */'${rel}/a.js'), '', '${rel}/a.js', false] /* from .a */`,
@@ -64,8 +61,7 @@ describe('scanForImports', () => {
       root,
       (a, b) => a + b,
       imports,
-      () => true,
-      x => x
+      () => true
     );
     expect(Object.values(imports)).toEqual([
       `[() => import(/* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js', false] /* from .a */`,
@@ -87,8 +83,7 @@ describe('scanForImports', () => {
       root,
       (a, b) => a + b,
       imports,
-      () => true,
-      x => x
+      () => true
     );
     expect(Object.values(imports)).toEqual([
       `[() => import(/* webpackChunkName: "chunk-a" */'${rel}/a.js'), 'chunk-a', '${rel}/a.js', false] /* from .a */`,
@@ -110,8 +105,7 @@ describe('scanForImports', () => {
       root,
       (a, b) => a + b,
       imports,
-      () => true,
-      x => x
+      () => true
     );
     expect(Object.values(imports)).toEqual([
       `[() => import(/*  *//* webpack: \"123\" */'${rel}/a.js'), '', '${rel}/a.js', false] /* from .a */`,
