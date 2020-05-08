@@ -15,10 +15,10 @@
     <img src="https://img.shields.io/npm/v/react-imported-component.svg?style=flat-square" />
   </a>
     
-  <a href="https://circleci.com/gh/theKashey/react-imported-component/tree/master">
-   <img src="https://img.shields.io/circleci/project/github/theKashey/react-imported-component/master.svg?style=flat-square)" alt="Build status">
+  <a href="https://travis-ci.org/github/theKashey/react-imported-component">
+    <img src="https://travis-ci.org/theKashey/react-imported-component.svg" />
   </a>
-
+  
   <a href="https://www.npmjs.com/package/react-imported-component">
    <img src="https://img.shields.io/npm/dm/react-imported-component.svg" alt="npm downloads">
   </a>
