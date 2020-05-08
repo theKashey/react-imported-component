@@ -1,9 +1,0 @@
-machine:
-  node:
-    version: 8.9.1
-
-test:
-
-  override:
-    - npm run lint
-    - npm run test
