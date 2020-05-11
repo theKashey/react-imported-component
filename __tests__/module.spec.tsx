@@ -3,8 +3,8 @@ import { mount } from 'enzyme';
 import * as React from 'react';
 import { act } from 'react-dom/test-utils';
 
-import { done } from '../src/loadable';
-import { importedModule, ImportedModule } from '../src/Module';
+import { done } from '../src/loadable/loadable';
+import { importedModule, ImportedModule } from '../src/ui/Module';
 
 describe('Module Component', () => {
   describe('hoc', () => {

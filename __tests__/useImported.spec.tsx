@@ -3,13 +3,13 @@ import { mount } from 'enzyme';
 import * as React from 'react';
 
 import { act } from 'react-dom/test-utils';
-import { drainHydrateMarks } from '../src';
-import { done, getLoadable, toLoadable } from '../src/loadable';
-import { useImported } from '../src/useImported';
+import { drainHydrateMarks } from '../src/entrypoints';
+import { done, getLoadable, toLoadable } from '../src/loadable/loadable';
+import { useImported } from '../src/ui/useImported';
 
 const importedWrapper = (_: any, b: any) => b;
 
-jest.mock('../src/detectBackend', () => ({ isBackend: false }));
+jest.mock('../src/utils/detectBackend', () => ({ isBackend: false }));
 
 describe('useLoadable', () => {
   it('load mark', () => {

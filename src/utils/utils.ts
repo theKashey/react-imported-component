@@ -1,4 +1,4 @@
-import {Default} from "./types";
+import { Default } from '../types';
 
 type ObjectOrFunction = object | (() => any);
 
@@ -9,11 +9,7 @@ export function asDefault<T extends ObjectOrFunction>(mayBeNotDefault: T | Defau
 
   return {
     default: mayBeNotDefault,
-  }
+  };
 }
 
-export const es6import = (module: any) => (
-  module.default
-    ? module.default
-    : module
-);
+export const es6import = (module: any) => (module.default ? module.default : module);

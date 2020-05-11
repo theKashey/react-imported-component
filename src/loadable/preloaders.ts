@@ -6,9 +6,7 @@ export const addPreloader = (preloader: Preloader) => {
 
   return () => {
     preloaders = preloaders.filter(p => p !== preloader);
-  }
+  };
 };
 
-export const getPreloaders = () => (
-  preloaders.map(preloader => preloader())
-);
+export const getPreloaders = () => preloaders.map(preloader => preloader());

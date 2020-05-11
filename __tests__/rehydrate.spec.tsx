@@ -4,14 +4,14 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom/server';
 import { act } from 'react-dom/test-utils';
 
-import { ImportedComponent } from '../src/Component';
 import { settings } from '../src/config';
-import { ImportedStream } from '../src/context';
-import imported from '../src/HOC';
-import { done as whenDone, toLoadable } from '../src/loadable';
-import { createLoadableStream, drainHydrateMarks, rehydrateMarks } from '../src/marks';
+import { done as whenDone, toLoadable } from '../src/loadable/loadable';
+import { createLoadableStream, drainHydrateMarks, rehydrateMarks } from '../src/loadable/marks';
+import { ImportedComponent } from '../src/ui/Component';
+import { ImportedStream } from '../src/ui/context';
+import imported from '../src/ui/HOC';
 
-jest.mock('../src/detectBackend', () => ({ isBackend: true }));
+jest.mock('../src/utils/detectBackend', () => ({ isBackend: true }));
 
 describe('SSR Component', () => {
   const TargetComponent = ({ payload }: any) => <div>42 - {payload}</div>;

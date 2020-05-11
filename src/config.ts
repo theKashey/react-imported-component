@@ -1,4 +1,4 @@
-import { isBackend } from './detectBackend';
+import { isBackend } from './utils/detectBackend';
 
 const rejectNetwork = (url: string) => url.indexOf('http') !== 0;
 

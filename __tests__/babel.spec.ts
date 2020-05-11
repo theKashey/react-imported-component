@@ -16,7 +16,7 @@ const testPlugin = {
   webpack: (code: string) => {
     const result = transform(code, {
       presets: ['@babel/preset-react'],
-      plugins: [require.resolve('../dist/es5/babel')],
+      plugins: [require.resolve('../dist/es5/entrypoints/babel')],
     });
 
     return result!.code;

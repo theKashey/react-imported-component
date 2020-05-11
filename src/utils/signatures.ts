@@ -1,4 +1,4 @@
-import { AnyFunction, Mark } from './types';
+import { AnyFunction, Mark } from '../types';
 
 const trimImport = (str: string) => str.replace(/['"]/g, '');
 

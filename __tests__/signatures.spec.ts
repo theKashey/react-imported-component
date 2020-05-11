@@ -1,4 +1,4 @@
-import { getFunctionSignature, importMatch } from '../src/signatures';
+import { getFunctionSignature, importMatch } from '../src/utils/signatures';
 
 describe('signatures', () => {
   const a = (i: any) => i;

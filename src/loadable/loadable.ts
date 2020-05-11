@@ -1,9 +1,9 @@
-import { settings } from './config';
-import { isBackend } from './detectBackend';
+import { settings } from '../config';
+import { AnyFunction, DefaultImport, Loadable, Mark, MarkMeta, Promised } from '../types';
+import { isBackend } from '../utils/detectBackend';
+import { getFunctionSignature, importMatch } from '../utils/signatures';
 import { assingLoadableMark } from './marks';
 import { getPreloaders } from './preloaders';
-import { getFunctionSignature, importMatch } from './signatures';
-import { AnyFunction, DefaultImport, Loadable, Mark, MarkMeta, Promised } from './types';
 
 export interface InnerLoadable<T> extends Loadable<T> {
   ok: boolean;

@@ -1,10 +1,10 @@
 import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { getLoadable, InnerLoadable, isItReady } from '../loadable/loadable';
+import { useMark } from '../loadable/marks';
+import { DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable } from '../types';
+import { isBackend } from '../utils/detectBackend';
+import { es6import } from '../utils/utils';
 import { streamContext } from './context';
-import { isBackend } from './detectBackend';
-import { getLoadable, InnerLoadable, isItReady } from './loadable';
-import { useMark } from './marks';
-import { DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable } from './types';
-import { es6import } from './utils';
 
 function loadLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
   const upd = () => callback({});
