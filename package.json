@@ -51,7 +51,7 @@
   },
   "homepage": "https://github.com/theKashey/react-hot-component-loader#readme",
   "devDependencies": {
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.10.1",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.1",
     "@size-limit/preset-small-lib": "^2.1.1",
