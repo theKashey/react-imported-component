@@ -11,7 +11,19 @@ const RESOLVE_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
 
 const trimImport = (str: string) => str.replace(/['"]/g, '');
 
-const getImports = getMatchString(`(['"]?[\\w-/.@]+['"]?)\\)`, 1);
+const getImportMatch = getMatchString(`(['"]?[\\w-/.@]+['"]?)\\)`, 1);
+const getImports = (str: string) =>
+  getImportMatch(
+    str
+      // remove comments
+      .replace(/\/\*([^\*]*)\*\//gi, '')
+      .replace(/\/\/(.*)/gi, '')
+      // remove new lines
+      .replace(/\n/gi, '')
+      // remove spaces?
+      .replace(/[\s]+\)/i, ')')
+  );
+
 const getComment = getMatchString(/\/\*.*\*\// as any, 0);
 
 const getChunkName = getMatchString('webpackChunkName: "([^"]*)"', 1);

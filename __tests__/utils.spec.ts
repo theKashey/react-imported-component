@@ -91,6 +91,37 @@ describe('scanForImports', () => {
     ]);
   });
 
+  it('should match support multiline imports', () => {
+    const imports = {};
+    remapImports(
+      [
+        {
+          file: 'a',
+          content: `
+            blabla;import(
+            /* webpackChunkName: "chunk-a" */
+            "./a.js"
+            );
+            something else
+            import(
+             // ts-ignore
+             "./b.js"
+            );
+            `,
+        },
+      ],
+      root,
+      root,
+      (a, b) => a + b,
+      imports,
+      () => true
+    );
+    expect(Object.values(imports)).toEqual([
+      `[() => import(/* webpackChunkName: \"chunk-a\" */'${rel}/a.js'), 'chunk-a', '${rel}/a.js', false] /* from .a */`,
+      `[() => import('${rel}/b.js'), '', '${rel}/b.js', false] /* from .a */`,
+    ]);
+  });
+
   it('should remove webpackPrefetch and webpackPreload', () => {
     const imports = {};
     remapImports(
