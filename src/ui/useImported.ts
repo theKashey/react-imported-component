@@ -98,7 +98,7 @@ export function useImported<T, K = T>(
   exportPicker: (x: T) => K = es6import,
   options: HookOptions = {}
 ): ImportedShape<K> {
-  const [topLoadable] = useState(getLoadable(importer));
+  const topLoadable = getLoadable(importer);
   const { loadable, retry } = useLoadable<T>(topLoadable, options);
 
   if (loadable.error) {

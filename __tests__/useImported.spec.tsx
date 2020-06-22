@@ -156,6 +156,40 @@ describe('useImported', () => {
     expect(drainHydrateMarks()).toEqual(['conditional-mark']);
   });
 
+  it('conditional import selection', async () => {
+    const importer1 = () =>
+      importedWrapper('imported_conditional-1-mark_component', Promise.resolve(() => <span>version1</span>));
+    const importer2 = () =>
+      importedWrapper('imported_conditional-2-mark_component', Promise.resolve(() => <span>version2</span>));
+
+    const Comp = ({ version }: any) => {
+      const { loading, imported: Component } = useImported(version === 1 ? importer1 : importer2);
+
+      if (Component) {
+        return <Component />;
+      }
+
+      if (loading) {
+        return <span>loading</span>;
+      }
+      return <span>nothing</span>;
+    };
+
+    const wrapper = mount(<Comp version={1} />);
+    expect(wrapper.update().html()).toContain('loading');
+
+    await act(done);
+
+    expect(wrapper.update().html()).toContain('version1');
+    wrapper.setProps({ version: 2 });
+    expect(wrapper.update().html()).toContain('loading');
+
+    await act(done);
+
+    expect(wrapper.update().html()).toContain('version2');
+    expect(drainHydrateMarks()).toEqual(['conditional-1-mark', 'conditional-2-mark']);
+  });
+
   it('cached import', async () => {
     // this test is not working as it should (it should be broken)
     const importer = () => () => <span>loaded!</span>;
