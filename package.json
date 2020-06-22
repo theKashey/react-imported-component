@@ -16,8 +16,8 @@
     "test:ci": "jest --runInBand --coverage",
     "release": "yarn build && yarn test && yarn changelog",
     "format": "lib-builder format",
-    "size": "npx size-limit",
-    "size:report": "npx size-limit --json > .size.json",
+    "size": "yarn size-limit",
+    "size:report": "yarn --silent size-limit --json > .size.json",
     "update": "lib-builder update",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
@@ -72,7 +72,7 @@
     "enzyme-adapter-react-16": "^1.15.1",
     "prettier": "^1.18.2",
     "react-test-renderer": "^16.6.0",
-    "sinon": "^5.0.10"
+    "size-limit": "^4.5.1"
   },
   "dependencies": {
     "babel-plugin-macros": "^2.6.1",
