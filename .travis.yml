@@ -4,7 +4,7 @@ node_js:
 cache: yarn
 script:
   - yarn
-  - yarn build
+  - yarn build:ci
   - yarn test:ci
 notifications:
   email: false
