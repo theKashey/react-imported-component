@@ -44,6 +44,11 @@
     "@types/react": "^16.9.0",
     "react": "^16.9.0"
   },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  },
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
   "bugs": {
