@@ -8,6 +8,9 @@ interface TakeProps {
 
 export const streamContext = React.createContext(defaultStream);
 
+/**
+ * SSR. Tracker for used marks
+ */
 export const ImportedStream: React.FC<TakeProps> = ({ stream, children, ...props }) => {
   if (process.env.NODE_ENV !== 'development') {
     if ('takeUID' in props) {

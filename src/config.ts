@@ -9,6 +9,10 @@ export const settings = {
   fileFilter: rejectNetwork,
 };
 
+/**
+ * allows fine tune imported logic
+ * @internal
+ */
 export const setConfiguration = (config: Partial<typeof settings>) => {
   Object.assign(settings, config);
 };

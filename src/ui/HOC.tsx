@@ -50,6 +50,9 @@ function loader<P, K = P>(
   return Imported;
 }
 
+/**
+ * React.lazy "as-is" replacement
+ */
 export function lazy<T>(importer: LazyImport<T>): React.FC<T> {
   if (isBackend) {
     return loader(importer);

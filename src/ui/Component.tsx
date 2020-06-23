@@ -5,6 +5,9 @@ import { settings } from '../config';
 import { ComponentOptions } from '../types';
 import { useImported } from './useImported';
 
+/**
+ * @deprecated use {@link useImported} instead
+ */
 function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | null {
   const { loading, error, loadable, imported: Component, retry } = useImported(props.loadable);
 

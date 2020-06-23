@@ -42,6 +42,10 @@ export const assingLoadableMark = (mark: Mark, loadable: Loadable<any>) => {
 
 export const getUsedMarks = (stream: Stream = defaultStream): string[] => (stream ? Object.keys(stream.marks) : []);
 
+/**
+ * SSR
+ * @returns list or marks used
+ */
 export const drainHydrateMarks = (stream: Stream = defaultStream) => {
   checkStream(stream);
   const marks = getUsedMarks(stream);
@@ -52,6 +56,11 @@ export const drainHydrateMarks = (stream: Stream = defaultStream) => {
 export const markerOverlap = (a1: string[], a2: string[]) =>
   a1.filter(mark => a2.indexOf(mark) >= 0).length === a1.length;
 
+/**
+ * Loads a given marks/chunks
+ * @param marks
+ * @returns a resolution promise
+ */
 export const rehydrateMarks = (marks?: string[]) => {
   const rehydratedMarks: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
   const tasks: Array<Promise<any>> = [];
@@ -76,6 +85,10 @@ export const rehydrateMarks = (marks?: string[]) => {
   return Promise.all(tasks);
 };
 
+/**
+ * waits for the given marks to load
+ * @param marks
+ */
 export const waitForMarks = (marks: string[]) => {
   const tasks: Array<Promise<any>> = [];
 
@@ -88,6 +101,9 @@ export const waitForMarks = (marks: string[]) => {
   return Promise.all(tasks);
 };
 
+/**
+ * @returns a <script> tag with all used marks
+ */
 export const printDrainHydrateMarks = (stream?: Stream) => {
   checkStream(stream);
   return `<script>window.___REACT_DEFERRED_COMPONENT_MARKS=${JSON.stringify(drainHydrateMarks(stream))};</script>`;

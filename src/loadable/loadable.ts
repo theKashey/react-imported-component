@@ -159,6 +159,9 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
 let readyFlag = false;
 export const isItReady = () => readyFlag;
 
+/**
+ * waits for all necessary imports to be fulfilled
+ */
 export const done = (): Promise<void> => {
   if (pending.length) {
     readyFlag = false;
@@ -172,6 +175,10 @@ export const done = (): Promise<void> => {
   return Promise.resolve();
 };
 
+/**
+ * try to perform a render and loads all chunks required for it
+ * @deprecated
+ */
 export const dryRender = (renderFunction: () => void) => {
   renderFunction();
 
@@ -186,6 +193,9 @@ const assignMetaData = (mark: Mark, loadable: Loadable<any>, chunkName: string, 
 
 type ImportedDefinition = [Promised<any>, string, string, boolean];
 
+/**
+ * to be used __only via CLI tools__
+ */
 export const assignImportedComponents = (set: ImportedDefinition[]) => {
   const countBefore = LOADABLE_SIGNATURE.size;
   set.forEach(imported => {
@@ -212,6 +222,11 @@ export function executeLoadable(importFunction: DefaultImport<any> | Loadable<an
   }
 }
 
+/**
+ * wraps an `import` function with a tracker
+ * @internal
+ * @param importFunction
+ */
 export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): Loadable<T> {
   if ('resolution' in importFunction) {
     return importFunction;
@@ -238,4 +253,8 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
   return loadable as any;
 }
 
+/**
+ * Reset `importers` weak cache
+ * @internal
+ */
 export const clearImportedCache = () => LOADABLE_SIGNATURE.clear();

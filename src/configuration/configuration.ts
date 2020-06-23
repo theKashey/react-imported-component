@@ -1,4 +1,5 @@
 /**
+ * @name ImportedConfiguration
  * react-imported-component configuration
  * __TO BE USED AT `imported.js`__
  * @see {@link https://github.com/theKashey/react-imported-component#-imported-js}
@@ -21,6 +22,9 @@ export interface ImportedConfiguration {
    * @returns {Boolean} false if import should be ignored by the `imported-components`
    * @see {@link https://github.com/theKashey/react-imported-component/#server-side-auto-import}
    * @example
+   * //a.js -> source
+   *  import('./b.js) -> target
+   * @example
    * testImport(filename, source, config) {
    *   return !(
    *     // no mjs please
@@ -34,23 +38,23 @@ export interface ImportedConfiguration {
 
   /**
    * marks import with prefetch comment (if possible)
-   * @param targetFile
-   * @param sourceFile
+   * @param {String} targetFile
+   * @param {String} sourceFile
    * @param sourceConfiguration
    */
   shouldPrefetch?: (targetFile: string, sourceFile: string, sourceConfiguration: object) => boolean;
   /**
    * marks import with preload comment (if possible)
-   * @param targetFile
-   * @param sourceFile
+   * @param {String} targetFile
+   * @param {String} sourceFile
    * @param sourceConfiguration
    */
   shouldPreload?: (targetFile: string, sourceFile: string, sourceConfiguration: object) => boolean;
   /**
    * adds custom chunkname to a import (if possible)
-   * @param targetFile
-   * @param sourceFile
-   * @param givenChunkName
+   * @param {String} targetFile
+   * @param {String} sourceFile
+   * @param {String|undefined} givenChunkName
    * @returns
    *  {string} - a new chunk name
    *  {undefined} - keep as is
@@ -60,7 +64,7 @@ export interface ImportedConfiguration {
 }
 
 /**
- * react-imported-component configuration
- * @param config
+ * provides react-imported-component configuration
+ * @param {ImportedConfiguration} config
  */
 export const configure = (config: ImportedConfiguration): ImportedConfiguration => config;

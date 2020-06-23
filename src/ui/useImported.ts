@@ -36,6 +36,11 @@ interface HookOptions {
   track?: boolean;
 }
 
+/**
+ * react hook to wrap `import` with a tracker
+ * used by {@link useImported}
+ * @internal
+ */
 export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {}) {
   const UID = useContext(streamContext);
 
@@ -93,6 +98,30 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
   };
 }
 
+/**
+ * The code splitting hook
+ * @param {Function} importer - an function with `import` inside it
+ * @param {Function} [exportPicker] - a "picker" of the export inside
+ * @param {HookOptions} options
+ * @param {Boolean} [options.import=true] - should the component be imported. Allow to defer execution.
+ * @param {Boolean} [options.track=true] - allows disabling tracking of components, isolating them to SSR
+ *
+ * @return {Object}
+ *  - imported: if non empty - the data is loaded
+ *  - error: if non empty - there is an error
+ *  - loading: if true - then it's still loading
+ *  - loadable: the under laying reference
+ *  - retry: retry if case of failure
+ *
+ *  @example
+ *  const { imported: Imported, loadable } = useImported(importer);
+ *  if (Imported) {
+ *    // yep, it's imported
+ *    return <Imported {...children} />;
+ *  }
+ *  // else throw resolution
+ *  throw loadable.resolution;
+ */
 export function useImported<T, K = T>(
   importer: DefaultImport<T> | Loadable<T>,
   exportPicker: (x: T) => K = es6import,
@@ -124,6 +153,13 @@ export function useImported<T, K = T>(
   };
 }
 
+/**
+ * A mix of React.lazy and useImported
+ * @see {@link useImported}
+ * @example
+ *  const Component = useLazy(() => import('./MyComponent');
+ *  return <Component />
+ */
 export function useLazy<T>(importer: DefaultComponentImport<T>): LazyExoticComponent<ComponentType<T>> {
   const [{ resolve, reject, lazyComponent }] = useState(() => {
     /* tslint:disable no-shadowed-variable */

@@ -1,6 +1,9 @@
 export type Preloader = () => any;
 let preloaders: Preloader[] = [];
 
+/**
+ * adds a precondition before resolving any imported object
+ */
 export const addPreloader = (preloader: Preloader) => {
   preloaders.push(preloader);
 
