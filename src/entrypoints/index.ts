@@ -44,7 +44,6 @@ export {
   useLazy,
   addPreloader,
   clearImportedCache,
-
   ImportedConfiguration,
   configure,
 };

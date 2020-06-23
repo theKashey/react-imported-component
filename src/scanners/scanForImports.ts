@@ -5,6 +5,8 @@ import { dirname, extname, join, resolve } from 'path';
 import scanDirectory from 'scan-directory';
 
 import { existsSync, Stats } from 'fs';
+import { ImportedConfiguration } from '../configuration/configuration';
+import { CLIENT_SIDE_ONLY } from '../configuration/constants';
 import { getFileContent, getMatchString, getRelative, normalizePath, pWriteFile } from './shared';
 
 const RESOLVE_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
@@ -28,7 +30,7 @@ const getComment = getMatchString(/\/\*.*\*\// as any, 0);
 
 const getChunkName = getMatchString('webpackChunkName: "([^"]*)"', 1);
 
-const clientSideOnly = (comment: string) => comment.indexOf('client-side') >= 0;
+const clientSideOnly = (comment: string) => comment.indexOf(CLIENT_SIDE_ONLY) >= 0;
 
 const clearComment = (str: string) => str.replace('webpackPrefetch: true', '').replace('webpackPreload: true', '');
 
@@ -79,7 +81,8 @@ export const remapImports = (
   targetDir: string,
   getRelativeName: (a: string, b: string) => string,
   imports: Record<string, string>,
-  testImport: (target: string, source: string) => boolean
+  testImport: NonNullable<ImportedConfiguration['testImport']>,
+  chunkName?: ImportedConfiguration['chunkName']
 ) =>
   data
     .map(({ file, content }) => mapImports(file, getDynamicImports(content)))
@@ -90,9 +93,10 @@ export const remapImports = (
         const sourceName = getRelativeName(root, file);
         if (testImport(rootName, sourceName)) {
           const isClientSideOnly = clientSideOnly(comment);
-          const def = `[() => import(${comment}'${fileName}'), '${getChunkName(
-            comment
-          )}', '${rootName}', ${isClientSideOnly}] /* from ${sourceName} */`;
+          const givenChunkName = getChunkName(comment)[0] || '';
+          const def = `[() => import(${comment}'${fileName}'), '${(chunkName &&
+            chunkName(rootName, sourceName, givenChunkName)) ||
+            givenChunkName}', '${rootName}', ${isClientSideOnly}] /* from ${sourceName} */`;
           const slot = getRelativeName(root, name);
 
           // keep the maximal definition
@@ -107,7 +111,9 @@ function scanTop(root: string, start: string, target: string) {
 
     // try load configuration
     const configurationFile = join(root, '.imported.js');
-    const { testFile = () => true, testImport = () => true } = existsSync(configurationFile)
+    const { testFile = () => true, testImport = () => true, chunkName }: ImportedConfiguration = existsSync(
+      configurationFile
+    )
       ? require(configurationFile)
       : {};
 
@@ -129,7 +135,7 @@ function scanTop(root: string, start: string, target: string) {
 
     const imports: Record<string, string> = {};
     const targetDir = resolve(root, dirname(target));
-    remapImports(data, root, targetDir, getRelative, imports, testImport);
+    remapImports(data, root, targetDir, getRelative, imports, testImport, chunkName);
 
     console.log(`${Object.keys(imports).length} imports found, saving to ${target}`);
 

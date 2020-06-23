@@ -91,6 +91,29 @@ describe('scanForImports', () => {
     ]);
   });
 
+  it('should override chunk name', () => {
+    const imports = {};
+    remapImports(
+      [
+        {
+          file: 'a',
+          content:
+            'blabla;import(/* webpackChunkName: "chunk-a" */"./a.js"); blabla; import(/* webpackChunkName: "chunk-b" */"./b.js"); import(/* webpackChunkName: "chunk-c" */"./c.js");',
+        },
+      ],
+      root,
+      root,
+      (a, b) => a + b,
+      imports,
+      imported => imported.indexOf('c.js') < 0,
+      (imported, _, givenChunkName) => (imported.indexOf('a.js') > 0 ? `test-${givenChunkName}-test` : 'bundle-b')
+    );
+    expect(Object.values(imports)).toEqual([
+      `[() => import(/* webpackChunkName: \"chunk-a\" */'${rel}/a.js'), 'test-chunk-a-test', '${rel}/a.js', false] /* from .a */`,
+      `[() => import(/* webpackChunkName: \"chunk-b\" */'${rel}/b.js'), 'bundle-b', '${rel}/b.js', false] /* from .a */`,
+    ]);
+  });
+
   it('should match support multiline imports', () => {
     const imports = {};
     remapImports(

@@ -1,7 +1,7 @@
 /**
  * react-imported-component configuration
  * __TO BE USED AT `imported.js`__
- * @see {@link https://github.com/theKashey/react-imported-component#.imported.js}
+ * @see {@link https://github.com/theKashey/react-imported-component#-imported-js}
  */
 export interface ImportedConfiguration {
   /**
@@ -15,10 +15,11 @@ export interface ImportedConfiguration {
   testFile?: (fileName: string) => boolean;
   /**
    * tests if a given import should be visible to a `imported-component`
+   * This method is equivalent to `client-side` magic comment
    * @param {String} targetFileName - import target
    * @param {String} sourceFileName - source filename
-   * @param {Object} configuration - an import configuration
    * @returns {Boolean} false if import should be ignored by the `imported-components`
+   * @see {@link https://github.com/theKashey/react-imported-component/#server-side-auto-import}
    * @example
    * testImport(filename, source, config) {
    *   return !(
@@ -29,18 +30,7 @@ export interface ImportedConfiguration {
    *  )
    * }
    */
-  testImport?: (targetFileName: string, sourceFileName: string, configuration: object) => boolean;
-  /**
-   * tests if this import should(or could) be executed only on ClientSide
-   * @param targetFileName
-   * @param sourceFileName
-   * @returns {Boolean} true if only client side
-   * @example
-   * clientSideOnly(target) {
-   *   return target.indexOf('polyfill')>0
-   * }
-   */
-  clientSideOnly: (targetFileName: string, sourceFileName: string) => boolean;
+  testImport?: (targetFileName: string, sourceFileName: string) => boolean;
 
   /**
    * marks import with prefetch comment (if possible)
@@ -48,14 +38,14 @@ export interface ImportedConfiguration {
    * @param sourceFile
    * @param sourceConfiguration
    */
-  shouldPrefetch: (targetFile: string, sourceFile: string, sourceConfiguration: object) => boolean;
+  shouldPrefetch?: (targetFile: string, sourceFile: string, sourceConfiguration: object) => boolean;
   /**
    * marks import with preload comment (if possible)
    * @param targetFile
    * @param sourceFile
    * @param sourceConfiguration
    */
-  shouldPreload: (targetFile: string, sourceFile: string, sourceConfiguration: object) => boolean;
+  shouldPreload?: (targetFile: string, sourceFile: string, sourceConfiguration: object) => boolean;
   /**
    * adds custom chunkname to a import (if possible)
    * @param targetFile
@@ -64,13 +54,13 @@ export interface ImportedConfiguration {
    * @returns
    *  {string} - a new chunk name
    *  {undefined} - keep as is
-   *  {null} - remove
+   *  {null} - keep as is (will remove in the future)
    */
-  chunkName: (targetFile: string, sourceFile: string, givenChunkName: string | undefined) => string | null | undefined;
+  chunkName?: (targetFile: string, sourceFile: string, givenChunkName: string | undefined) => string | null | undefined;
 }
 
 /**
  * react-imported-component configuration
  * @param config
  */
-export const configure = (config: ImportedConfiguration):ImportedConfiguration => config;
+export const configure = (config: ImportedConfiguration): ImportedConfiguration => config;

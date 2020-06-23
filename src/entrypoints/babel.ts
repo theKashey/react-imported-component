@@ -2,7 +2,10 @@
 import * as crc32 from 'crc-32';
 import { existsSync } from 'fs';
 import { dirname, join, relative, resolve } from 'path';
-import {ImportedConfiguration} from '../configuration/configuration';
+import vm from 'vm';
+
+import { ImportedConfiguration } from '../configuration/configuration';
+import { CLIENT_SIDE_ONLY } from '../configuration/constants';
 
 export const encipherImport = (str: string) => {
   return crc32.str(str).toString(32);
@@ -42,23 +45,61 @@ function getComments(callPath: any) {
   return callPath.has('leadingComments') ? callPath.get('leadingComments') : [];
 }
 
-export type CommentProcessor = (comments: string[], target: string, file: string) => string[];
-
+const Nope = () => false as any;
 // load configuration
 const configurationFile = join(process.cwd(), '.imported.js');
-const {
-  shouldPrefetch,
-  shouldPreload,
-  chunkName,
-} = (existsSync(configurationFile) ? require(configurationFile) : {}) as  ImportedConfiguration;
+const defaultConfiguration: ImportedConfiguration = (existsSync(configurationFile)
+  ? require(configurationFile)
+  : {}) as ImportedConfiguration;
 
-const processComment = (comments: string[], importName: string, fileName: string) => {
+const processComment = (
+  configuration: ImportedConfiguration,
+  comments: string[],
+  importName: string,
+  fileName: string,
+  options: {
+    isBootstrapFile: boolean;
+  }
+): string[] => {
+  const { shouldPrefetch = Nope, shouldPreload = Nope, chunkName = Nope } = configuration;
+  const chunkComment = (chunk: string) => ` webpackChunkName: "${chunk}" `;
+  const preloadComment = () => ` webpackPreload: true `;
+  const prefetchComment = () => ` webpackPrefetch: true `;
 
-}
+  const parseMagicComments = (str: string): object => {
+    if (str.trim() === CLIENT_SIDE_ONLY) {
+      return {};
+    }
+    try {
+      const values = vm.runInNewContext(`(function(){return {${str}};})()`);
+      return values;
+    } catch (e) {
+      return {};
+    }
+  };
+
+  const importConfiguration = comments.reduce(
+    (acc, comment) => ({
+      ...acc,
+      ...parseMagicComments(comment),
+    }),
+    {} as any
+  );
+
+  const newChunkName = chunkName(importName, fileName, importConfiguration);
+  const { isBootstrapFile } = options;
+  return [
+    ...comments,
+    !isBootstrapFile && shouldPrefetch(importName, fileName, importConfiguration) ? prefetchComment() : '',
+    !isBootstrapFile && shouldPreload(importName, fileName, importConfiguration) ? preloadComment() : '',
+    newChunkName ? chunkComment(newChunkName) : '',
+  ].filter(x => !!x);
+};
 
 export const createTransformer = (
   { types: t, template }: any,
   excludeMacro = false,
+  configuration = defaultConfiguration
 ) => {
   const headerTemplate = template(
     `var importedWrapper = require('react-imported-component/wrapper');`,
@@ -69,6 +110,8 @@ export const createTransformer = (
 
   const hasImports = new Set<string>();
   const visitedNodes = new Map();
+
+  let isBootstrapFile = false;
 
   return {
     traverse(programPath: any, fileName: string) {
@@ -84,6 +127,7 @@ export const createTransformer = (
             path.remove();
             const assignName = 'assignImportedComponents';
             if (specifiers.length === 1 && specifiers[0].imported.name === assignName) {
+              isBootstrapFile = true;
               programPath.node.body.unshift(
                 t.importDeclaration(
                   [t.importSpecifier(t.identifier(assignName), t.identifier(assignName))],
@@ -113,7 +157,9 @@ export const createTransformer = (
           const rawComments = getComments(rawImport);
           const comments = rawComments.map((parent: any) => parent.node.value);
 
-          const newComments = processComment(comments, importName, fileName);
+          const newComments = processComment(configuration, comments, importName, fileName, {
+            isBootstrapFile,
+          });
 
           if (newComments !== comments) {
             rawComments.forEach((comment: any) => comment.remove());
@@ -153,8 +199,8 @@ export const createTransformer = (
   };
 };
 
-export default function(babel: any) {
-  const transformer = createTransformer(babel);
+export default function(babel: any, options: ImportedConfiguration = {}) {
+  const transformer = createTransformer(babel, false, options);
 
   return {
     inherits: syntax,
