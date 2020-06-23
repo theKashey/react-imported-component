@@ -2,6 +2,7 @@
 import * as crc32 from 'crc-32';
 import { existsSync } from 'fs';
 import { dirname, join, relative, resolve } from 'path';
+import {ImportedConfiguration} from '../configuration/configuration';
 
 export const encipherImport = (str: string) => {
   return crc32.str(str).toString(32);
@@ -41,18 +42,23 @@ function getComments(callPath: any) {
   return callPath.has('leadingComments') ? callPath.get('leadingComments') : [];
 }
 
-const ItoI = (I: any) => I;
-
 export type CommentProcessor = (comments: string[], target: string, file: string) => string[];
 
 // load configuration
 const configurationFile = join(process.cwd(), '.imported.js');
-const { processComment: bundledProcessor = ItoI } = existsSync(configurationFile) ? require(configurationFile) : {};
+const {
+  shouldPrefetch,
+  shouldPreload,
+  chunkName,
+} = (existsSync(configurationFile) ? require(configurationFile) : {}) as  ImportedConfiguration;
+
+const processComment = (comments: string[], importName: string, fileName: string) => {
+
+}
 
 export const createTransformer = (
   { types: t, template }: any,
   excludeMacro = false,
-  processComment: CommentProcessor = bundledProcessor
 ) => {
   const headerTemplate = template(
     `var importedWrapper = require('react-imported-component/wrapper');`,

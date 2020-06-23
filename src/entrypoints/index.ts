@@ -1,4 +1,5 @@
 import { setConfiguration } from '../config';
+import { configure, ImportedConfiguration } from '../configuration/configuration';
 import {
   assignImportedComponents,
   clearImportedCache,
@@ -43,5 +44,8 @@ export {
   useLazy,
   addPreloader,
   clearImportedCache,
+
+  ImportedConfiguration,
+  configure,
 };
 export default imported;

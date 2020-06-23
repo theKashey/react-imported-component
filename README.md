@@ -835,15 +835,23 @@ setConfiguration({
 There is possibility to finely control both with files are scanned, which imports are added and which chunks would be generated(webpackonly)
 via `.imported.js` at the root directory
 
+> 💩 .js, not .ts
+
 ```js
-modules.export = {
+// 👉 use provided helper for documentation and type safety
+const { configure } = require('react-imported-component');
+
+modules.export = configure({
   testFile: fileName => true | false,
   testImport: (targetFile, sourceFile) => true | false,
-  processComment: (sourceComments, targetFile, sourceFile) => newComments,
-};
+  clientSideOnly: (targetFile, sourceFile, sourceComments) => true | false,
+  shouldPrefetch: (targetFile, sourceFile, sourceComments) => true | false,
+  shouldPreload: (targetFile, sourceFile, sourceComments) => true | false,
+  chunkName: (targetFile, sourceFile, sourceComments) => string | null | undefined,
+});
 ```
 
-None of those methods is required.
+None of those methods are required.
 
 `.imported` could be used to:
 
