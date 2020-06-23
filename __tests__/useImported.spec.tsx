@@ -1,6 +1,7 @@
 import '@theuiteam/lib-builder/configs/setupEnzyme';
 import { mount } from 'enzyme';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 
 import { act } from 'react-dom/test-utils';
 import { drainHydrateMarks } from '../src/entrypoints';
@@ -90,6 +91,35 @@ describe('useImported', () => {
 
     expect(wrapper.html()).toContain('error');
     expect(drainHydrateMarks()).toEqual([]);
+  });
+
+  it('useImported memoization', async () => {
+    const importers = [
+      () => importedWrapper('imported_unconditional1-mark_component', Promise.resolve(() => <span>1!</span>)),
+      () => importedWrapper('imported_unconditional2-mark_component', Promise.resolve(() => <span>2!</span>)),
+    ];
+
+    const Comp = ({ v }: any) => {
+      const x = useImported(importers[v]);
+      const [state, setState] = useState(0);
+      useEffect(() => setState(oldState => oldState + 1), [x]);
+
+      return <span>{state}</span>;
+    };
+
+    const wrapper = mount(<Comp v={0} />);
+    expect(wrapper.html()).toContain('1');
+    await act(done);
+    wrapper.update();
+    expect(wrapper.html()).toContain('2');
+    wrapper.update();
+    expect(wrapper.html()).toContain('2');
+    wrapper.setProps({ v: 1 });
+    expect(wrapper.html()).toContain('3');
+    await act(done);
+    expect(wrapper.html()).toContain('4');
+    drainHydrateMarks();
+    // expect().toEqual(['unconditional-mark']);
   });
 
   it('unconditional import', async () => {

@@ -7,7 +7,7 @@ module.exports = [
   {
     path: 'dist/es2015/entrypoints/index.js',
     ignore: ['tslib'],
-    limit: '3.1 KB',
+    limit: '3.2 KB',
   },
   {
     path: 'dist/es2015/entrypoints/boot.js',

@@ -91,11 +91,14 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
     }
   }
 
-  return {
-    loadable,
-    retry,
-    update: forceUpdate,
-  };
+  return useMemo(
+    () => ({
+      loadable,
+      retry,
+      update: forceUpdate,
+    }),
+    [loadable, retry, forceUpdate]
+  );
 }
 
 /**
@@ -130,27 +133,32 @@ export function useImported<T, K = T>(
   const topLoadable = getLoadable(importer);
   const { loadable, retry } = useLoadable<T>(topLoadable, options);
 
-  if (loadable.error) {
+  const { error, done, payload } = loadable;
+  const loading = loadable.isLoading();
+
+  return useMemo(() => {
+    if (error) {
+      return {
+        error,
+        loadable,
+        retry,
+      };
+    }
+
+    if (done) {
+      return {
+        imported: exportPicker(payload as T),
+        loadable,
+        retry,
+      };
+    }
+
     return {
-      error: loadable.error,
+      loading,
       loadable,
       retry,
     };
-  }
-
-  if (loadable.done) {
-    return {
-      imported: exportPicker(loadable.payload as T),
-      loadable,
-      retry,
-    };
-  }
-
-  return {
-    loading: loadable.isLoading(),
-    loadable,
-    retry,
-  };
+  }, [error, loading, payload, loadable]);
 }
 
 /**
