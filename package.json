@@ -9,7 +9,7 @@
   "types": "dist/es5/entrypoints/index.d.ts",
   "scripts": {
     "build:ci": "lib-builder build && yarn size",
-    "build": "lib-builder build && yarn size && yarn size:report",
+    "build": "rm -Rf ./dist/* && lib-builder build && yarn size && yarn size:report",
     "test": "jest",
     "prepublish": "npm run build",
     "lint": "lib-builder lint",
