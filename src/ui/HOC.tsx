@@ -9,13 +9,17 @@ import { ImportedComponent } from './Component';
 import { useLoadable } from './useImported';
 
 /**
- *
+ * creates a "lazy" component, like `React.lazy`
+ * @see {@link useImported} or {@link useLazy}
  * @param {Function} loaderFunction - () => import('a'), or () => require('b')
  * @param {Object} [options]
  * @param {React.Component} [options.LoadingComponent]
  * @param {React.Component} [options.ErrorComponent]
  * @param {Function} [options.onError] - error handler. Will consume the real error.
- * @param {Function} [options.async] - enable React 16+ suspense.
+ * @param {Function} [options.async = false] - enable React 16+ suspense.
+ *
+ * @example
+ * const PageA = imported('./pageA', { async: true });
  */
 function loader<P, K = P>(
   loaderFunction: DefaultComponentImport<P>,

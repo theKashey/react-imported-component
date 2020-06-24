@@ -116,6 +116,8 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
  *  - loadable: the under laying reference
  *  - retry: retry if case of failure
  *
+ *  @see if you dont need precise control consider {@link useLazy}
+ *
  *  @example
  *  const { imported: Imported, loadable } = useImported(importer);
  *  if (Imported) {
@@ -162,11 +164,12 @@ export function useImported<T, K = T>(
 }
 
 /**
- * A mix of React.lazy and useImported
- * @see {@link useImported}
+ * A mix of React.lazy and useImported - uses React.lazy for Component and `useImported` to track the promise
+ * not "retry"-able
+ * @see if you need precise control consider {@link useImported}
  * @example
  *  const Component = useLazy(() => import('./MyComponent');
- *  return <Component />
+ *  return <Component /> // throws to SuspenseBoundary if not ready
  */
 export function useLazy<T>(importer: DefaultComponentImport<T>): LazyExoticComponent<ComponentType<T>> {
   const [{ resolve, reject, lazyComponent }] = useState(() => {
