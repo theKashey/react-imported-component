@@ -88,11 +88,25 @@ describe('importMatch', () => {
 
   it('maps function signatures', () => {
     expect(getFunctionSignature(`import('file')`)).toEqual(getFunctionSignature(`import(/* */'file')`));
+
+    expect(getFunctionSignature(`import('file')`)).toEqual('import(`file`)');
   });
 
   it('maps function signatures after terser pass', () => {
     expect(getFunctionSignature('()=>$(`imported_-f5674t_component`,n.e(3).then(n.bind(null,`xxx`,7)))')).toEqual(
       getFunctionSignature('()=>$(`imported_-f5674t_component`,x.e(3).then(x.bind(null,`xxx`,7)))')
+    );
+    expect(getFunctionSignature('()=>$(`imported_-f5674t_component`,n.e(3).then(n.bind(null,`xxx`,7)))')).toEqual(
+      '()=>$(`imported_-f5674t_component`,-we(3).-wbind(null,`xxx`,7)))'
+    );
+  });
+
+  it('maps function with different wrappers', () => {
+    expect(getFunctionSignature('()=>P("imported_-is59m_component",t.e(41).then(t.bind(null,"./Promo.jsx")))')).toEqual(
+      getFunctionSignature('()=>s("imported_-is59m_component",n.e(41).then(n.bind(null,"./Promo.jsx")))')
+    );
+    expect(getFunctionSignature('()=>P("imported_-is59m_component",t.e(41).then(t.bind(null,"./Promo.jsx")))')).toEqual(
+      '()=>$(`imported_-is59m_component`,-we(41).-wbind(null,`./Promo.jsx`)))'
     );
   });
 });

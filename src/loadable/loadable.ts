@@ -56,6 +56,10 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
       importFunction = newImportFunction;
     },
 
+    get importer() {
+      return importFunction;
+    },
+
     then(cb, err) {
       if (this.promise) {
         return this.promise.then(cb, err);
@@ -245,6 +249,24 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
     loadable.replaceImportFunction(importFunction);
 
     return loadable as any;
+  }
+
+  const ownMark = importMatch(functionSignature).join('|');
+  if (ownMark) {
+    LOADABLE_SIGNATURE.forEach(({ mark, importer }) => {
+      if (mark.join('|') === ownMark) {
+        // tslint:disable-next-line:no-console
+        console.warn(
+          'Another loadable found for an existing mark. That\'s possible, signatures must match (https://github.com/theKashey/react-imported-component/issues/192):',
+          {
+            mark,
+            knownImporter: importer,
+            currentSignature: String(importFunction),
+            knownSignature: String(importer),
+          }
+        );
+      }
+    });
   }
 
   const loadable = toLoadable(importFunction as any);
