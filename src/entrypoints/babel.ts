@@ -200,7 +200,10 @@ export const createTransformer = (
 };
 
 export default function(babel: any, options: ImportedConfiguration = {}) {
-  const transformer = createTransformer(babel, false, options);
+  const transformer = createTransformer(babel, false, {
+    ...defaultConfiguration,
+    ...options,
+  });
 
   return {
     inherits: syntax,
