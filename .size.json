@@ -7,7 +7,7 @@
   {
     "name": "dist/es2015/entrypoints/index.js",
     "passed": true,
-    "size": 3311
+    "size": 3316
   },
   {
     "name": "dist/es2015/entrypoints/boot.js",
