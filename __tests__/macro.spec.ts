@@ -1,6 +1,6 @@
-const pluginTester = require("babel-plugin-tester");
-const plugin = require("babel-plugin-macros");
-const prettier = require("prettier");
+const pluginTester = require('babel-plugin-tester');
+const plugin = require('babel-plugin-macros');
+const prettier = require('prettier');
 
 describe('babel macro', () => {
   pluginTester({
@@ -11,24 +11,24 @@ describe('babel macro', () => {
       plugins: ['dynamic-import-node'],
     },
     formatResult(result: string) {
-      return prettier.format(result, {trailingComma: "es5"});
+      return prettier.format(result, { trailingComma: 'es5' });
     },
     tests: {
-      "nothing": "const a = 42;",
-      "no usage": `import {lazy} from "../macro";`,
-      "flat import": `import "../macro";
+      nothing: 'const a = 42;',
+      'no usage': `import {lazy} from "../macro";`,
+      'flat import': `import "../macro";
       import('./a.js')
       `,
-      "boot": `
+      boot: `
       import {assignImportedComponents, lazy} from "../macro";
       assignImportedComponents([() => import('./a')]);
       lazy(() => import('./a'));
       `,
-      "lazy": `
+      lazy: `
         import {lazy} from "../macro";
         const v = lazy(() => import('./a'));
         `,
-      "many": `
+      many: `
         import {imported, useImported} from "../macro";        
         const v = imported(() => import('./a'));
         const x = () => useImported(() => import('./b'));
@@ -46,10 +46,10 @@ describe('babel macro', () => {
       plugins: [require.resolve('../babel'), 'dynamic-import-node'],
     },
     formatResult(result: string) {
-      return prettier.format(result, {trailingComma: "es5"});
+      return prettier.format(result, { trailingComma: 'es5' });
     },
     tests: {
-      "plugin combination": `
+      'plugin combination': `
         import {imported, useImported} from "../macro";        
         const v = imported(() => import('./a'));
         const x = () => useImported(() => import('./b'));

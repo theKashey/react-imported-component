@@ -1,7 +1,7 @@
 // @ts-ignore
 import { createMacro } from 'babel-plugin-macros';
+import { assignImportedComponents } from '../loadable/loadable';
 import { createTransformer } from './babel';
-import { assignImportedComponents } from './loadable';
 
 function getMacroType(tagName: string) {
   switch (tagName) {
@@ -94,13 +94,13 @@ const neverCallMe: any = () => {
   );
 };
 
-const lazy: typeof import('./HOC').lazy = neverCallMe;
-const imported: typeof import('./HOC').default = neverCallMe;
-const importedModule: typeof import('./Module').importedModule = neverCallMe;
-const useImported: typeof import('./useImported').useImported = neverCallMe;
+const lazy: typeof import('../ui/HOC').lazy = neverCallMe;
+const imported: typeof import('../ui/HOC').default = neverCallMe;
+const importedModule: typeof import('../ui/Module').importedModule = neverCallMe;
+const useImported: typeof import('../ui/useImported').useImported = neverCallMe;
 
-const ImportedModule: typeof import('./Module').ImportedModule = neverCallMe;
-const ImportedComponent: typeof import('./Component').ImportedComponent = neverCallMe;
+const ImportedModule: typeof import('../ui/Module').ImportedModule = neverCallMe;
+const ImportedComponent: typeof import('../ui/Component').ImportedComponent = neverCallMe;
 
 export { lazy, imported, importedModule, ImportedModule, ImportedComponent, useImported, assignImportedComponents };
 

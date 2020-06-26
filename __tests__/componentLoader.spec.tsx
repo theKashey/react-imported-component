@@ -2,9 +2,9 @@ import '@theuiteam/lib-builder/configs/setupEnzyme';
 import { mount } from 'enzyme';
 import * as React from 'react';
 
-import { ImportedComponent } from '../src/Component';
-import loader from '../src/HOC';
-import { toLoadable } from '../src/loadable';
+import { toLoadable } from '../src/loadable/loadable';
+import { ImportedComponent } from '../src/ui/Component';
+import loader from '../src/ui/HOC';
 
 describe('Async Component', () => {
   describe('loader', () => {

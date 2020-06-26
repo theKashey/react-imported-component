@@ -1,8 +1,15 @@
 var importedWrapper = require('react-imported-component/wrapper');
 
 import { lazy, useImported } from "react-imported-component";
-import { assignImportedComponents } from "react-imported-component/boot";
 import imported from 'react-imported-component';
+const PreloadComponent = imported(() => importedWrapper("imported_-hbct7n_component", import(
+/* webpackPreload: true */
+'./PreloadThis')));
+const PrefetchChunkComponent = imported(() => importedWrapper("imported_fspdct_component", import(
+/* webpackChunkName: "chunked-this" */
+
+/* webpackPrefetch: true */
+'./ChunkThis')));
 const AsyncComponent0 = imported(() => importedWrapper("imported_18g2v0c_component", import(
 /* webpackChunkName:namedChunk */
 './MyComponent')));

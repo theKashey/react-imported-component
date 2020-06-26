@@ -1,14 +1,15 @@
 {
   "name": "react-imported-component",
-  "version": "6.2.4",
+  "version": "6.3.4",
   "description": "I will import your component, and help to handle it",
-  "main": "dist/es5/index.js",
-  "jsnext:main": "dist/es2015/index.js",
-  "module": "dist/es2015/index.js",
+  "main": "dist/es5/entrypoints/index.js",
+  "jsnext:main": "dist/es2015/entrypoints/index.js",
+  "module": "dist/es2015/entrypoints/index.js",
   "sideEffects": false,
-  "types": "dist/es5/index.d.ts",
+  "types": "dist/es5/entrypoints/index.d.ts",
   "scripts": {
-    "build": "lib-builder build && yarn size:report",
+    "build:ci": "lib-builder build && yarn size",
+    "build": "rm -Rf ./dist/* && lib-builder build && yarn size && yarn size:report",
     "test": "jest",
     "prepublish": "npm run build",
     "lint": "lib-builder lint",
@@ -16,8 +17,8 @@
     "test:ci": "jest --runInBand --coverage",
     "release": "yarn build && yarn test && yarn changelog",
     "format": "lib-builder format",
-    "size": "npx size-limit",
-    "size:report": "npx size-limit --json > .size.json",
+    "size": "yarn size-limit",
+    "size:report": "yarn --silent size-limit --json > .size.json",
     "update": "lib-builder update",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
@@ -44,6 +45,11 @@
     "@types/react": "^16.9.0",
     "react": "^16.9.0"
   },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  },
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -54,7 +60,7 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.1",
-    "@size-limit/preset-small-lib": "^2.1.1",
+    "@size-limit/preset-small-lib": "^4.5.1",
     "@theuiteam/lib-builder": "0.0.8",
     "@types/detect-node": "^2.0.0",
     "@types/enzyme": "^3.10.3",
@@ -67,7 +73,7 @@
     "enzyme-adapter-react-16": "^1.15.1",
     "prettier": "^1.18.2",
     "react-test-renderer": "^16.6.0",
-    "sinon": "^5.0.10"
+    "size-limit": "^4.5.1"
   },
   "dependencies": {
     "babel-plugin-macros": "^2.6.1",

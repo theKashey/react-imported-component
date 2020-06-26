@@ -1,13 +1,14 @@
-import { settings } from './config';
-import { isBackend } from './detectBackend';
+import { settings } from '../config';
+import { AnyFunction, DefaultImport, Loadable, Mark, MarkMeta, Promised } from '../types';
+import { isBackend } from '../utils/detectBackend';
+import { getFunctionSignature, importMatch } from '../utils/signatures';
 import { assingLoadableMark } from './marks';
 import { getPreloaders } from './preloaders';
-import { getFunctionSignature, importMatch } from './signatures';
-import { AnyFunction, DefaultImport, Loadable, Mark, MarkMeta, Promised } from './types';
 
 export interface InnerLoadable<T> extends Loadable<T> {
   ok: boolean;
   promise: Promise<T> | undefined;
+
   _probeChanges(): Promise<boolean>;
 }
 
@@ -55,6 +56,10 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
       importFunction = newImportFunction;
     },
 
+    get importer() {
+      return importFunction;
+    },
+
     then(cb, err) {
       if (this.promise) {
         return this.promise.then(cb, err);
@@ -100,7 +105,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
     },
 
     _probeChanges() {
-      return callLoad()
+      return Promise.resolve(importFunction())
         .then(payload => payload !== this.payload)
         .catch(err => {
           throw err;
@@ -158,6 +163,9 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
 let readyFlag = false;
 export const isItReady = () => readyFlag;
 
+/**
+ * waits for all necessary imports to be fulfilled
+ */
 export const done = (): Promise<void> => {
   if (pending.length) {
     readyFlag = false;
@@ -171,6 +179,10 @@ export const done = (): Promise<void> => {
   return Promise.resolve();
 };
 
+/**
+ * try to perform a render and loads all chunks required for it
+ * @deprecated
+ */
 export const dryRender = (renderFunction: () => void) => {
   renderFunction();
 
@@ -185,6 +197,9 @@ const assignMetaData = (mark: Mark, loadable: Loadable<any>, chunkName: string, 
 
 type ImportedDefinition = [Promised<any>, string, string, boolean];
 
+/**
+ * to be used __only via CLI tools__
+ */
 export const assignImportedComponents = (set: ImportedDefinition[]) => {
   const countBefore = LOADABLE_SIGNATURE.size;
   set.forEach(imported => {
@@ -211,6 +226,11 @@ export function executeLoadable(importFunction: DefaultImport<any> | Loadable<an
   }
 }
 
+/**
+ * wraps an `import` function with a tracker
+ * @internal
+ * @param importFunction
+ */
 export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): Loadable<T> {
   if ('resolution' in importFunction) {
     return importFunction;
@@ -231,10 +251,32 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
     return loadable as any;
   }
 
+  const ownMark = importMatch(functionSignature).join('|');
+  if (ownMark) {
+    LOADABLE_SIGNATURE.forEach(({ mark, importer }) => {
+      if (mark.join('|') === ownMark) {
+        // tslint:disable-next-line:no-console
+        console.warn(
+          'Another loadable found for an existing mark. That\'s possible, signatures must match (https://github.com/theKashey/react-imported-component/issues/192):',
+          {
+            mark,
+            knownImporter: importer,
+            currentSignature: String(importFunction),
+            knownSignature: String(importer),
+          }
+        );
+      }
+    });
+  }
+
   const loadable = toLoadable(importFunction as any);
   LOADABLE_WEAK_SIGNATURE.set(importFunction, loadable);
 
   return loadable as any;
 }
 
+/**
+ * Reset `importers` weak cache
+ * @internal
+ */
 export const clearImportedCache = () => LOADABLE_SIGNATURE.clear();

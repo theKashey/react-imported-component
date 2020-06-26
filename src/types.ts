@@ -46,6 +46,7 @@ export interface Loadable<T> {
   mark: Mark;
 
   resolution: Promise<void>;
+  importer: any;
 
   isLoading(): boolean;
 
@@ -106,7 +107,10 @@ export type ModuleFC<T> = (props: ImportModuleProps<T>) => ReactElement | null;
 
 export type HOCModuleType<T> = ModuleFC<T> & AdditionalHOC;
 
-export type HOC = <P, K = P>(loader: DefaultComponentImport<P>, options?: Partial<ComponentOptions<P, K>> & HOCOptions) => HOCType<P, K>;
+export type HOC = <P, K = P>(
+  loader: DefaultComponentImport<P>,
+  options?: Partial<ComponentOptions<P, K>> & HOCOptions
+) => HOCType<P, K>;
 
 export interface ImportedComponents {
   [index: number]: () => Promise<DefaultComponent<any>>;

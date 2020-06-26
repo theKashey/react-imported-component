@@ -1,4 +1,4 @@
-import { getLoadable } from '../src/loadable';
+import { getLoadable } from '../src/loadable/loadable';
 
 describe('getLoadable', () => {
   const importedWrapper = (_: any, b: any) => b;

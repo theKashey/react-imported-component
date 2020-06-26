@@ -1,10 +1,9 @@
 language: node_js
 node_js:
-  - '8'
+  - '10'
 cache: yarn
 script:
   - yarn
-  - yarn build
   - yarn test:ci
 notifications:
   email: false

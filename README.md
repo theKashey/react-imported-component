@@ -270,6 +270,7 @@ If you have `imported` definition in one file, and use it from another - just `i
 ##### useImported
 
 - `useImported(importFunction, [exportPicker], [options])` - code splitting hook
+
   - `importFunction` - a function which resolves to `default` or `wildcard` import(T | {default:T})
   - `[exportPicker]` - function to pick "T" from the import
   - `[options]` - options to the hook
@@ -337,7 +338,7 @@ let's keep all fields in a secret, except one:
 
 1. Add `babel` plugin
 2. Run `yarn imported-components src src/imported.js` to extract all your imports into a `run time chunk` (aka async-requires).
-3. Replace `React.lazy` with our `lazy`, and `React.Suspense` with our `LazyBoundary`.
+3. Replace `React.lazy` with our `lazy`, and `React.Suspense` with our `LazyBoundary`. Literraly [monkey-patch React to do so](#monkey-patch)
 4. Add `printDrainHydrateMarks` to the server code code.
 5. Add `rehydrateMarks` to the client code
 6. Done. Just read the rest of readme for details.
@@ -569,6 +570,19 @@ While the rest(99%) of the bundle would make CPU busy - chunks would be loaded o
 > 💡This is utilizing the differences between `parse`(unenviable) phase of script, and execute(more expensive) one.
 
 # Cooking receipts
+
+<a name="monkey-patch"/>
+
+## Replace React.lazy by lazy
+
+```js
+import React from 'react';
+import { lazy, LazyBoundary } from 'react-imported-component';
+React.lazy = lazy;
+React.Suspense = LazyBoundary;
+```
+
+That's all the work required to get it working.
 
 ## Partial hydration
 
@@ -829,6 +843,34 @@ setConfiguration({
 });
 ```
 
+### .imported.js
+
+There is possibility to finely control both with files are scanned, which imports are added and which chunks would be generated(webpackonly)
+via `.imported.js` at the root directory
+
+> 💩 .js, not .ts
+
+```js
+// 👉 use provided helper for documentation and type safety
+const { configure } = require('react-imported-component');
+
+modules.export = configure({
+  testFile: fileName => true | false,
+  testImport: (targetFile, sourceFile) => true | false,
+  clientSideOnly: (targetFile, sourceFile, sourceComments) => true | false,
+  shouldPrefetch: (targetFile, sourceFile, sourceComments) => true | false,
+  shouldPreload: (targetFile, sourceFile, sourceComments) => true | false,
+  chunkName: (targetFile, sourceFile, sourceComments) => string | null | undefined,
+});
+```
+
+None of those methods are required.
+
+`.imported` could be used to:
+
+- remove some files or imports
+- autogenerate chunk names or prefetch/preload
+
 ### Bundler independent SSR
 
 It does not matter how do you bundle your application - it could be even browser. The secrect sause is a **cli** command, to extract all your imports into imports map, and use it later to load chunks by request.
@@ -884,7 +926,7 @@ If React-Hot-Loader is detected `lazy` switches to `imported async` mode, this b
 
 ## Other loaders
 
-Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
+Another loaders exist, and the only difference is in API, and how they manage (or not manage) SSR.
 
 - (no SSR) React.Lazy
 - (webpack only) With [react-loadable](https://github.com/thejameskyle/react-loadable)

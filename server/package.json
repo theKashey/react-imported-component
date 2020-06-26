@@ -1,7 +1,7 @@
 {
   "private": true,
-  "main": "../dist/es5/server.js",
-  "jsnext:main": "../dist/es2015/server.js",
-  "module": "../dist/es2015/server.js",
-  "types": "../dist/es2015/server.d.ts"
+  "main": "../dist/es5/entrypoints/server.js",
+  "jsnext:main": "../dist/es2015/entrypoints/server.js",
+  "module": "../dist/es2015/entrypoints/server.js",
+  "types": "../dist/es2015/entrypoints/server.d.ts"
 }
