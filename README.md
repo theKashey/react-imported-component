@@ -338,7 +338,7 @@ let's keep all fields in a secret, except one:
 
 1. Add `babel` plugin
 2. Run `yarn imported-components src src/imported.js` to extract all your imports into a `run time chunk` (aka async-requires).
-3. Replace `React.lazy` with our `lazy`, and `React.Suspense` with our `LazyBoundary`.
+3. Replace `React.lazy` with our `lazy`, and `React.Suspense` with our `LazyBoundary`. Literraly [monkey-patch React to do so](#monkey-patch)
 4. Add `printDrainHydrateMarks` to the server code code.
 5. Add `rehydrateMarks` to the client code
 6. Done. Just read the rest of readme for details.
@@ -570,6 +570,19 @@ While the rest(99%) of the bundle would make CPU busy - chunks would be loaded o
 > 💡This is utilizing the differences between `parse`(unenviable) phase of script, and execute(more expensive) one.
 
 # Cooking receipts
+
+<a name="monkey-patch"/>
+
+## Replace React.lazy by lazy
+
+```js
+import React from 'react';
+import { lazy, LazyBoundary } from 'react-imported-component';
+React.lazy = lazy;
+React.Suspense = LazyBoundary;
+```
+
+That's all the work required to get it working.
 
 ## Partial hydration
 
@@ -913,7 +926,7 @@ If React-Hot-Loader is detected `lazy` switches to `imported async` mode, this b
 
 ## Other loaders
 
-Another loaders exists, and the only difference is in API, and how they manage (or not manage) SSR.
+Another loaders exist, and the only difference is in API, and how they manage (or not manage) SSR.
 
 - (no SSR) React.Lazy
 - (webpack only) With [react-loadable](https://github.com/thejameskyle/react-loadable)

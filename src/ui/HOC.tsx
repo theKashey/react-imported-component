@@ -54,6 +54,7 @@ function loader<P, K = P>(
   return Imported;
 }
 
+const ReactLazy = React.lazy;
 /**
  * React.lazy "as-is" replacement
  */
@@ -74,7 +75,7 @@ export function lazy<T>(importer: LazyImport<T>): React.FC<T> {
   return function ImportedLazy(props: T) {
     const { loadable } = useLoadable(topLoadable);
 
-    const Lazy = useMemo(() => React.lazy(() => loadable.tryResolveSync(asDefault as any) as any), []);
+    const Lazy = useMemo(() => ReactLazy(() => loadable.tryResolveSync(asDefault as any) as any), []);
 
     return <Lazy {...(props as any)} />;
   };
