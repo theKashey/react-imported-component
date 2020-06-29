@@ -1,3 +1,28 @@
+## [6.3.5](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.4...v6.3.5) (2020-06-26)
+
+## [6.3.4](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.3...v6.3.4) (2020-06-24)
+
+### Bug Fixes
+
+- better cleaning for function signatures ([ae37c4c](https://github.com/theKashey/react-hot-component-loader/commit/ae37c4c9cc8ef422aa0f8761176cf0f43d6041b5))
+
+## [6.3.3](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.2...v6.3.3) (2020-06-24)
+
+### Bug Fixes
+
+- memoize useImported result object ([f03bb69](https://github.com/theKashey/react-hot-component-loader/commit/f03bb695386ce259f5fe71664a291873b498b5e8))
+
+## [6.3.2](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.1...v6.3.2) (2020-06-23)
+
+### Bug Fixes
+
+- multiline imports are not working ([ab2da95](https://github.com/theKashey/react-hot-component-loader/commit/ab2da9520fcbd9bc9527d739a1281e1329591ceb))
+- useImported should detect replacement of loadable ([301992d](https://github.com/theKashey/react-hot-component-loader/commit/301992dc3f09d554c850307bb9768ae3da06ce0c))
+
+### Features
+
+- allow import control via configuration file ([61a68a1](https://github.com/theKashey/react-hot-component-loader/commit/61a68a147733c2509d7f51a73c4f7a213c574f8d))
+
 ## [6.3.1](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.0...v6.3.1) (2020-04-25)
 
 ### Bug Fixes
