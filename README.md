@@ -60,7 +60,7 @@ Other features:
 
 - 🔥 Hot-Module-Replacement/React-Hot-Loader friendly
 - ⛓️ support forwardRef
-- ⚛️ Rect 16/Async/Hooks ready
+- ⚛️ React 16/Async/Hooks ready
 - 🛠 HOC, Component, Hooks API
 - 🐳 stream rendering support
 - 👥 partial hydration out of the box
@@ -339,7 +339,7 @@ let's keep all fields in a secret, except one:
 1. Add `babel` plugin
 2. Run `yarn imported-components src src/imported.js` to extract all your imports into a `run time chunk` (aka async-requires).
 3. Replace `React.lazy` with our `lazy`, and `React.Suspense` with our `LazyBoundary`. Literraly [monkey-patch React to do so](#monkey-patch)
-4. Add `printDrainHydrateMarks` to the server code code.
+4. Add `printDrainHydrateMarks` to the server code.
 5. Add `rehydrateMarks` to the client code
 6. Done. Just read the rest of readme for details.
 
