@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom/server';
 import { act } from 'react-dom/test-utils';
 
-import { settings } from '../src/configuration/config';
+import { setConfiguration } from '../src/configuration/config';
 import { done as whenDone, toLoadable } from '../src/loadable/loadable';
 import { createLoadableStream, drainHydrateMarks, rehydrateMarks } from '../src/loadable/marks';
 import { ImportedComponent } from '../src/ui/Component';
@@ -22,10 +22,10 @@ describe('SSR Component', () => {
 
   describe('client-rehydrate', () => {
     beforeEach(() => {
-      settings.SSR = false;
+      setConfiguration({ SSR: false });
     });
     afterEach(() => {
-      settings.SSR = true;
+      setConfiguration({ SSR: true });
     });
 
     it('SSR green case', async () => {
@@ -110,11 +110,9 @@ describe('SSR Component', () => {
 
   describe('server-rehydrate', () => {
     beforeEach(() => {
-      settings.SSR = true;
+      setConfiguration({ SSR: false });
     });
-    afterEach(() => {
-      settings.SSR = true;
-    });
+
     it('green case', async () => {
       const renderSpy2 = jest.fn().mockImplementation(A => <div>{A && <A />}</div>);
       const Component = () => <div>loaded!</div>;
