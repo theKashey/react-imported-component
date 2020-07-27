@@ -34,12 +34,30 @@ export interface ImportedClientSettings {
   checkSignatures: boolean;
 }
 
-export const settings: ImportedClientSettings = {
+const localSettings: ImportedClientSettings = {
   hot: (!!module as any).hot,
   SSR: isBackend,
   rethrowErrors: process.env.NODE_ENV !== 'production',
   fileFilter: rejectNetwork,
   checkSignatures: true,
+};
+
+export const settings = {
+  get hot() {
+    return localSettings.hot;
+  },
+  get SSR() {
+    return localSettings.SSR;
+  },
+  get rethrowErrors() {
+    return localSettings.rethrowErrors;
+  },
+  get fileFilter() {
+    return localSettings.fileFilter;
+  },
+  get checkSignatures() {
+    return localSettings.checkSignatures;
+  },
 };
 
 /**
@@ -49,5 +67,5 @@ export const settings: ImportedClientSettings = {
  * @see configuration via imported.json {@link https://github.com/theKashey/react-imported-component#importedjs}
  */
 export const setConfiguration = (config: Partial<ImportedClientSettings>) => {
-  Object.assign(settings, config);
+  Object.assign(localSettings, config);
 };

@@ -20,9 +20,13 @@ const LOADABLE_SIGNATURE = new Map<string, Loadable<any>>();
 const addPending = (promise: Promise<any>) => pending.push(promise);
 const removeFromPending = (promise: Promise<any>) => (pending = pending.filter(a => a !== promise));
 
+const toKnownSignature = (signature: string, marks: string[]) =>
+  (!settings.checkSignatures && marks.join('|')) || signature;
+
 export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
   let importFunction = firstImportFunction;
-  const callLoad = (): Promise<T> => Promise.all([importFunction(), ...getPreloaders()]).then(([result]) => result);
+  const loadImportedComponent = (): Promise<T> =>
+    Promise.all([importFunction(), ...getPreloaders()]).then(([result]) => result);
   const functionSignature = getFunctionSignature(importFunction);
   const mark = importMatch(functionSignature);
 
@@ -114,7 +118,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
 
     load() {
       if (!this.promise) {
-        const promise = (this.promise = callLoad().then(
+        const promise = (this.promise = loadImportedComponent().then(
           payload => {
             this.done = true;
             this.ok = true;
@@ -139,7 +143,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
   };
 
   if (mark && mark.length) {
-    LOADABLE_SIGNATURE.set(functionSignature, loadable);
+    LOADABLE_SIGNATURE.set(toKnownSignature(functionSignature, mark), loadable);
     assingLoadableMark(mark, loadable);
   } else {
     if (process.env.NODE_ENV !== 'development') {
@@ -241,9 +245,9 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
   }
 
   const rawSignature = getFunctionSignature(importFunction);
-  const ownMark = importMatch(String(rawSignature)).join('|');
+  const ownMark = importMatch(String(rawSignature));
   // read cache signature
-  const functionSignature = (!settings.checkSignatures && ownMark) || rawSignature;
+  const functionSignature = toKnownSignature(rawSignature, ownMark);
 
   if (LOADABLE_SIGNATURE.has(functionSignature)) {
     // tslint:disable-next-line:no-shadowed-variable
@@ -255,7 +259,7 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
 
   if (ownMark) {
     LOADABLE_SIGNATURE.forEach(({ mark, importer }) => {
-      if (mark.join('|') === ownMark) {
+      if (mark[0] === ownMark[1] && mark.join('|') === ownMark.join('|')) {
         // tslint:disable-next-line:no-console
         console.warn(
           'Another loadable found for an existing mark. That\'s possible, but signatures must match (https://github.com/theKashey/react-imported-component/issues/192):',

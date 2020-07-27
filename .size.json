@@ -2,16 +2,16 @@
   {
     "name": "dist/es2015/entrypoints/index.js, dist/es2015/entrypoints/boot.js",
     "passed": true,
-    "size": 3646
+    "size": 3717
   },
   {
     "name": "dist/es2015/entrypoints/index.js",
     "passed": true,
-    "size": 3354
+    "size": 3428
   },
   {
     "name": "dist/es2015/entrypoints/boot.js",
     "passed": true,
-    "size": 1803
+    "size": 1879
   }
 ]
