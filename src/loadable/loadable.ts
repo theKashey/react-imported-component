@@ -240,8 +240,10 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
     return LOADABLE_WEAK_SIGNATURE.get(importFunction) as any;
   }
 
+  const ownMark = importMatch(String(importFunction)).join('|');
+  const rawSignature = getFunctionSignature(importFunction);
   // read cache signature
-  const functionSignature = getFunctionSignature(importFunction);
+  const functionSignature = (!settings.checkSignatures && ownMark) || rawSignature;
 
   if (LOADABLE_SIGNATURE.has(functionSignature)) {
     // tslint:disable-next-line:no-shadowed-variable
@@ -251,16 +253,16 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
     return loadable as any;
   }
 
-  const ownMark = importMatch(functionSignature).join('|');
   if (ownMark) {
     LOADABLE_SIGNATURE.forEach(({ mark, importer }) => {
       if (mark.join('|') === ownMark) {
         // tslint:disable-next-line:no-console
         console.warn(
-          'Another loadable found for an existing mark. That\'s possible, signatures must match (https://github.com/theKashey/react-imported-component/issues/192):',
+          'Another loadable found for an existing mark. That\'s possible, but signatures must match (https://github.com/theKashey/react-imported-component/issues/192):',
           {
             mark,
             knownImporter: importer,
+            currentImported: importFunction,
             currentSignature: String(importFunction),
             knownSignature: String(importer),
           }

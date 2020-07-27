@@ -95,7 +95,7 @@ export const remapImports = (
           const isClientSideOnly = clientSideOnly(comment);
           const givenChunkName = getChunkName(comment)[0] || '';
           const def = `[() => import(${comment}'${fileName}'), '${(chunkName &&
-            chunkName(rootName, sourceName, givenChunkName)) ||
+            chunkName(rootName, sourceName, { chunkName: givenChunkName })) ||
             givenChunkName}', '${rootName}', ${isClientSideOnly}] /* from ${sourceName} */`;
           const slot = getRelativeName(root, name);
 

@@ -11,7 +11,7 @@ const PrefetchChunkComponent = imported(() => importedWrapper("imported_fspdct_c
 /* webpackPrefetch: true */
 './ChunkThis')));
 const AsyncComponent0 = imported(() => importedWrapper("imported_18g2v0c_component", import(
-/* webpackChunkName:namedChunk */
+/* webpackChunkName: "namedChunk" */
 './MyComponent')));
 const AsyncComponent1 = imported(() => importedWrapper("imported_18g2v0c_component", import('./MyComponent')));
 const AsyncComponent2 = imported(async () => await importedWrapper("imported_18g2v0c_component", import('./MyComponent')));

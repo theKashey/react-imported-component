@@ -106,7 +106,7 @@ describe('scanForImports', () => {
       (a, b) => a + b,
       imports,
       imported => imported.indexOf('c.js') < 0,
-      (imported, _, givenChunkName) => (imported.indexOf('a.js') > 0 ? `test-${givenChunkName}-test` : 'bundle-b')
+      (imported, _, options) => (imported.indexOf('a.js') > 0 ? `test-${options.chunkName}-test` : 'bundle-b')
     );
     expect(Object.values(imports)).toEqual([
       `[() => import(/* webpackChunkName: \"chunk-a\" */'${rel}/a.js'), 'test-chunk-a-test', '${rel}/a.js', false] /* from .a */`,
