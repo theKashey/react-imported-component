@@ -1,6 +1,6 @@
 {
   "name": "react-imported-component",
-  "version": "6.3.5",
+  "version": "6.3.9",
   "description": "I will import your component, and help to handle it",
   "main": "dist/es5/entrypoints/index.js",
   "jsnext:main": "dist/es2015/entrypoints/index.js",
@@ -62,7 +62,6 @@
     "@babel/runtime": "^7.3.1",
     "@size-limit/preset-small-lib": "^4.5.1",
     "@theuiteam/lib-builder": "0.0.8",
-    "@types/detect-node": "^2.0.0",
     "@types/enzyme": "^3.10.3",
     "@types/node": "^12.12.6",
     "@types/react-dom": "^16.9.4",
@@ -78,7 +77,7 @@
   "dependencies": {
     "babel-plugin-macros": "^2.6.1",
     "crc-32": "^1.2.0",
-    "detect-node": "^2.0.4",
+    "detect-node-es": "^1.0.0",
     "scan-directory": "^2.0.0",
     "tslib": "^1.10.0"
   },

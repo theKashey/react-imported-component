@@ -97,7 +97,21 @@ describe('importMatch', () => {
       getFunctionSignature('()=>$(`imported_-f5674t_component`,x.e(3).then(x.bind(null,`xxx`,7)))')
     );
     expect(getFunctionSignature('()=>$(`imported_-f5674t_component`,n.e(3).then(n.bind(null,`xxx`,7)))')).toEqual(
-      '()=>$(`imported_-f5674t_component`,-we(3).-wbind(null,`xxx`,7)))'
+      '()=>$(`imported_-f5674t_component`,-we().-wbind(null,`xxx`,7)))'
+    );
+  });
+
+  it('maps internal and external signatures', () => {
+    // internal is with Promise.resolve
+    // extenal is with webpack_require.e
+    expect(
+      getFunctionSignature(
+        '() => importedWrapper("imported_-1135avo_component", __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! universal/components/SERP */ "./universal/components/SERP/index.js")))'
+      )
+    ).toBe(
+      getFunctionSignature(
+        '() => importedWrapper("imported_-1135avo_component", Promise.resolve(/*! import() */).then(__webpack_require__.bind(null, /*! universal/components/SERP */ "./universal/components/SERP/index.js")))'
+      )
     );
   });
 
@@ -106,7 +120,15 @@ describe('importMatch', () => {
       getFunctionSignature('()=>s("imported_-is59m_component",n.e(41).then(n.bind(null,"./Promo.jsx")))')
     );
     expect(getFunctionSignature('()=>P("imported_-is59m_component",t.e(41).then(t.bind(null,"./Promo.jsx")))')).toEqual(
-      '()=>$(`imported_-is59m_component`,-we(41).-wbind(null,`./Promo.jsx`)))'
+      '()=>$(`imported_-is59m_component`,-we().-wbind(null,`./Promo.jsx`)))'
+    );
+  });
+
+  it('fallback check: same signature, different function', () => {
+    expect(
+      getFunctionSignature('()=>P("imported_-one_component",t.e(41).then(t.bind(null,"./Promo.jsx")))')
+    ).not.toEqual(
+      getFunctionSignature('()=>s("imported_-another_component",n.e(41).then(n.bind(null,"./Promo.jsx")))')
     );
   });
 });

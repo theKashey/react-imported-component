@@ -1,4 +1,4 @@
-import { setConfiguration } from '../config';
+import { setConfiguration } from '../configuration/config';
 import { getMarkedChunks, getMarkedFileNames } from '../loadable/markerMapper';
 import { createLoadableStream, drainHydrateMarks, printDrainHydrateMarks } from '../loadable/marks';
 import { getLoadableTrackerCallback } from '../trackers/globalTracker';

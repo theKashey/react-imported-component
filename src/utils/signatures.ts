@@ -21,7 +21,8 @@ export const getFunctionSignature = (fn: AnyFunction | string) =>
     .replace(/\/\*([^\*]*)\*\//gi, '')
 
     // webpack specific
-    .replace(/\w+.e\(/, '-we(')
+    .replace(/Promise.resolve\([^)]*\)/, '-we()')
+    .replace(/\w+.e\([^)]*\)/, '-we()')
     .replace(/\w+.\w.bind\(/, '-wbind(')
     .replace(/\w+.bind\(/, '-wbind(')
 

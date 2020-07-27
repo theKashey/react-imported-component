@@ -1,3 +1,3 @@
-import isNodeDetected from 'detect-node';
+import { isNode } from 'detect-node-es';
 
-export const isBackend = isNodeDetected || typeof window === 'undefined';
+export const isBackend = isNode || typeof window === 'undefined';

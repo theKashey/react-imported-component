@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 
-import { settings } from '../config';
+import { settings } from '../configuration/config';
 import { ComponentOptions } from '../types';
 import { useImported } from './useImported';
 

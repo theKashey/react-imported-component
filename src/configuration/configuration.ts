@@ -1,3 +1,15 @@
+import { ImportedClientSettings } from './config';
+
+export interface KnownImportOptions {
+  chunkName?: string;
+  webpackChunkName?: string;
+
+  webpackPreload?: boolean;
+  webpackPrefetch?: boolean;
+}
+
+type ImportOptions = KnownImportOptions | Record<string, string | boolean>;
+
 /**
  * @name ImportedConfiguration
  * react-imported-component configuration
@@ -42,14 +54,14 @@ export interface ImportedConfiguration {
    * @param {String} sourceFile
    * @param sourceConfiguration
    */
-  shouldPrefetch?: (targetFile: string, sourceFile: string, sourceConfiguration: object) => boolean;
+  shouldPrefetch?: (targetFile: string, sourceFile: string, sourceConfiguration: ImportOptions) => boolean;
   /**
    * marks import with preload comment (if possible)
    * @param {String} targetFile
    * @param {String} sourceFile
    * @param sourceConfiguration
    */
-  shouldPreload?: (targetFile: string, sourceFile: string, sourceConfiguration: object) => boolean;
+  shouldPreload?: (targetFile: string, sourceFile: string, sourceConfiguration: ImportOptions) => boolean;
   /**
    * adds custom chunkname to a import (if possible)
    * @param {String} targetFile
@@ -60,7 +72,12 @@ export interface ImportedConfiguration {
    *  {undefined} - keep as is
    *  {null} - keep as is (will remove in the future)
    */
-  chunkName?: (targetFile: string, sourceFile: string, givenChunkName: string | undefined) => string | null | undefined;
+  chunkName?: (targetFile: string, sourceFile: string, importOptions: ImportOptions) => string | null | undefined;
+
+  /**
+   * clientside configuration properties to be passed into `setConfiguration`
+   */
+  configuration?: Partial<ImportedClientSettings>;
 }
 
 /**
