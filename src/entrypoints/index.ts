@@ -1,4 +1,4 @@
-import { setConfiguration } from '../config';
+import { setConfiguration } from '../configuration/config';
 import { configure, ImportedConfiguration } from '../configuration/configuration';
 import {
   assignImportedComponents,

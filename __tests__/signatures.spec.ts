@@ -123,4 +123,12 @@ describe('importMatch', () => {
       '()=>$(`imported_-is59m_component`,-we().-wbind(null,`./Promo.jsx`)))'
     );
   });
+
+  it('fallback check: same signature, different function', () => {
+    expect(
+      getFunctionSignature('()=>P("imported_-one_component",t.e(41).then(t.bind(null,"./Promo.jsx")))')
+    ).not.toEqual(
+      getFunctionSignature('()=>s("imported_-another_component",n.e(41).then(n.bind(null,"./Promo.jsx")))')
+    );
+  });
 });

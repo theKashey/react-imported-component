@@ -1,4 +1,4 @@
-import { setConfiguration } from '../config';
+import { setConfiguration } from '../configuration/config';
 import { assignImportedComponents, done as whenComponentsReady } from '../loadable/loadable';
 import { loadByChunkname } from '../loadable/loadByChunkName';
 import { rehydrateMarks } from '../loadable/marks';

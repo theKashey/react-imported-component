@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom/server';
 import { act } from 'react-dom/test-utils';
 
-import { settings } from '../src/config';
+import { settings } from '../src/configuration/config';
 import { done as whenDone, toLoadable } from '../src/loadable/loadable';
 import { createLoadableStream, drainHydrateMarks, rehydrateMarks } from '../src/loadable/marks';
 import { ImportedComponent } from '../src/ui/Component';

@@ -1,3 +1,5 @@
+import { ImportedClientSettings } from './config';
+
 export interface KnownImportOptions {
   chunkName?: string;
   webpackChunkName?: string;
@@ -71,6 +73,11 @@ export interface ImportedConfiguration {
    *  {null} - keep as is (will remove in the future)
    */
   chunkName?: (targetFile: string, sourceFile: string, importOptions: ImportOptions) => string | null | undefined;
+
+  /**
+   * clientside configuration properties to be passed into `setConfiguration`
+   */
+  configuration?: Partial<ImportedClientSettings>;
 }
 
 /**

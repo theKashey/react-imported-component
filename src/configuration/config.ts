@@ -1,11 +1,11 @@
-import { isBackend } from './utils/detectBackend';
+import { isBackend } from '../utils/detectBackend';
 
 const rejectNetwork = (url: string) => url.indexOf('http') !== 0;
 
 /**
  * client-side only imported settings
  */
-interface ImportedClientSettings {
+export interface ImportedClientSettings {
   /**
    * enabled hot module replacement
    * @autoconfig enabled if HMR is detected

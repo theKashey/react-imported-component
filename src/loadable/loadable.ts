@@ -1,4 +1,4 @@
-import { settings } from '../config';
+import { settings } from '../configuration/config';
 import { AnyFunction, DefaultImport, Loadable, Mark, MarkMeta, Promised } from '../types';
 import { isBackend } from '../utils/detectBackend';
 import { getFunctionSignature, importMatch } from '../utils/signatures';
@@ -240,8 +240,8 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
     return LOADABLE_WEAK_SIGNATURE.get(importFunction) as any;
   }
 
-  const ownMark = importMatch(String(importFunction)).join('|');
   const rawSignature = getFunctionSignature(importFunction);
+  const ownMark = importMatch(String(rawSignature)).join('|');
   // read cache signature
   const functionSignature = (!settings.checkSignatures && ownMark) || rawSignature;
 
