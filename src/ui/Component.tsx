@@ -21,6 +21,7 @@ function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | 
 
   if (Component) {
     // importedUUID for cache busting
+    // @ts-ignore
     return <Component {...props.forwardProps} ref={props.forwardRef} />;
   }
 

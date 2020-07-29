@@ -1,7 +1,7 @@
 import { AnyFunction, Loadable, Promised } from '../types';
 import { isBackend } from '../utils/detectBackend';
 import { getFunctionSignature, importMatch } from '../utils/signatures';
-import { assingLoadableMark } from './marks';
+import { assignLoadableMark } from './marks';
 import { addPending, removeFromPending } from './pending';
 import { getPreloaders } from './preloaders';
 import { LOADABLE_SIGNATURE } from './registry';
@@ -135,7 +135,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
 
   if (mark && mark.length) {
     LOADABLE_SIGNATURE.set(toKnownSignature(functionSignature, mark), loadable);
-    assingLoadableMark(mark, loadable);
+    assignLoadableMark(mark, loadable);
   } else {
     if (process.env.NODE_ENV !== 'development') {
       // tslint:disable-next-line:no-console

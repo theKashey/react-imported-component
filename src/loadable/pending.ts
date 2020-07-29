@@ -1,6 +1,13 @@
+/**
+ * pending indicates any ongoing procceses
+ */
 let pending: Array<Promise<any>> = [];
 export const addPending = (promise: Promise<any>) => pending.push(promise);
 export const removeFromPending = (promise: Promise<any>) => (pending = pending.filter(a => a !== promise));
+
+/**
+ * is it really ready?
+ */
 let readyFlag = false;
 export const isItReady = () => readyFlag;
 

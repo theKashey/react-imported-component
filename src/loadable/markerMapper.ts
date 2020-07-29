@@ -1,6 +1,6 @@
 import { Mark, MarkMeta } from '../types';
-import { markerOverlap } from './marks';
 import { markMeta } from './metadata';
+import { markerOverlap } from './utils';
 
 const getMarkedMeta = (marks: Mark, mapping: (meta: MarkMeta) => string) => {
   if (markMeta.length === 0) {

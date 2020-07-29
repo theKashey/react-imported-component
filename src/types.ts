@@ -73,7 +73,7 @@ export interface ComponentOptions<P, K> {
 
   async?: boolean;
 
-  render?: (Component: ComponentType<P>, State: LoadableComponentState, props?: K) => ReactElement | null;
+  render?: (Component: ComponentType<P> | undefined, State: LoadableComponentState, props?: K) => ReactElement | null;
 
   forwardRef?: Ref<any>;
   forwardProps?: K;

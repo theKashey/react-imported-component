@@ -1,4 +1,6 @@
 import { Loadable, Mark, Stream } from '../types';
+import { checkStream, clearStream, defaultStream } from './stream';
+import { markerOverlap } from './utils';
 
 interface MarkPair {
   mark: Mark;
@@ -7,28 +9,6 @@ interface MarkPair {
 
 const LOADABLE_MARKS = new Map<string, MarkPair>();
 
-export const createLoadableStream = () => ({ marks: {} });
-const clearStream = (stream?: Stream) => {
-  if (stream) {
-    stream.marks = {};
-  }
-};
-const checkStream = (stream: Stream | number | string | undefined) => {
-  if (process.env.NODE_ENV !== 'production') {
-    if (!stream) {
-      return;
-    }
-
-    if (typeof stream !== 'object' || !stream.marks) {
-      throw new Error(
-        'react-imported-component: version 6 requires `stream` to be an object. Refer to the migration guide'
-      );
-    }
-  }
-};
-
-export const defaultStream = createLoadableStream();
-
 export const useMark = (stream: Stream = defaultStream, marks: string[]) => {
   checkStream(stream);
   if (marks && marks.length) {
@@ -36,10 +16,14 @@ export const useMark = (stream: Stream = defaultStream, marks: string[]) => {
   }
 };
 
-export const assingLoadableMark = (mark: Mark, loadable: Loadable<any>) => {
+export const assignLoadableMark = (mark: Mark, loadable: Loadable<any>) => {
   LOADABLE_MARKS.set(JSON.stringify(mark), { mark, loadable });
 };
 
+/**
+ * returns marks used in the stream
+ * @param stream
+ */
 export const getUsedMarks = (stream: Stream = defaultStream): string[] => (stream ? Object.keys(stream.marks) : []);
 
 /**
@@ -52,9 +36,6 @@ export const drainHydrateMarks = (stream: Stream = defaultStream) => {
   clearStream(stream);
   return marks;
 };
-
-export const markerOverlap = (a1: string[], a2: string[]) =>
-  a1.filter(mark => a2.indexOf(mark) >= 0).length === a1.length;
 
 /**
  * Loads a given marks/chunks
