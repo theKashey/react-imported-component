@@ -1,6 +1,8 @@
 import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { getLoadable, InnerLoadable, isItReady } from '../loadable/loadable';
+import { getLoadable } from '../loadable/loadable';
 import { useMark } from '../loadable/marks';
+import { isItReady } from '../loadable/pending';
+import { InnerLoadable } from '../loadable/toLoadable';
 import { DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable } from '../types';
 import { isBackend } from '../utils/detectBackend';
 import { es6import } from '../utils/utils';

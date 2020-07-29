@@ -5,7 +5,9 @@ import { useEffect, useState } from 'react';
 
 import { act } from 'react-dom/test-utils';
 import { drainHydrateMarks } from '../src/entrypoints';
-import { done, getLoadable, toLoadable } from '../src/loadable/loadable';
+import { getLoadable } from '../src/loadable/loadable';
+import { done } from '../src/loadable/pending';
+import { toLoadable } from '../src/loadable/toLoadable';
 import { useImported } from '../src/ui/useImported';
 
 const importedWrapper = (_: any, b: any) => b;

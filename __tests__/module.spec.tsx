@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import * as React from 'react';
 import { act } from 'react-dom/test-utils';
 
-import { done } from '../src/loadable/loadable';
+import { done } from '../src/loadable/pending';
 import { importedModule, ImportedModule } from '../src/ui/Module';
 
 describe('Module Component', () => {
