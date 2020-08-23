@@ -38,7 +38,7 @@
 
 | Library             | Suspense | SSR | Hooks | Library | Non-modules | import(`./${value}`) | babel-macro | webpack only |
 | ------------------- | :------: | :-: | :---: | :-----: | :---------: | :------------------: | :---------: | :----------: |
-| React.lazy          |    ✅    | ❌  |  ❌   |   ❌    |     ❌      |          ❌          |     😹      |
+| React.lazy          |    ✅    | ❌  |  ❌   |   ❌    |     ❌      |          ❌          |     😹      |    no-ssr    |
 | react-loadable      |    ✅    | ✅  |  ❌   |   ❌    |     ✅      |          ❌          |     ❌      |      😿      |
 | @loadable/component |    ✅    | ✅  |  ❌   |   ✅    |     ❌      |          ✅          |     ❌      |      😿      |
 | imported-component  |    ✅    | ✅  |  ✅   |   ✅    |     ✅      |          ❌          |     ✅      |      😸      |
@@ -781,6 +781,96 @@ const prefetchChunks = (chunks, assets) =>
     .join('');
 
 res.send(prefetchChunks(chunkNames, assets));
+```
+
+#### Preloading
+
+Proper preloading is available **only** with bundler integration. Calling `component.preload` will not
+only `preload` it, but will `execute` as well.
+
+> `.preload` is equal do loading script as usual.
+
+If you seek the best experience you might want to prefetch or preload only (network only), not load (network and CPU).
+
+In order to prefetch(or preload) scripts - use `webpack-imported`, as seen in examples above.
+
+You need SSR step in order to use preloading!
+
+##### Step 1 - expose known chunks
+
+In order to prefetch or preload you should know scripts locations. This information is stored inside webpack, and you cannot access it from user code.
+As a result we have to duplicate this information:
+
+```js
+import { importAssets } from 'webpack-imported';
+// react-imported-component data file
+import applicationImports from '../async-requires';
+// webpack-imported data file
+import importedChunks from '../build/imported.json';
+// 👆 this file is generated during the build, you cannot use it "IN" the build
+// that's why this is Server Side only component
+
+export const ScriptLocations = () => (
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        window.KNOWN_SCRIPT_MARKS = ${JSON.stringify(
+          applicationImports.reduce((acc, [, chunkName]) => {
+            if (chunkName) {
+              acc[chunkName] = importAssets(importedChunks, chunkName).raw.load;
+            }
+            return acc;
+          }, {})
+        )};        
+    `,
+    }}
+  />
+);
+```
+
+Then add `<ScriptLocations/>` somewhere in your SSR-ed `head`.
+
+##### Step 2 - preload
+
+Then you will be able to `prefetch(() => import('./home')`.
+
+```js
+import { getMarkedChunks, loadableResource } from 'react-imported-component';
+
+// this function is partially duplicating webpack internals
+export const prefetch = importCallback => {
+  // get a "lodable" attached for a given import
+  const loadable = loadableResource(importCallback);
+  if (typeof document !== 'undefined') {
+    const prefix = __webpack_public_path__;
+    if (loadable) {
+      // get chunks used in loadable
+      const chunks = getMarkedChunks(loadable.mark);
+      chunks.forEach(chunk => {
+        // note the usage of KNOWN_SCRIPT_MARKS
+        const { js = [], css = [] } = window.KNOWN_SCRIPT_MARKS[chunk];
+        js.forEach(script => {
+          const link = document.createElement('link');
+
+          link.rel = 'prefetch';
+          link.as = 'script';
+
+          link.href = prefix + script;
+          document.head.appendChild(link);
+        });
+        css.forEach(style => {
+          const link = document.createElement('link');
+
+          link.rel = 'prefetch';
+          link.as = 'style';
+
+          link.href = prefix + style;
+          document.head.appendChild(link);
+        });
+      });
+    }
+  }
+};
 ```
 
 ### Parcel integration
