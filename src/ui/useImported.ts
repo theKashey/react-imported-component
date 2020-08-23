@@ -104,6 +104,27 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
 }
 
 /**
+ * short version of {@link useImported}
+ * @param {Function} importer - an function with `import` inside it
+ *
+ * @return {Object}
+ *  - imported: if non empty - the data is loaded
+ *  - error: if non empty - there is an error
+ *  - loading: if true - then it's still loading
+ *  - loadable: the under laying reference
+ *  - retry: retry if case of failure
+ *
+ *  @example
+ *  const { imported: Imported, loadable } = useImported(importer);
+ *  if (Imported) {
+ *    // yep, it's imported
+ *    return <Imported {...children} />;
+ *  }
+ *  // else throw resolution
+ *  throw loadable.resolution;
+ */
+export function useImported<T>(importer: DefaultImport<T> | Loadable<T>): ImportedShape<T>;
+/**
  * The code splitting hook
  * @param {Function} importer - an function with `import` inside it
  * @param {Function} [exportPicker] - a "picker" of the export inside
@@ -118,7 +139,7 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
  *  - loadable: the under laying reference
  *  - retry: retry if case of failure
  *
- *  @see if you dont need precise control consider {@link useLazy}
+ *  @see if you dont need precise control consider(and loading Components) {@link useLazy}
  *
  *  @example
  *  const { imported: Imported, loadable } = useImported(importer);
