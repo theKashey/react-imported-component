@@ -4,13 +4,13 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 import { act } from 'react-dom/test-utils';
-import { drainHydrateMarks } from '../src/entrypoints';
+import { DefaultImport, drainHydrateMarks } from '../src/entrypoints';
 import { getLoadable } from '../src/loadable/loadable';
 import { done } from '../src/loadable/pending';
 import { toLoadable } from '../src/loadable/toLoadable';
 import { useImported } from '../src/ui/useImported';
 
-const importedWrapper = (_: any, b: any) => b;
+const importedWrapper = <T extends any>(_: any, b: T): T => b;
 
 jest.mock('../src/utils/detectBackend', () => ({ isBackend: false }));
 
@@ -124,6 +124,34 @@ describe('useImported', () => {
     // expect().toEqual(['unconditional-mark']);
   });
 
+  it('named import', async () => {
+    const importer = () =>
+      importedWrapper('imported_unconditional-mark_component', Promise.resolve({ named: () => <span>loaded!</span> }));
+
+    const Comp = () => {
+      const { loading, imported: Component } = useImported(importer, ({ named }) => named);
+
+      if (Component) {
+        return <Component />;
+      }
+
+      if (loading) {
+        return <span>loading</span>;
+      }
+      return <span>nothing</span>;
+    };
+
+    const wrapper = mount(<Comp />);
+    expect(wrapper.html()).toContain('loading');
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(wrapper.update().html()).toContain('loaded!');
+    expect(drainHydrateMarks()).toEqual(['unconditional-mark']);
+  });
+
   it('unconditional import', async () => {
     const importer = () =>
       importedWrapper('imported_unconditional-mark_component', Promise.resolve(() => <span>loaded!</span>));
@@ -227,7 +255,7 @@ describe('useImported', () => {
     const importer = () => () => <span>loaded!</span>;
 
     const Comp = () => {
-      const { loading, imported: Component } = useImported(importer as any);
+      const { loading, imported: Component } = useImported((importer as any) as DefaultImport<React.FC>);
 
       if (Component) {
         return <Component />;

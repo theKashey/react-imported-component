@@ -125,7 +125,7 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
  */
 export function useImported<T>(importer: DefaultImport<T> | Loadable<T>): ImportedShape<T>;
 /**
- * The code splitting hook
+ * The code splitting hook, the full version
  * @param {Function} importer - an function with `import` inside it
  * @param {Function} [exportPicker] - a "picker" of the export inside
  * @param {HookOptions} options
@@ -139,9 +139,11 @@ export function useImported<T>(importer: DefaultImport<T> | Loadable<T>): Import
  *  - loadable: the under laying reference
  *  - retry: retry if case of failure
  *
- *  @see if you dont need precise control consider(and loading Components) {@link useLazy}
+ * @see if you dont need precise control consider(and loading Components) {@link useLazy}
  *
- *  @example
+ * @example
+ *  const { imported: Imported, loadable } = useImported(importer, ({namedExport} => namedExport);
+ * @example
  *  const { imported: Imported, loadable } = useImported(importer);
  *  if (Imported) {
  *    // yep, it's imported
@@ -152,7 +154,13 @@ export function useImported<T>(importer: DefaultImport<T> | Loadable<T>): Import
  */
 export function useImported<T, K = T>(
   importer: DefaultImport<T> | Loadable<T>,
-  exportPicker: (x: T) => K = es6import,
+  exportPicker: undefined | ((x: T) => K),
+  options?: HookOptions
+): ImportedShape<K>;
+
+export function useImported<T, K = T>(
+  importer: DefaultImport<T> | Loadable<T>,
+  exportPicker: undefined | ((x: T) => K) = es6import,
   options: HookOptions = {}
 ): ImportedShape<K> {
   const topLoadable = getLoadable(importer);
