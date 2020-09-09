@@ -1,15 +1,13 @@
 import { setConfiguration } from '../configuration/config';
 import { configure, ImportedConfiguration } from '../configuration/configuration';
-import {
-  assignImportedComponents,
-  clearImportedCache,
-  done as whenComponentsReady,
-  dryRender,
-  getLoadable as loadableResource,
-} from '../loadable/loadable';
+import { assignImportedComponents } from '../loadable/assignImportedComponents';
+import { clearImportedCache, dryRender, getLoadable as loadableResource } from '../loadable/loadable';
 import { loadByChunkname } from '../loadable/loadByChunkName';
+import { getMarkedChunks, getMarkedFileNames } from '../loadable/markerMapper';
 import { drainHydrateMarks, printDrainHydrateMarks, rehydrateMarks, waitForMarks } from '../loadable/marks';
+import { done as whenComponentsReady } from '../loadable/pending';
 import { addPreloader } from '../loadable/preloaders';
+import { DefaultImport } from '../types';
 import { ImportedComponent } from '../ui/Component';
 import { ImportedComponent as ComponentLoader } from '../ui/Component';
 import { ImportedStream } from '../ui/context';
@@ -43,8 +41,11 @@ export {
   useImported,
   useLazy,
   addPreloader,
+  getMarkedChunks,
+  getMarkedFileNames,
   clearImportedCache,
   ImportedConfiguration,
   configure,
+  DefaultImport,
 };
 export default imported;

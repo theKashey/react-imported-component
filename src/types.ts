@@ -22,6 +22,10 @@ export type DefaultComponent<P> = ComponentType<P> | DefaultImportedComponent<P>
 export type DefaultComponentImport<T> = () => Promise<DefaultComponent<T>>;
 
 export type Defaultable<P> = P | Default<P>;
+/**
+ * standard "importer" accepted by the package.
+ * Could be {default:T} or T
+ */
 export type DefaultImport<T> = () => Promise<Defaultable<T>>;
 
 export interface MarkMeta {
@@ -73,7 +77,7 @@ export interface ComponentOptions<P, K> {
 
   async?: boolean;
 
-  render?: (Component: ComponentType<P>, State: LoadableComponentState, props?: K) => ReactElement | null;
+  render?: (Component: ComponentType<P> | undefined, State: LoadableComponentState, props?: K) => ReactElement | null;
 
   forwardRef?: Ref<any>;
   forwardProps?: K;

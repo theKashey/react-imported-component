@@ -5,8 +5,10 @@ import * as ReactDOM from 'react-dom/server';
 import { act } from 'react-dom/test-utils';
 
 import { setConfiguration } from '../src/configuration/config';
-import { done as whenDone, toLoadable } from '../src/loadable/loadable';
-import { createLoadableStream, drainHydrateMarks, rehydrateMarks } from '../src/loadable/marks';
+import { drainHydrateMarks, rehydrateMarks } from '../src/loadable/marks';
+import { done as whenDone } from '../src/loadable/pending';
+import { createLoadableStream } from '../src/loadable/stream';
+import { toLoadable } from '../src/loadable/toLoadable';
 import { ImportedComponent } from '../src/ui/Component';
 import { ImportedStream } from '../src/ui/context';
 import imported from '../src/ui/HOC';

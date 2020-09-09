@@ -1,7 +1,7 @@
 // @ts-ignore
 import { createMacro } from 'babel-plugin-macros';
 import { createTransformer } from '../babel/babel';
-import { assignImportedComponents } from '../loadable/loadable';
+import { assignImportedComponents } from '../loadable/assignImportedComponents';
 
 function getMacroType(tagName: string) {
   switch (tagName) {

@@ -1,4 +1,4 @@
-import { markMeta } from './loadable';
+import { markMeta } from './metadata';
 
 /**
  * loads chunk by a known chunkname
