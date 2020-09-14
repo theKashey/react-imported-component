@@ -1,3 +1,26 @@
+## [6.3.13](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.12...v6.3.13) (2020-09-14)
+
+### Bug Fixes
+
+- expose short typescript helpers for useImported ([ef7da10](https://github.com/theKashey/react-hot-component-loader/commit/ef7da105bda11dcb3ab1ade8254f787d7527118c))
+- function overloading shadows the original implementation ([d4c6cd2](https://github.com/theKashey/react-hot-component-loader/commit/d4c6cd2e78158d256b500a1aea576e8a9d750643))
+
+## [6.3.12](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.11...v6.3.12) (2020-07-29)
+
+## [6.3.11](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.9...v6.3.11) (2020-07-27)
+
+### Bug Fixes
+
+- replace detect-node by detect-node-es ([15047a2](https://github.com/theKashey/react-hot-component-loader/commit/15047a27f8d3e727a49ce66d117aa6cd912054de))
+
+## [6.3.9](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.8...v6.3.9) (2020-07-27)
+
+## [6.3.8](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.7...v6.3.8) (2020-07-27)
+
+## [6.3.7](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.6...v6.3.7) (2020-07-27)
+
+## [6.3.6](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.5...v6.3.6) (2020-07-27)
+
 ## [6.3.5](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.4...v6.3.5) (2020-06-26)
 
 ## [6.3.4](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.3...v6.3.4) (2020-06-24)
