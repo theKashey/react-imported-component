@@ -4,6 +4,7 @@ import { drainHydrateMarks, printDrainHydrateMarks } from '../loadable/marks';
 import { createLoadableStream } from '../loadable/stream';
 import { getLoadableTrackerCallback } from '../trackers/globalTracker';
 import { createLoadableTransformer } from '../transformers/loadableTransformer';
+import { Stream } from '../types';
 import { ImportedStream } from '../ui/context';
 
 export {
@@ -16,4 +17,5 @@ export {
   getLoadableTrackerCallback,
   getMarkedChunks,
   getMarkedFileNames,
+  Stream,
 };

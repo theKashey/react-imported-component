@@ -17,9 +17,14 @@ export const assignImportedComponents = (set: ImportedDefinition[]) => {
     assignMetaData(loadable.mark, loadable, imported[1], imported[2]);
   });
 
-  if (countBefore === LOADABLE_SIGNATURE.size) {
+  if (set.length === 0) {
     // tslint:disable-next-line:no-console
     console.error('react-imported-component: no import-marks found, please check babel plugin');
+  }
+
+  if (countBefore === LOADABLE_SIGNATURE.size) {
+    // tslint:disable-next-line:no-console
+    console.error('react-imported-component: no new imports found');
   }
 
   done();
