@@ -11,7 +11,8 @@ const LazyClientBoundary: React.FC<{
 }> = ({ children, fallback }) => (
   <React.Suspense
     // we keep fallback null during hydration as it is expected behavior for "ssr-ed" Suspense blocks - they should not "fallback"
-    fallback={useIsClientPhase() ? fallback : null}
+    // see https://github.com/sebmarkbage/react/blob/185700696ebbe737c99bd6c4b678d5f2a923bd29/packages/react-dom/src/__tests__/ReactServerRenderingHydration-test.js#L668-L682
+    fallback={useIsClientPhase() ? fallback : (undefined as any)}
   >
     {children}
   </React.Suspense>

@@ -2,16 +2,14 @@ import * as React from 'react';
 import { defaultStream } from '../loadable/stream';
 import { Stream } from '../types';
 
-interface TakeProps {
-  stream: Stream;
-}
-
 export const streamContext = React.createContext(defaultStream);
 
 /**
  * SSR. Tracker for used marks
  */
-export const ImportedStream: React.FC<TakeProps> = ({ stream, children, ...props }) => {
+export const ImportedStream: React.FC<{
+  stream: Stream;
+}> = ({ stream, children, ...props }) => {
   if (process.env.NODE_ENV !== 'development') {
     if ('takeUID' in props) {
       throw new Error('react-imported-component: `takeUID` was replaced by `stream`.');
