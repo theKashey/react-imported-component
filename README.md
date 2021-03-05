@@ -144,7 +144,7 @@ const ClientSideOnly = () => (
 const ServerSideFriendly = () => (
   <LazyBoundary>
     {' '}
-    // LazyBoundary is Suspense on the client, and "nothing" on the server
+    // LazyBoundary is Suspense* on the client, and "nothing" on the server
     <Component />
   </LazyBoundary>
 );
@@ -254,7 +254,7 @@ If you have `imported` definition in one file, and use it from another - just `i
 
   - `importFunction` - function which resolves with Component to be imported.
   - `options` - optional settings
-  - `options.async` - activates react suspense support. Will throw a Promise in a Loading State - use it with Suspense in a same way you use **React.lazy**.
+  - `options.async` - activates react suspense support. Will throw a Promise in a Loading State - use it with Suspense in a same way you use **React.lazy**. See [working with Suspense](working-with-suspense)
   - `options.LoadingComponent` - component to be shown in Loading state
   - `options.ErrorComponent` - component to be shown in Error state. Will re-throw error if ErrorComponent is not set. Use ErrorBoundary to catch it.
   - `options.onError` - function to consume the error, if one will thrown. Will rethrow a real error if not set.
@@ -290,6 +290,10 @@ Hints:
 
 - use `options.import=false` to perform conditional import - `importFunction` would not be used if this option set to `false.
 - use `options.track=true` to perform SSR only import - to usage would be tracked if this option set to `false.
+
+##### ImportedController
+
+- `<ImportedControoler>` - a controller for Suspense Hydration. **Compulsory** for async/lazy usecases
 
 ##### Misc
 
@@ -442,12 +446,17 @@ Before rendering your application you have to ensure - all parts are loaded.
 `rehydrateMarks` will load everything you need, and provide a promise to await.
 
 ```js
-import { rehydrateMarks } from 'react-imported-component';
+import { rehydrateMarks, ImportedController } from 'react-imported-component';
 
 // this will trigger all marked imports, and await for competition.
 rehydrateMarks().then(() => {
-  // better
-  ReactDOM.hydrate(<App />, document.getElementById('main'));
+  // better (note ImportedController usage)
+  ReactDOM.hydrate(
+    <ImportedController>
+      <App />
+    </ImportedController>,
+    document.getElementById('main')
+  );
   // or
   ReactDOM.render(<App />, document.getElementById('main'));
 });
