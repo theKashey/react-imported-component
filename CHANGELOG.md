@@ -1,3 +1,14 @@
+# [6.4.0](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.13...v6.4.0) (2021-03-05)
+
+### Bug Fixes
+
+- allow hot reloading for server cases ([8144a9f](https://github.com/theKashey/react-hot-component-loader/commit/8144a9f1e0e8f6ceb3b1b010a50d313641a6a0ac))
+- allow suspense hydration ([d200d5e](https://github.com/theKashey/react-hot-component-loader/commit/d200d5ef530ef06a47a4b065812588e76edaa085))
+
+### Features
+
+- add ImportedController ([d67a211](https://github.com/theKashey/react-hot-component-loader/commit/d67a21197ad1d0f29de68afa1cfc1ec25e5eb8fb))
+
 ## [6.3.13](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.12...v6.3.13) (2020-09-14)
 
 ### Bug Fixes
