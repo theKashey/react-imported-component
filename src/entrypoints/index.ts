@@ -12,10 +12,12 @@ import { ImportedComponent } from '../ui/Component';
 import { ImportedComponent as ComponentLoader } from '../ui/Component';
 import { ImportedStream } from '../ui/context';
 import imported, { lazy } from '../ui/HOC';
-import LazyBoundary from '../ui/LazyBoundary';
+import { ImportedController } from '../ui/ImportedController';
+import { LazyBoundary } from '../ui/LazyBoundary';
 import { ImportedModule, importedModule } from '../ui/Module';
 import { useImported, useLazy, useLoadable } from '../ui/useImported';
 import { remapImports } from '../utils/helpers';
+import { useIsClientPhase } from '../utils/useClientPhase';
 
 export {
   printDrainHydrateMarks,
@@ -36,6 +38,8 @@ export {
   importedModule,
   lazy,
   LazyBoundary,
+  ImportedController,
+  useIsClientPhase,
   remapImports,
   useLoadable,
   useImported,

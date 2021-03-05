@@ -25,10 +25,12 @@ function loader<P, K = P>(
   loaderFunction: DefaultComponentImport<P>,
   baseOptions: Partial<ComponentOptions<P, K>> & HOCOptions = {}
 ): HOCType<P, K> {
-  const loadable = getLoadable(loaderFunction);
+  let loadable = getLoadable(loaderFunction);
 
   const Imported = React.forwardRef<any, any>(function ImportedComponentHOC({ importedProps = {}, ...props }, ref) {
     const options = { ...baseOptions, ...importedProps };
+    // re-get loadable in order to have fresh reference
+    loadable = getLoadable(loaderFunction);
 
     return (
       <ImportedComponent
@@ -49,7 +51,11 @@ function loader<P, K = P>(
 
     return loadable.resolution;
   };
-  Imported.done = loadable.resolution;
+  Object.defineProperty(Imported, 'done', {
+    get() {
+      return loadable.resolution;
+    },
+  });
 
   return Imported;
 }

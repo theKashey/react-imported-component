@@ -1,6 +1,6 @@
 import { Stream } from '../types';
 
-export const createLoadableStream = () => ({ marks: {} });
+export const createLoadableStream = (): Stream => ({ marks: {} });
 export const clearStream = (stream?: Stream) => {
   if (stream) {
     stream.marks = {};
