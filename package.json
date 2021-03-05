@@ -1,6 +1,6 @@
 {
   "name": "react-imported-component",
-  "version": "6.4.0",
+  "version": "6.4.1",
   "description": "I will import your component, and help to handle it",
   "main": "dist/es5/entrypoints/index.js",
   "jsnext:main": "dist/es2015/entrypoints/index.js",
