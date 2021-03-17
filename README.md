@@ -409,7 +409,7 @@ const html = renderToString(<YourApp />) + '<script>const marks=' + JSON.stringi
 #### renderToStream or async render
 
 ```js
-import {createLoadableStream} 'react-imported-component';
+import {createLoadableStream} from 'react-imported-component/server';
 
 let importedStream = createLoadableStream();
 // ImportedStream is a async rendering "provider"
