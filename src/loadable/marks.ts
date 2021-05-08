@@ -39,19 +39,19 @@ export const drainHydrateMarks = (stream: Stream = defaultStream) => {
 
 /**
  * Loads a given marks/chunks
+ * @see returns a promise for a given marks only. In order to await all requests currently in flight use {@link waitForMarks}
  * @param marks
  * @returns a resolution promise
  */
 export const rehydrateMarks = (marks?: string[]) => {
   const rehydratedMarks: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
-  const tasks: Array<Promise<any>> = [];
 
   const usedMarks = new Set<string>();
 
   LOADABLE_MARKS.forEach(({ mark, loadable }) => {
     if (markerOverlap(mark, rehydratedMarks)) {
       mark.forEach(m => usedMarks.add(m));
-      tasks.push(loadable.load());
+      loadable.load();
     }
   });
 
@@ -63,7 +63,7 @@ export const rehydrateMarks = (marks?: string[]) => {
     }
   });
 
-  return Promise.all(tasks);
+  return waitForMarks(rehydratedMarks);
 };
 
 /**
