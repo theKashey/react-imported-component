@@ -293,7 +293,7 @@ Hints:
 
 ##### ImportedController
 
-- `<ImportedControoler>` - a controller for Suspense Hydration. **Compulsory** for async/lazy usecases
+- `<ImportedController>` - a controller for Suspense Hydration. **Compulsory** for async/lazy usecases
 
 ##### Misc
 
