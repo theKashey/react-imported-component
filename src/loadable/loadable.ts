@@ -51,6 +51,14 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
   }
 
   if (ownMark) {
+    if (process.env.NODE_ENV !== 'production') {
+      if (ownMark.length > 1) {
+        // tslint:disable-next-line:no-console
+        console.warn('A function exposes multiple imports. Imported-Components cannot know which one will be used.', {
+          importFunction,
+        });
+      }
+    }
     LOADABLE_SIGNATURE.forEach(({ mark, importer }) => {
       if (mark[0] === ownMark[1] && mark.join('|') === ownMark.join('|')) {
         // tslint:disable-next-line:no-console

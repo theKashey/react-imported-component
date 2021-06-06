@@ -39,6 +39,7 @@ export const drainHydrateMarks = (stream: Stream = defaultStream) => {
 
 /**
  * Loads a given marks/chunks
+ * @see returns a promise for a given marks only. In order to await all requests currently in flight use {@link waitForMarks}
  * @param marks
  * @returns a resolution promise
  */
