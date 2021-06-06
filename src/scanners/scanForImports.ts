@@ -54,6 +54,23 @@ const getImportString = (pattern: string, selected: number) => (str: string): Ma
 
 export const getDynamicImports = getImportString(`import[\\s]?\\((([^)])+['"]?)\\)`, 1);
 
+export const cleanFileContent = (content: string) => {
+  const mapping: string[] = [];
+  // wrap
+  const wrapped = content.replace(new RegExp(`import[\\s]?\\((([^)])+['"]?)\\)`, 'g'), match => {
+    const placement = mapping.push(match) - 1;
+    return `imported_${placement}_replacement`;
+  });
+
+  const cleaned = wrapped.replace(new RegExp('//.*', 'g'), '').replace(new RegExp('\\/\\*[\\s\\S]*?\\*\\/', 'gm'), '');
+
+  const unwrapped = cleaned.replace(new RegExp('imported_([\\d]*)_replacement', 'g'), (_, b: string) => {
+    return mapping[+b];
+  });
+
+  return unwrapped;
+};
+
 const mapImports = (file: string, imports: MappedImport[]) =>
   imports.map(dep => {
     const { name } = dep;
@@ -85,7 +102,7 @@ export const remapImports = (
   chunkName?: ImportedConfiguration['chunkName']
 ) =>
   data
-    .map(({ file, content }) => mapImports(file, getDynamicImports(content)))
+    .map(({ file, content }) => mapImports(file, getDynamicImports(cleanFileContent(content))))
     .forEach(importBlock =>
       importBlock.forEach(({ name, comment, doNotTransform, file }) => {
         const rootName = doNotTransform ? name : getRelativeName(root, name);
@@ -105,7 +122,7 @@ export const remapImports = (
       })
     );
 
-function scanTop(root: string, start: string, target: string) {
+export function scanTop(root: string, start: string, target: string) {
   async function scan() {
     console.log('scanning', start, 'for imports...');
 
@@ -183,13 +200,4 @@ ${Object.keys(imports)
   }
 
   return scan();
-}
-
-// --------
-
-if (!process.argv[3]) {
-  console.log('usage: imported-components sourceRoot targetFile');
-  console.log('example: imported-components src src/importedComponents.js');
-} else {
-  scanTop(process.cwd(), process.argv[2], process.argv[3]);
 }
