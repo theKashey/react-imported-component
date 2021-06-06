@@ -45,13 +45,14 @@ export const drainHydrateMarks = (stream: Stream = defaultStream) => {
  */
 export const rehydrateMarks = (marks?: string[]) => {
   const rehydratedMarks: string[] = marks || (global as any).___REACT_DEFERRED_COMPONENT_MARKS || [];
+  const tasks: Array<Promise<any>> = [];
 
   const usedMarks = new Set<string>();
 
   LOADABLE_MARKS.forEach(({ mark, loadable }) => {
     if (markerOverlap(mark, rehydratedMarks)) {
       mark.forEach(m => usedMarks.add(m));
-      loadable.load();
+      tasks.push(loadable.load());
     }
   });
 
@@ -63,7 +64,7 @@ export const rehydrateMarks = (marks?: string[]) => {
     }
   });
 
-  return waitForMarks(rehydratedMarks);
+  return Promise.all(tasks);
 };
 
 /**
