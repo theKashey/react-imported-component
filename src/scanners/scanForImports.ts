@@ -1,6 +1,6 @@
 /* tslint:disable no-console */
 
-import { dirname, extname, join, resolve } from 'path';
+import { dirname, extname, resolve } from 'path';
 // @ts-ignore
 import scanDirectory from 'scan-directory';
 
