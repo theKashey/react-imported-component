@@ -10,7 +10,7 @@
   "sideEffects": false,
   "scripts": {
     "build:ci": "lib-builder build && yarn size",
-    "build": "lib-builder build && yarn size:report",
+    "build": "lib-builder build && yarn size && yarn size:report",
     "test": "jest",
     "prepublish": "yarn build && yarn changelog",
     "lint": "lib-builder lint",
@@ -43,8 +43,8 @@
     "hmr"
   ],
   "peerDependencies": {
-    "react": "^16.9.0 || ^17.0.0",
-    "@types/react": "^16.9.0 || ^17.0.0"
+    "@types/react": "^16.9.0 || ^17.0.0",
+    "react": "^16.9.0 || ^17.0.0"
   },
   "peerDependenciesMeta": {
     "@types/react": {
@@ -63,24 +63,16 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.1",
-    "@types/enzyme": "^3.10.3",
-    "@types/node": "^12.12.6",
-    "@types/react-dom": "^16.9.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.5.5",
     "babel-plugin-dynamic-import-node": "^2.3.0",
-    "babel-plugin-tester": "^7.0.1",
-    "conventional-changelog-cli": "^2.0.27",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1",
-    "prettier": "^1.18.2",
-    "react-test-renderer": "^16.6.0",
-    "size-limit": "^4.5.1"
+    "babel-plugin-tester": "^7.0.1"
   },
   "dependencies": {
-    "tslib": "^2.0.0",
     "babel-plugin-macros": "^2.6.1",
     "crc-32": "^1.2.0",
     "detect-node-es": "^1.0.0",
-    "scan-directory": "^2.0.0"
+    "scan-directory": "^2.0.0",
+    "tslib": "^2.0.0"
   },
   "engines": {
     "node": ">=10"
