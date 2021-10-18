@@ -1,3 +1,19 @@
+# [6.5.0](https://github.com/theKashey/react-hot-component-loader/compare/v6.4.1...v6.5.0) (2021-10-18)
+
+### Bug Fixes
+
+- allow configuration for ignored folders ([4fc6519](https://github.com/theKashey/react-hot-component-loader/commit/4fc6519dc1aa1da21c82e3a2a37966fab2e1fae5))
+- correct global tracker mutation ([4ee1c64](https://github.com/theKashey/react-hot-component-loader/commit/4ee1c64e341c5056f0e7d68c755879197c0114de))
+- document undefined behavior when importing two locations ([8b84df1](https://github.com/theKashey/react-hot-component-loader/commit/8b84df125045e7e0359381b0d663daacb8b57863))
+- imports within comments are no longer discoverable ([b47dea0](https://github.com/theKashey/react-hot-component-loader/commit/b47dea0cfe285ee0e1f069bb650c928c33a9fb9a))
+- readme typo ([732ea29](https://github.com/theKashey/react-hot-component-loader/commit/732ea2923489fb806e888a8321df51fe3c464927))
+
+## [6.4.1](https://github.com/theKashey/react-hot-component-loader/compare/v6.4.0...v6.4.1) (2021-03-05)
+
+### Bug Fixes
+
+- extend react to 17 ([bf670f6](https://github.com/theKashey/react-hot-component-loader/commit/bf670f6e2bdab7694613df90cc77e403ac7e325e))
+
 # [6.4.0](https://github.com/theKashey/react-hot-component-loader/compare/v6.3.13...v6.4.0) (2021-03-05)
 
 ### Bug Fixes
@@ -84,13 +100,12 @@
 
 ### Bug Fixes
 
+- **package:** update multistream to version 4.0.0 ([8954ab9](https://github.com/theKashey/react-hot-component-loader/commit/8954ab905b414a62f26c573d4152def29fab6af1))
+- **package:** update react-imported-component to version 6.1.1 ([9ef6eef](https://github.com/theKashey/react-hot-component-loader/commit/9ef6eef36c6c0e204d65499c93de13a60671d334))
 - **package:** update scan-directory to version 2.0.0 ([b8a6d76](https://github.com/theKashey/react-hot-component-loader/commit/b8a6d76c2ce4502a4a369d50f12198ec03a72d83))
+- **package:** update used-styles to version 2.0.2 ([323ae70](https://github.com/theKashey/react-hot-component-loader/commit/323ae70f94fee4315bf6a9ad62afa6aa32964343))
 
 # [6.2.0](https://github.com/theKashey/react-hot-component-loader/compare/v6.1.1...v6.2.0) (2019-09-25)
-
-### Bug Fixes
-
-- **package:** update react-imported-component to version 6.1.1 ([9ef6eef](https://github.com/theKashey/react-hot-component-loader/commit/9ef6eef36c6c0e204d65499c93de13a60671d334))
 
 ### Features
 
@@ -125,17 +140,12 @@
 
 ## [6.0.2](https://github.com/theKashey/react-hot-component-loader/compare/v6.0.1...v6.0.2) (2019-09-06)
 
-### Bug Fixes
-
-- **package:** update used-styles to version 2.0.2 ([323ae70](https://github.com/theKashey/react-hot-component-loader/commit/323ae70f94fee4315bf6a9ad62afa6aa32964343))
-
 ## [6.0.1](https://github.com/theKashey/react-hot-component-loader/compare/v5.5.3...v6.0.1) (2019-09-04)
 
 ### Bug Fixes
 
-- replace isNode to isBrowser check ([426d49c](https://github.com/theKashey/react-hot-component-loader/commit/426d49c0679a6e46bdabb98a320e2d2f8bab4569))
 - **package:** update multistream to version 3.0.0 ([102f50a](https://github.com/theKashey/react-hot-component-loader/commit/102f50a3f651f22e1961ea3778744c6a6906c2b4))
-- **package:** update multistream to version 4.0.0 ([8954ab9](https://github.com/theKashey/react-hot-component-loader/commit/8954ab905b414a62f26c573d4152def29fab6af1))
+- replace isNode to isBrowser check ([426d49c](https://github.com/theKashey/react-hot-component-loader/commit/426d49c0679a6e46bdabb98a320e2d2f8bab4569))
 
 ## [5.5.3](https://github.com/theKashey/react-hot-component-loader/compare/v5.5.2...v5.5.3) (2019-02-25)
 
