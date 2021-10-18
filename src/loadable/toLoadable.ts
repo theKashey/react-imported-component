@@ -22,7 +22,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
   const mark = importMatch(functionSignature);
 
   let resolveResolution: AnyFunction;
-  const resolution = new Promise<void>(r => {
+  const resolution = new Promise<void>((r) => {
     resolveResolution = r;
   });
 
@@ -59,9 +59,11 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
       if (this.promise) {
         return this.promise.then(cb, err);
       }
+
       if (err) {
         err();
       }
+
       return Promise.reject();
     },
 
@@ -69,19 +71,23 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
       if (this.error) {
         this.reset();
       }
+
       if (!this.promise) {
         this.load();
       }
+
       return this.promise!;
     },
 
     tryResolveSync(then) {
       if (this.done) {
         const result = then(this.payload as any);
+
         return {
           then(cb: any) {
             // synchronous thenable - https://github.com/facebook/react/pull/14626
             cb(result);
+
             return Promise.resolve(result);
           },
         } as any;
@@ -96,13 +102,14 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
 
         return this.load() as any;
       }
+
       return Promise.resolve();
     },
 
     _probeChanges() {
       return Promise.resolve(importFunction())
-        .then(payload => payload !== this.payload)
-        .catch(err => {
+        .then((payload) => payload !== this.payload)
+        .catch((err) => {
           throw err;
         });
     },
@@ -110,16 +117,17 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
     load() {
       if (!this.promise) {
         const promise = (this.promise = loadImportedComponent().then(
-          payload => {
+          (payload) => {
             this.done = true;
             this.ok = true;
             this.payload = payload;
             this.error = null;
             removeFromPending(promise);
             resolveResolution(payload);
+
             return payload;
           },
-          err => {
+          (err) => {
             this.done = true;
             this.ok = false;
             this.error = err;
@@ -129,6 +137,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
         ));
         addPending(promise);
       }
+
       return this.promise;
     },
   };
@@ -142,7 +151,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
       console.warn(
         'react-imported-component: no mark found at',
         importFunction,
-        'Please check babel plugin or macro setup, as well as imported-component\'s limitations. See https://github.com/theKashey/react-imported-component/issues/147'
+        "Please check babel plugin or macro setup, as well as imported-component's limitations. See https://github.com/theKashey/react-imported-component/issues/147"
       );
     }
   }

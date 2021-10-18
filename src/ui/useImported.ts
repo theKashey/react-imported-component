@@ -1,6 +1,7 @@
 import { ComponentType, lazy, LazyExoticComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import { getLoadable } from '../loadable/loadable';
-import { useMark } from '../loadable/marks';
+import { consumeMark } from '../loadable/marks';
 import { isItReady } from '../loadable/pending';
 import { InnerLoadable } from '../loadable/toLoadable';
 import { DefaultComponentImport, DefaultImport, DefaultImportedComponent, Loadable } from '../types';
@@ -19,7 +20,7 @@ function updateLoadable(loadable: Loadable<any>, callback: (l: any) => void) {
   if (process.env.NODE_ENV === 'development') {
     const upd = () => callback({});
 
-    (loadable as InnerLoadable<any>)._probeChanges().then(changed => changed && upd(), upd);
+    (loadable as InnerLoadable<any>)._probeChanges().then((changed) => changed && upd(), upd);
   }
 }
 
@@ -53,14 +54,16 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
   useMemo(() => {
     if (options.import !== false) {
       if (options.track !== false) {
-        useMark(UID, loadable.mark);
+        consumeMark(UID, loadable.mark);
       }
+
       if (!wasDone) {
         loadLoadable(loadable, forceUpdate);
       } else {
         updateLoadable(loadable, forceUpdate);
       }
     }
+
     return true;
   }, [loadable, options.import, options.track]);
 
@@ -77,6 +80,7 @@ export function useLoadable<T>(loadable: Loadable<T>, options: HookOptions = {})
     if (!loadable) {
       return;
     }
+
     loadable.reset();
     forceUpdate({});
     updateLoadable(loadable, forceUpdate);
@@ -226,6 +230,7 @@ export function useLazy<T>(importer: DefaultComponentImport<T>): LazyExoticCompo
     if (error) {
       reject!(error);
     }
+
     if (imported) {
       resolve!(imported);
     }

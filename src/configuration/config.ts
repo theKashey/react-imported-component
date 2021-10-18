@@ -1,6 +1,6 @@
 import { isBackend } from '../utils/detectBackend';
 
-const rejectNetwork = (url: string) => url.indexOf('http') !== 0;
+const rejectNetwork = (url: string): boolean => url.indexOf('http') !== 0;
 
 /**
  * client-side only imported settings
@@ -42,7 +42,7 @@ const localSettings: ImportedClientSettings = {
   checkSignatures: true,
 };
 
-export const settings = {
+export const settings: ImportedClientSettings = {
   get hot() {
     return localSettings.hot;
   },
@@ -66,6 +66,6 @@ export const settings = {
  * @internal
  * @see configuration via imported.json {@link https://github.com/theKashey/react-imported-component#importedjs}
  */
-export const setConfiguration = (config: Partial<ImportedClientSettings>) => {
+export const setConfiguration = (config: Partial<ImportedClientSettings>): void => {
   Object.assign(localSettings, config);
 };

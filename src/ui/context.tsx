@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { defaultStream } from '../loadable/stream';
 import { Stream } from '../types';
 

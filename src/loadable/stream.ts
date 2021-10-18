@@ -1,12 +1,14 @@
 import { Stream } from '../types';
 
 export const createLoadableStream = (): Stream => ({ marks: {} });
-export const clearStream = (stream?: Stream) => {
+
+export const clearStream = (stream?: Stream): void => {
   if (stream) {
     stream.marks = {};
   }
 };
-export const checkStream = (stream: Stream | number | string | undefined) => {
+
+export const checkStream = (stream: Stream | number | string | undefined): void => {
   if (process.env.NODE_ENV !== 'production') {
     if (!stream) {
       return;
@@ -19,4 +21,5 @@ export const checkStream = (stream: Stream | number | string | undefined) => {
     }
   }
 };
+
 export const defaultStream = createLoadableStream();

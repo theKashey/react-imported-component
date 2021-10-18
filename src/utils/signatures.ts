@@ -4,7 +4,8 @@ const trimImport = (str: string) => str.replace(/['"]/g, '');
 
 export const importMatch = (functionString: string): Mark => {
   const markMatches = functionString.match(/`imported_(.*?)_component`/g) || [];
-  return markMatches.map(match => match && trimImport((match.match(/`imported_(.*?)_component`/i) || [])[1]));
+
+  return markMatches.map((match) => match && trimImport((match.match(/`imported_(.*?)_component`/i) || [])[1]));
 };
 
 /**
@@ -12,7 +13,7 @@ export const importMatch = (functionString: string): Mark => {
  * basically from file to file different "short" names could be used
  * @param fn
  */
-export const getFunctionSignature = (fn: AnyFunction | string) =>
+export const getFunctionSignature = (fn: AnyFunction | string): string =>
   String(fn)
     // quotes
     .replace(/(["'])/g, '`')

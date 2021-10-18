@@ -1,5 +1,6 @@
 // @ts-ignore
 import { createMacro } from 'babel-plugin-macros';
+
 import { createTransformer } from '../babel/babel';
 import { assignImportedComponents } from '../loadable/assignImportedComponents';
 
@@ -31,10 +32,13 @@ function macro({ references, state, babel }: any) {
 
   Object.keys(references).forEach((tagName: string) => {
     const origin = getMacroType(tagName);
+
     if (origin) {
       imports[origin] = imports[origin] || [];
       imports[origin].push(tagName);
+
       const tags = references[tagName];
+
       tags.forEach((tag: any) => {
         const expression = tag.parentPath;
 
@@ -54,7 +58,7 @@ function addReactImports(babel: any, state: any, importsGroups: Record<string, s
   const { types: t } = babel;
 
   return Object.keys(importsGroups)
-    .map(origin => {
+    .map((origin) => {
       const imports = importsGroups[origin];
 
       if (!imports.length) {
@@ -67,7 +71,7 @@ function addReactImports(babel: any, state: any, importsGroups: Record<string, s
 
       // Handle adding the import or altering the existing import
       if (importedImport) {
-        imports.forEach(name => {
+        imports.forEach((name) => {
           if (
             !importedImport.specifiers.find((specifier: any) => specifier.imported && specifier.imported.name === name)
           ) {
@@ -77,7 +81,7 @@ function addReactImports(babel: any, state: any, importsGroups: Record<string, s
       } else {
         state.file.path.node.body.unshift(
           t.importDeclaration(
-            imports.map(name => t.importSpecifier(t.identifier(name), t.identifier(name))),
+            imports.map((name) => t.importSpecifier(t.identifier(name), t.identifier(name))),
             t.stringLiteral(origin)
           )
         );

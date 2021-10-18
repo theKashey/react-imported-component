@@ -1,7 +1,8 @@
 // @ts-ignore
-import * as crc32 from 'crc-32';
 import { existsSync } from 'fs';
 import { dirname, join, relative, resolve } from 'path';
+
+import * as crc32 from 'crc-32';
 
 import { ImportedConfiguration } from '../configuration/configuration';
 import { processComment } from './magic-comments';
@@ -12,6 +13,7 @@ export const encipherImport = (str: string) => {
 
 // Babel v7 compat
 let syntax: any;
+
 try {
   syntax = require('babel-plugin-syntax-dynamic-import');
 } catch (err) {
@@ -23,12 +25,14 @@ try {
     );
   }
 }
+
 syntax = syntax.default || syntax;
 
 const resolveImport = (importName: string, file = '') => {
   if (importName.charAt(0) === '.') {
     return relative(process.cwd(), resolve(dirname(file), importName));
   }
+
   return importName;
 };
 
@@ -46,9 +50,9 @@ function getComments(callPath: any) {
 
 // load configuration
 const configurationFile = join(process.cwd(), '.imported.js');
-const defaultConfiguration: ImportedConfiguration = (existsSync(configurationFile)
-  ? require(configurationFile)
-  : {}) as ImportedConfiguration;
+const defaultConfiguration: ImportedConfiguration = (
+  existsSync(configurationFile) ? require(configurationFile) : {}
+) as ImportedConfiguration;
 
 export const createTransformer = (
   { types: t, template }: any,
@@ -76,12 +80,16 @@ export const createTransformer = (
           }
 
           const source = path.node.source.value;
+
           if (source === 'react-imported-component/macro') {
             const { specifiers } = path.node;
             path.remove();
+
             const assignName = 'assignImportedComponents';
+
             if (specifiers.length === 1 && specifiers[0].imported.name === assignName) {
               isBootstrapFile = true;
+
               programPath.node.body.unshift(
                 t.importDeclaration(
                   [t.importSpecifier(t.identifier(assignName), t.identifier(assignName))],
@@ -117,6 +125,7 @@ export const createTransformer = (
 
           if (newComments !== comments) {
             rawComments.forEach((comment: any) => comment.remove());
+
             newComments.forEach((comment: string) => {
               rawImport.addComment('leading', ` ${comment} `);
             });
@@ -125,6 +134,7 @@ export const createTransformer = (
           if (!importName) {
             return;
           }
+
           const requiredFileHash = encipherImport(resolveImport(importName, fileName));
 
           let replace = null;
@@ -146,6 +156,7 @@ export const createTransformer = (
       if (!hasImports.has(filename)) {
         return;
       }
+
       node.body.unshift(headerTemplate());
     },
 

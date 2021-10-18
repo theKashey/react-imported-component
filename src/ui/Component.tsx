@@ -29,6 +29,7 @@ function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | 
     if (props.async) {
       throw loadable.resolution;
     }
+
     return props.LoadingComponent ? <props.LoadingComponent {...props.forwardProps} /> : null;
   }
 
@@ -36,6 +37,7 @@ function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | 
     // always report errors
     // tslint:disable-next-line:no-console
     console.error('react-imported-component', error);
+
     // let's rethrow the error after react leaves this function
     // this might be very crucial for the "safe" dev mode
     if (settings.rethrowErrors) {
@@ -43,9 +45,11 @@ function ImportedComponent<P, K>(props: ComponentOptions<P, K>): ReactElement | 
         throw error;
       });
     }
+
     if (props.ErrorComponent) {
       return <props.ErrorComponent retryImport={retry} error={error} {...props.forwardProps} />;
     }
+
     throw error;
   }
 

@@ -9,7 +9,7 @@ import { toKnownSignature } from './utils';
  * try to perform a render and loads all chunks required for it
  * @deprecated
  */
-export const dryRender = (renderFunction: () => void) => {
+export const dryRender = (renderFunction: () => void): Promise<unknown> => {
   renderFunction();
 
   return Promise.resolve().then(done);
@@ -59,11 +59,12 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
         });
       }
     }
+
     LOADABLE_SIGNATURE.forEach(({ mark, importer }) => {
       if (mark[0] === ownMark[1] && mark.join('|') === ownMark.join('|')) {
         // tslint:disable-next-line:no-console
         console.warn(
-          'Another loadable found for an existing mark. That\'s possible, but signatures must match (https://github.com/theKashey/react-imported-component/issues/192):',
+          "Another loadable found for an existing mark. That's possible, but signatures must match (https://github.com/theKashey/react-imported-component/issues/192):",
           {
             mark,
             knownImporter: importer,
@@ -86,4 +87,4 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
  * Reset `importers` weak cache
  * @internal
  */
-export const clearImportedCache = () => LOADABLE_SIGNATURE.clear();
+export const clearImportedCache = (): void => LOADABLE_SIGNATURE.clear();

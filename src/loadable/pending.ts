@@ -2,14 +2,21 @@
  * pending indicates any ongoing procceses
  */
 let pending: Array<Promise<any>> = [];
-export const addPending = (promise: Promise<any>) => pending.push(promise);
-export const removeFromPending = (promise: Promise<any>) => (pending = pending.filter(a => a !== promise));
+
+export const addPending = (promise: Promise<any>): void => {
+  pending.push(promise);
+};
+
+export const removeFromPending = (promise: Promise<any>): void => {
+  pending = pending.filter((a) => a !== promise);
+};
 
 /**
  * is it really ready?
  */
 let readyFlag = false;
-export const isItReady = () => readyFlag;
+
+export const isItReady = (): boolean => readyFlag;
 
 /**
  * waits for all necessary imports to be fulfilled
@@ -17,8 +24,9 @@ export const isItReady = () => readyFlag;
 export const done = (): Promise<void> => {
   if (pending.length) {
     readyFlag = false;
+
     return Promise.all(pending)
-      .then(a => a[1])
+      .then((a) => a[1])
       .then(done);
   }
 

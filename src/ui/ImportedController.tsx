@@ -16,6 +16,7 @@ export const HydrationState: React.FC<{ state: ImportedState }> = ({ state, chil
  */
 const HydrationEffect = ({ loopCallback }: { loopCallback(): void }): null => {
   useLayoutEffect(loopCallback, []);
+
   return null;
 };
 
@@ -36,7 +37,8 @@ export const ImportedController: React.FC<{
     pastHydration: false,
   });
 
-  const onFirstHydration = useCallback(() => setState(oldState => ({ ...oldState, pastHydration: true })), []);
+  const onFirstHydration = useCallback(() => setState((oldState) => ({ ...oldState, pastHydration: true })), []);
+
   return (
     <>
       <HydrationEffect loopCallback={onFirstHydration} />

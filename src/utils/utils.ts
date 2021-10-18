@@ -1,5 +1,6 @@
 import { Default } from '../types';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type ObjectOrFunction = object | (() => any);
 
 export function asDefault<T extends ObjectOrFunction>(mayBeNotDefault: T | Default<T>): Default<T> {

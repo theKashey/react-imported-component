@@ -1,4 +1,5 @@
 import { dirname } from 'path';
+
 import { remapImports } from '../scanForImports';
 import { getRelative } from '../shared';
 
@@ -10,6 +11,7 @@ describe('scanForImports', () => {
 
   it('should map simple import', () => {
     const imports = {};
+
     remapImports(
       [{ file: `${rel}/a`, content: 'blabla;import("./b.js"); blabla;' }],
       rel,
@@ -18,11 +20,13 @@ describe('scanForImports', () => {
       imports,
       () => true
     );
+
     expect(Object.values(imports)).toEqual([`[() => import('./b.js'), '', './b.js', false] /* from ./a */`]);
   });
 
   it('handles imports in jsdoc', () => {
     const imports = {};
+
     remapImports(
       [
         {
@@ -43,6 +47,7 @@ describe('scanForImports', () => {
       imports,
       () => true
     );
+
     expect(Object.values(imports)).toEqual([
       `[() => import(/* comment:valuable */'./a.js'), '', './a.js', false] /* from ./a */`,
       `[() => import('./b.js'), '', './b.js', false] /* from ./a */`,
@@ -51,6 +56,7 @@ describe('scanForImports', () => {
 
   it('should map client-side import', () => {
     const imports = {};
+
     remapImports(
       [{ file: sourceFile, content: 'blabla;import(/* client-side */"./a.js"); blabla;' }],
       rel,
@@ -59,6 +65,7 @@ describe('scanForImports', () => {
       imports,
       () => true
     );
+
     expect(Object.values(imports)).toEqual([
       `[() => import(/* client-side */'./a.js'), '', './a.js', true] /* from ./a */`,
     ]);
@@ -66,6 +73,7 @@ describe('scanForImports', () => {
 
   it('should map simple import with a comment', () => {
     const imports = {};
+
     remapImports(
       [{ file: sourceFile, content: 'blabla;import(/* comment:42 */"./a.js"); blabla;' }],
       rel,
@@ -74,6 +82,7 @@ describe('scanForImports', () => {
       imports,
       () => true
     );
+
     expect(Object.values(imports)).toEqual([
       `[() => import(/* comment:42 */'./a.js'), '', './a.js', false] /* from ./a */`,
     ]);
@@ -81,6 +90,7 @@ describe('scanForImports', () => {
 
   it('should map complex import', () => {
     const imports = {};
+
     remapImports(
       [
         {
@@ -94,6 +104,7 @@ describe('scanForImports', () => {
       imports,
       () => true
     );
+
     expect(Object.values(imports)).toEqual([
       `[() => import(/* webpack: \"123\" */'./a.js'), '', './a.js', false] /* from ./a */`,
       `[() => import(/* webpack: 123 */'./b.js'), '', './b.js', false] /* from ./a */`,
@@ -102,6 +113,7 @@ describe('scanForImports', () => {
 
   it('should match chunk name', () => {
     const imports = {};
+
     remapImports(
       [
         {
@@ -116,6 +128,7 @@ describe('scanForImports', () => {
       imports,
       () => true
     );
+
     expect(Object.values(imports)).toEqual([
       `[() => import(/* webpackChunkName: "chunk-a" */'${rootRel}/a.js'), 'chunk-a', '${rootRel}/a.js', false] /* from .a */`,
       `[() => import(/* webpack: 123 */'${rootRel}/b.js'), '', '${rootRel}/b.js', false] /* from .a */`,
@@ -124,6 +137,7 @@ describe('scanForImports', () => {
 
   it('should override chunk name', () => {
     const imports = {};
+
     remapImports(
       [
         {
@@ -136,9 +150,10 @@ describe('scanForImports', () => {
       root,
       (a, b) => a + b,
       imports,
-      imported => imported.indexOf('c.js') < 0,
+      (imported) => imported.indexOf('c.js') < 0,
       (imported, _, options) => (imported.indexOf('a.js') > 0 ? `test-${options.chunkName}-test` : 'bundle-b')
     );
+
     expect(Object.values(imports)).toEqual([
       `[() => import(/* webpackChunkName: \"chunk-a\" */'${rootRel}/a.js'), 'test-chunk-a-test', '${rootRel}/a.js', false] /* from .a */`,
       `[() => import(/* webpackChunkName: \"chunk-b\" */'${rootRel}/b.js'), 'bundle-b', '${rootRel}/b.js', false] /* from .a */`,
@@ -147,6 +162,7 @@ describe('scanForImports', () => {
 
   it('should match support multiline imports', () => {
     const imports = {};
+
     remapImports(
       [
         {
@@ -170,6 +186,7 @@ describe('scanForImports', () => {
       imports,
       () => true
     );
+
     expect(Object.values(imports)).toEqual([
       `[() => import(/* webpackChunkName: \"chunk-a\" */'${rootRel}/a.js'), 'chunk-a', '${rootRel}/a.js', false] /* from .a */`,
       `[() => import('${rootRel}/b.js'), '', '${rootRel}/b.js', false] /* from .a */`,
@@ -178,6 +195,7 @@ describe('scanForImports', () => {
 
   it('should remove webpackPrefetch and webpackPreload', () => {
     const imports = {};
+
     remapImports(
       [
         {
@@ -192,6 +210,7 @@ describe('scanForImports', () => {
       imports,
       () => true
     );
+
     expect(Object.values(imports)).toEqual([
       `[() => import(/*  *//* webpack: \"123\" */'${rootRel}/a.js'), '', '${rootRel}/a.js', false] /* from .a */`,
       `[() => import(/*  */'${rootRel}/b.js'), '', '${rootRel}/b.js', false] /* from .a */`,
