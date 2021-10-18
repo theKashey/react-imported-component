@@ -1,4 +1,4 @@
-import { rehydrateMarks } from '../loadable/marks';
+import {rehydrateMarks} from '../loadable/marks';
 
 /**
  * injects a loadable tracker on a given global variable name.
@@ -16,7 +16,7 @@ import { rehydrateMarks } from '../loadable/marks';
 export const injectLoadableTracker = (name: string = 'importedComponents') => {
   const value = (global as any)[name] as string[][];
   if (value) {
-    if (!value.push || (value.push && !value.forEach)) {
+    if (!value.push || (Boolean(value.push) && !Boolean(value.forEach))) {
       // tslint:disable-next-line:no-console
       console.error('given: ', value);
       throw new Error(`injectLoadableTracker(${name}) expected to be expected on Array-like variable, and only once.`);

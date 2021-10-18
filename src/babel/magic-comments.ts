@@ -1,5 +1,5 @@
-import { ImportedConfiguration, KnownImportOptions } from '../configuration/configuration';
-import { commentsToConfiguration } from './utils';
+import {ImportedConfiguration, KnownImportOptions} from '../configuration/configuration';
+import {commentsToConfiguration} from './utils';
 
 const preservePrefetch = (_: any, __: any, options: KnownImportOptions) => !!options.webpackPrefetch;
 const preservePreload = (_: any, __: any, options: KnownImportOptions) => !!options.webpackPreload;
@@ -15,7 +15,10 @@ const knownMagics = ['webpackChunkName', 'webpackPrefetch', 'webpackPreload'];
 const toComments = <T extends object>(conf: T): string[] =>
   (Object.keys(conf) as Array<keyof T>)
     .filter(key => !knownMagics.includes(key as any))
-    .reduce((acc, key) => [...acc, `${key}:${JSON.stringify(conf[key])}`], [] as string[]);
+    .reduce((acc, key) => {
+      acc.concat(`${key}:${JSON.stringify(conf[key])}`);
+      return acc;
+    }, [] as string[]);
 
 const nullish = <T>(a: T, b: T): T => {
   if (a === undefined) {
@@ -45,7 +48,7 @@ export const processComment = (
     chunkName(importName, fileName, importConfiguration),
     preserveChunkName(importName, fileName, importConfiguration)
   );
-  const { isBootstrapFile } = options;
+  const {isBootstrapFile} = options;
   return [
     ...toComments(importConfiguration),
     !isBootstrapFile && shouldPrefetch(importName, fileName, importConfiguration) ? prefetchComment() : '',
