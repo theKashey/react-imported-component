@@ -5,20 +5,21 @@
   "main": "dist/es5/entrypoints/index.js",
   "jsnext:main": "dist/es2015/entrypoints/index.js",
   "module": "dist/es2015/entrypoints/index.js",
+  "module:es2019": "dist/es2019/entrypoints/index.js",
   "types": "dist/es5/entrypoints/index.d.ts",
   "sideEffects": false,
   "scripts": {
     "build:ci": "lib-builder build && yarn size",
-    "build": "rm -Rf ./dist/* && lib-builder build && yarn size && yarn size:report",
+    "build": "lib-builder build && yarn size:report",
     "test": "jest",
-    "prepublish": "npm run build",
+    "prepublish": "yarn build && yarn changelog",
     "lint": "lib-builder lint",
     "dev": "lib-builder dev",
     "test:ci": "jest --runInBand --coverage",
-    "release": "yarn build && yarn test && yarn changelog",
+    "release": "yarn build && yarn test",
     "format": "lib-builder format",
-    "size": "yarn size-limit",
-    "size:report": "yarn --silent size-limit --json > .size.json",
+    "size": "npx size-limit",
+    "size:report": "npx size-limit --json > .size.json",
     "update": "lib-builder update",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
@@ -42,8 +43,8 @@
     "hmr"
   ],
   "peerDependencies": {
-    "@types/react": "^16.9.0 || ^17.0.0",
-    "react": "^16.9.0 || ^17.0.0"
+    "react": "^16.9.0 || ^17.0.0",
+    "@types/react": "^16.9.0 || ^17.0.0"
   },
   "peerDependenciesMeta": {
     "@types/react": {
@@ -57,11 +58,11 @@
   },
   "homepage": "https://github.com/theKashey/react-hot-component-loader#readme",
   "devDependencies": {
+    "@theuiteam/lib-builder": "^0.1.4",
+    "@size-limit/preset-small-lib": "^4.5.1",
     "@babel/core": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.1",
-    "@size-limit/preset-small-lib": "^4.5.1",
-    "@theuiteam/lib-builder": "^0.1.4",
     "@types/enzyme": "^3.10.3",
     "@types/node": "^12.12.6",
     "@types/react-dom": "^16.9.4",
@@ -75,14 +76,14 @@
     "size-limit": "^4.5.1"
   },
   "dependencies": {
+    "tslib": "^2.0.0",
     "babel-plugin-macros": "^2.6.1",
     "crc-32": "^1.2.0",
     "detect-node-es": "^1.0.0",
-    "scan-directory": "^2.0.0",
-    "tslib": "^2.0.0"
+    "scan-directory": "^2.0.0"
   },
   "engines": {
-    "node": ">=8.5.0"
+    "node": ">=10"
   },
   "files": [
     "bin",
@@ -101,7 +102,7 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "prettier --write",
-      "tslint --fix",
+      "eslint --fix",
       "git add"
     ],
     "*.{js,css,json,md}": [
