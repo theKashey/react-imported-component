@@ -18,7 +18,16 @@ type ImportOptions = KnownImportOptions | Record<string, string | boolean>;
  */
 export interface ImportedConfiguration {
   /**
-   * tests if this file should scanned by `imported-component`
+   * tests folder during scanning process. Can be used to optimize scanning process.
+   * @default ignores `node_modules` and `.*` directories
+   * @returns boolean flag
+   *   - true, dive in
+   *   - false, stop here
+   */
+  testFolder?: (targetName: string) => boolean;
+  /**
+   * tests if this file should scanned by `imported-component`.
+   * Keep in mind that you might consider removing (unit)test files from the scan
    * @param fileName - source file name
    * @returns {Boolean} true - if should, false - is should not
    * @example
@@ -47,7 +56,6 @@ export interface ImportedConfiguration {
    * }
    */
   testImport?: (targetFileName: string, sourceFileName: string) => boolean;
-
   /**
    * marks import with prefetch comment (if possible)
    * @param {String} targetFile

@@ -89,8 +89,14 @@ const mapImports = (file: string, imports: MappedImport[]) =>
     };
   });
 
-const rejectSystemFiles = (file: string, stats: Stats) =>
-  (stats.isDirectory() && file.match(/node_modules/)) || file.match(/(\/\.\w+)/);
+const rejectSystemFiles = (test: Required<ImportedConfiguration>['testFolder']) => (file: string, stats: Stats) => {
+  if (stats.isDirectory()) {
+    return !test(file);
+  }
+  return false;
+};
+
+const rejectNodeModulesAndDotFolders = (file: string) => !(file.match(/node_modules/) || file.match(/(\/\.\w+)/));
 
 export const remapImports = (
   data: FileContent[],
@@ -124,18 +130,20 @@ export const remapImports = (
 
 export function scanTop(root: string, start: string, target: string) {
   async function scan() {
-    console.log('scanning', start, 'for imports...');
+    const sourceDir = resolve(root, start);
+    console.log('scanning', sourceDir, 'for imports...');
 
     // try load configuration
-    const configurationFile = join(root, '.imported.js');
+    const configurationFile = resolve(root, '.imported.js');
     const {
+      testFolder = rejectNodeModulesAndDotFolders,
       testFile = () => true,
       testImport = () => true,
       chunkName,
       configuration,
     }: ImportedConfiguration = existsSync(configurationFile) ? require(configurationFile) : {};
 
-    const files = ((await scanDirectory(join(root, start), undefined, rejectSystemFiles)) as string[])
+    const files = ((await scanDirectory(sourceDir, undefined, rejectSystemFiles(testFolder))) as string[])
       .filter(name => normalizePath(name).indexOf(target) === -1)
       .filter(name => RESOLVE_EXTENSIONS.indexOf(extname(name)) >= 0)
       .filter(name => testFile(name))
