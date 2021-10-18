@@ -91,7 +91,7 @@ const mapImports = (file: string, imports: MappedImport[]) =>
 
 const rejectSystemFiles = (test: Required<ImportedConfiguration>['testFolder']) => (file: string, stats: Stats) => {
   if (stats.isDirectory()) {
-    return test(file);
+    return !test(file);
   }
   return false;
 };
@@ -130,10 +130,11 @@ export const remapImports = (
 
 export function scanTop(root: string, start: string, target: string) {
   async function scan() {
-    console.log('scanning', start, 'for imports...');
+    const sourceDir = resolve(root, start);
+    console.log('scanning', sourceDir, 'for imports...');
 
     // try load configuration
-    const configurationFile = join(root, '.imported.js');
+    const configurationFile = resolve(root, '.imported.js');
     const {
       testFolder = rejectNodeModulesAndDotFolders,
       testFile = () => true,
@@ -142,7 +143,6 @@ export function scanTop(root: string, start: string, target: string) {
       configuration,
     }: ImportedConfiguration = existsSync(configurationFile) ? require(configurationFile) : {};
 
-    const sourceDir = resolve(root, start);
     const files = ((await scanDirectory(sourceDir, undefined, rejectSystemFiles(testFolder))) as string[])
       .filter(name => normalizePath(name).indexOf(target) === -1)
       .filter(name => RESOLVE_EXTENSIONS.indexOf(extname(name)) >= 0)
