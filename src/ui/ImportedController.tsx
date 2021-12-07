@@ -41,8 +41,8 @@ export const ImportedController: React.FC<{
 
   return (
     <>
-      <HydrationState state={state}>{children}</HydrationState>
       <HydrationEffect loopCallback={onFirstHydration} />
+      <HydrationState state={state}>{children}</HydrationState>
     </>
   );
 };
