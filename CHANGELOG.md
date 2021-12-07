@@ -1,3 +1,9 @@
+## [6.5.2](https://github.com/theKashey/react-hot-component-loader/compare/v6.5.0...v6.5.2) (2021-12-07)
+
+### Bug Fixes
+
+- context update in layoutEffect breaks suspense ([88e043f](https://github.com/theKashey/react-hot-component-loader/commit/88e043f41e42e8e3e96b83da75688328bae95c8f))
+
 # [6.5.0](https://github.com/theKashey/react-hot-component-loader/compare/v6.4.1...v6.5.0) (2021-10-18)
 
 ### Bug Fixes
