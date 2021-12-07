@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useLayoutEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 
 interface ImportedState {
   usesHydration: boolean;
@@ -15,7 +15,7 @@ export const HydrationState: React.FC<{ state: ImportedState }> = ({ state, chil
  * this component just creates a "the first-most" effect in the system
  */
 const HydrationEffect = ({ loopCallback }: { loopCallback(): void }): null => {
-  useLayoutEffect(loopCallback, []);
+  useEffect(loopCallback, []);
 
   return null;
 };
@@ -41,8 +41,8 @@ export const ImportedController: React.FC<{
 
   return (
     <>
-      <HydrationEffect loopCallback={onFirstHydration} />
       <HydrationState state={state}>{children}</HydrationState>
+      <HydrationEffect loopCallback={onFirstHydration} />
     </>
   );
 };
