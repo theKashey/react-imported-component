@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 interface ImportedState {
   usesHydration: boolean;
@@ -10,15 +10,6 @@ export const importedState = createContext<ImportedState | undefined>(undefined)
 export const HydrationState: React.FC<{ state: ImportedState }> = ({ state, children }) => (
   <importedState.Provider value={state}>{children}</importedState.Provider>
 );
-
-/**
- * this component just creates a "the first-most" effect in the system
- */
-const HydrationEffect = ({ loopCallback }: { loopCallback(): void }): null => {
-  useEffect(loopCallback, []);
-
-  return null;
-};
 
 /**
  * @see [LazyBoundary]{@link LazyBoundary} - HydrationController is required for LazyBoundary to properly work with React>16.10
@@ -37,12 +28,9 @@ export const ImportedController: React.FC<{
     pastHydration: false,
   });
 
-  const onFirstHydration = useCallback(() => setState((oldState) => ({ ...oldState, pastHydration: true })), []);
+  useEffect(() => {
+    setState((oldState) => ({ ...oldState, pastHydration: true }));
+  }, []);
 
-  return (
-    <>
-      <HydrationEffect loopCallback={onFirstHydration} />
-      <HydrationState state={state}>{children}</HydrationState>
-    </>
-  );
+  return <HydrationState state={state}>{children}</HydrationState>;
 };
