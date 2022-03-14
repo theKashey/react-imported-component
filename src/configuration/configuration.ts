@@ -86,6 +86,39 @@ export interface ImportedConfiguration {
    * clientside configuration properties to be passed into `setConfiguration`
    */
   configuration?: Partial<ImportedClientSettings>;
+
+  /**
+   * Allowing for module name overrides, helpful for when you re-export wrappers.
+   */
+  modules?: {
+    /**
+     * The root module name
+     * 
+     * @default "react-imported-component"
+     */
+    native?: string;
+
+    /**
+     * The imported wrapper module name.
+     * 
+     * @default "react-imported-component/wrapper"
+     */
+    wrapper?: string;
+
+    /**
+     * When using the macro pathways.
+     * 
+     * @defaults "react-imported-component/macro"
+     */
+    macro?: string;
+
+    /**
+     * The module to ues during boot.
+     * 
+     * @defaults "react-imported-component/boot"
+     */
+    boot?: string;
+  }
 }
 
 /**
