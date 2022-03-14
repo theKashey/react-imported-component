@@ -54,13 +54,22 @@ const defaultConfiguration: ImportedConfiguration = (
   existsSync(configurationFile) ? require(configurationFile) : {}
 ) as ImportedConfiguration;
 
+const resolveModuleNames = (config: ImportedConfiguration): Required<Required<ImportedConfiguration>['modules']> => ({
+  boot: config.modules?.boot ?? 'react-imported-component/boot',
+  macro: config.modules?.macro ?? 'react-imported-component/macro',
+  wrapper: config.modules?.wrapper ?? 'react-imported-component/wrapper',
+  native: config.modules?.wrapper ?? 'react-imported-component',
+});
+
 export const createTransformer = (
   { types: t, template }: any,
   excludeMacro = false,
   configuration = defaultConfiguration
 ) => {
+  const moduleNames = resolveModuleNames(configuration);
+
   const headerTemplate = template(
-    `var importedWrapper = require('react-imported-component/wrapper');`,
+    `var importedWrapper = require(${moduleNames.wrapper});`,
     templateOptions
   );
 
@@ -81,7 +90,7 @@ export const createTransformer = (
 
           const source = path.node.source.value;
 
-          if (source === 'react-imported-component/macro') {
+          if (source === moduleNames.macro) {
             const { specifiers } = path.node;
             path.remove();
 
@@ -93,7 +102,7 @@ export const createTransformer = (
               programPath.node.body.unshift(
                 t.importDeclaration(
                   [t.importSpecifier(t.identifier(assignName), t.identifier(assignName))],
-                  t.stringLiteral('react-imported-component/boot')
+                  t.stringLiteral(moduleNames.boot)
                 )
               );
             } else {
@@ -102,7 +111,7 @@ export const createTransformer = (
                   specifiers.map((spec: any) =>
                     t.importSpecifier(t.identifier(spec.imported.name), t.identifier(spec.imported.name))
                   ),
-                  t.stringLiteral('react-imported-component')
+                  t.stringLiteral(moduleNames.native)
                 )
               );
             }
