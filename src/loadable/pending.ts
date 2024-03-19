@@ -22,6 +22,7 @@ export const isItReady = (): boolean => readyFlag;
  * waits for all necessary imports to be fulfilled
  */
 export const done = (): Promise<void> => {
+  console.log('pending:', pending.length);
   if (pending.length) {
     readyFlag = false;
 

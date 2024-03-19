@@ -14,6 +14,10 @@ export interface InnerLoadable<T> extends Loadable<T> {
   _probeChanges(): Promise<boolean>;
 }
 
+/**
+ * @deprecated to be used only inside {@link getLoadable}
+ * @internal
+ */
 export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = true): Loadable<T> {
   let importFunction = firstImportFunction;
   const loadImportedComponent = (): Promise<T> =>
@@ -116,6 +120,7 @@ export function toLoadable<T>(firstImportFunction: Promised<T>, autoImport = tru
 
     load() {
       if (!this.promise) {
+        console.log('loading', importFunction);
         const promise = (this.promise = loadImportedComponent().then(
           (payload) => {
             this.done = true;

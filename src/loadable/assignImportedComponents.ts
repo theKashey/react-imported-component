@@ -3,7 +3,7 @@ import { Promised } from '../types';
 import { assignMetaData } from './metadata';
 import { done } from './pending';
 import { LOADABLE_SIGNATURE } from './registry';
-import { toLoadable } from './toLoadable';
+import {getLoadable} from "./loadable";
 
 type ImportedDefinition = [Promised<any>, string, string, boolean];
 
@@ -15,7 +15,7 @@ export const assignImportedComponents = (set: ImportedDefinition[]) => {
 
   set.forEach((imported) => {
     const allowAutoLoad = !(imported[3] || !settings.fileFilter(imported[2]));
-    const loadable = toLoadable(imported[0], allowAutoLoad);
+    const loadable = getLoadable(imported[0], allowAutoLoad);
     assignMetaData(loadable.mark, loadable, imported[1], imported[2]);
   });
 

@@ -28,7 +28,7 @@ export function executeLoadable(importFunction: DefaultImport<any> | Loadable<an
  * @internal
  * @param importFunction
  */
-export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): Loadable<T> {
+export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>, autoImport: boolean = true): Loadable<T> {
   if ('resolution' in importFunction) {
     return importFunction;
   }
@@ -77,7 +77,7 @@ export function getLoadable<T>(importFunction: DefaultImport<T> | Loadable<T>): 
     });
   }
 
-  const loadable = toLoadable(importFunction as any);
+  const loadable = toLoadable(importFunction as any, autoImport);
   LOADABLE_WEAK_SIGNATURE.set(importFunction, loadable);
 
   return loadable as any;
