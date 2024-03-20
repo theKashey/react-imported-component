@@ -35,7 +35,7 @@ export interface ImportedClientSettings {
 }
 
 const localSettings: ImportedClientSettings = {
-  hot: (!!module as any).hot,
+  hot: typeof module !== 'undefined' && (!!module as any).hot,
   SSR: isBackend,
   rethrowErrors: process.env.NODE_ENV !== 'production',
   fileFilter: rejectNetwork,
