@@ -1,3 +1,15 @@
+## [6.5.4](https://github.com/theKashey/react-hot-component-loader/compare/v6.5.3...v6.5.4) (2024-03-20)
+
+### Bug Fixes
+
+- secure access to modules.hot, fixes [#231](https://github.com/theKashey/react-hot-component-loader/issues/231) ([926a4fd](https://github.com/theKashey/react-hot-component-loader/commit/926a4fd55215228c05bc6de4580008707aa73c8d))
+
+## [6.5.3](https://github.com/theKashey/react-hot-component-loader/compare/v6.5.2...v6.5.3) (2021-12-12)
+
+### Bug Fixes
+
+- use only one childlren in ImportedController to keep tree flat ([9f857e9](https://github.com/theKashey/react-hot-component-loader/commit/9f857e9d4e343dbb7fbff6e598d7e4009882c5cc))
+
 ## [6.5.2](https://github.com/theKashey/react-hot-component-loader/compare/v6.5.0...v6.5.2) (2021-12-07)
 
 ### Bug Fixes
