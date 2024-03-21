@@ -52,6 +52,8 @@ export const rehydrateMarks = (marks?: string[]): Promise<unknown> => {
 
   const usedMarks = new Set<string>();
 
+  console.log({rehydratedMarks,LOADABLE_MARKS })
+
   LOADABLE_MARKS.forEach(({ mark, loadable }) => {
     if (markerOverlap(mark, rehydratedMarks)) {
       mark.forEach((m) => usedMarks.add(m));
